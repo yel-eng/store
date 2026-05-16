@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lensora — عالم العدسات الملونة</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+<style>
+:root{
+  --bg:#080605;
+  --card:#121010;
+  --card-hover:#1a1616;
+  --gold:#c9a84c;
+  --gold-light:#e8d5a3;
+  --text:#f5ede0;
+  --text-dim:#6b6058;
+  --accent:#d4af37;
+  --success:#4caf50;
+  --danger:#e74c3c;
+  --radius:20px;
+  --radius-sm:12px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+button{cursor:pointer;border:none;font-family:inherit}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:16px 5%;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(8,6,5,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(201,168,76,.08);
+}
+.nav-logo{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);letter-spacing:4px}
+.nav-logo span{color:var(--text-dim);font-size:12px;letter-spacing:2px;display:block;font-family:'Inter',sans-serif}
+.nav-actions{display:flex;gap:12px;align-items:center}
+.cart-btn{
+  background:rgba(201,168,76,.1);color:var(--gold);
+  padding:10px 18px;border-radius:50px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.15);
+  transition:.3s;position:relative;
+}
+.cart-btn:hover{background:var(--gold);color:var(--bg)}
+.cart-badge{
+  background:var(--danger);color:#fff;
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  position:absolute;top:-6px;left:-6px;
+}
+.cart-badge:empty,.cart-badge[data-count="0"]{display:none}
+
+/* HERO */
+.hero{
+  padding:140px 5% 80px;text-align:center;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08) 0%,transparent 60%);
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(40px,7vw,72px);color:var(--gold);
+  letter-spacing:4px;margin-bottom:12px;
+  animation:fadeInUp .8s ease both;
+}
+.hero p{
+  font-size:16px;color:var(--text-dim);max-width:550px;
+  margin:0 auto 36px;line-height:1.8;
+  animation:fadeInUp .8s ease .2s both;
+}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* COLOR CATEGORIES */
+.categories-section{padding:20px 5% 80px;max-width:1400px;margin:0 auto}
+.section-title{
+  font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);
+  text-align:center;margin-bottom:8px;
+}
+.section-sub{text-align:center;color:var(--text-dim);font-size:14px;margin-bottom:48px}
+
+.color-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:24px;
+}
+.color-card{
+  background:var(--card);border-radius:var(--radius);overflow:hidden;
+  border:1px solid rgba(201,168,76,.06);
+  transition:transform .4s,box-shadow .4s;cursor:pointer;
+  animation:slideUp .6s ease both;
+}
+.color-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.color-card-header{
+  padding:24px;display:flex;align-items:center;gap:16px;
+  border-bottom:1px solid rgba(201,168,76,.06);
+}
+.color-swatch{
+  width:48px;height:48px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.1);
+  flex-shrink:0;
+}
+.color-card-header h3{font-size:18px;font-weight:600}
+.color-card-header span{font-size:12px;color:var(--text-dim)}
+.color-card-body{padding:24px}
+.color-preview{
+  display:flex;gap:10px;overflow:hidden;
+}
+.color-dot{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.08);
+  transition:transform .3s;
+}
+.color-dot:hover{transform:scale(1.2)}
+.color-card-footer{
+  padding:16px 24px;display:flex;justify-content:space-between;align-items:center;
+}
+.color-card-footer span{font-size:13px;color:var(--text-dim)}
+.open-btn{
+  padding:10px 24px;border-radius:50px;
+  background:var(--gold);color:var(--bg);font-weight:700;font-size:13px;
+  transition:.3s;
+}
+.open-btn:hover{background:var(--gold-light);transform:scale(1.05)}
+
+/* MODAL OVERLAY */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:.4s;padding:20px;
+  backdrop-filter:blur(10px);
+}
+.modal-bg.open{opacity:1;visibility:visible}
+.modal-box{
+  background:var(--bg);border-radius:var(--radius);
+  width:100%;max-width:900px;max-height:90vh;overflow-y:auto;
+  border:1px solid rgba(201,168,76,.1);
+  transform:scale(.9);transition:transform .4s;
+}
+.modal-bg.open .modal-box{transform:scale(1)}
+.modal-header{
+  padding:24px 32px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid rgba(201,168,76,.08);
+  position:sticky;top:0;background:var(--bg);z-index:2;border-radius:var(--radius) var(--radius) 0 0;
+}
+.modal-header h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold)}
+.modal-close{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(201,168,76,.1);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  transition:.3s;
+}
+.modal-close:hover{background:var(--gold);color:var(--bg)}
+
+/* LENS SLIDER */
+.slider-area{padding:32px}
+.lens-slider-container{
+  position:relative;overflow:hidden;
+  background:var(--card);border-radius:var(--radius);
+  padding:32px;
+}
+.lens-slider-track{
+  display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);
+  gap:20px;
+}
+.lens-slide{
+  min-width:100%;
+  display:flex;gap:32px;align-items:center;
+}
+.lens-visual{
+  width:220px;height:220px;border-radius:50%;
+  position:relative;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.lens-visual::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:3px solid rgba(255,255,255,.05);
+}
+.lens-visual-inner{
+  width:180px;height:180px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.lens-visual-inner::after{
+  content:'';position:absolute;inset:15%;border-radius:50%;
+  background:rgba(0,0,0,.15);
+}
+.lens-circle{
+  width:100%;height:100%;border-radius:50%;
+  transition:.5s;
+}
+.lens-details{flex:1}
+.lens-details h3{font-family:'Playfair Display',serif;font-size:24px;color:var(--text);margin-bottom:8px}
+.lens-details .lens-desc{font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:20px}
+.lens-meta{display:flex;gap:24px;margin-bottom:20px;flex-wrap:wrap}
+.meta-item{
+  background:rgba(201,168,76,.06);padding:12px 20px;border-radius:var(--radius-sm);
+  border:1px solid rgba(201,168,76,.08);
+}
+.meta-item .label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.meta-item .value{font-size:20px;font-weight:700;color:var(--gold);margin-top:4px}
+.meta-item .value.stock-low{color:#ff9800}
+.meta-item .value.stock-out{color:var(--danger)}
+.qty-selector{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.qty-selector label{font-size:14px;color:var(--text-dim)}
+.qty-ctrl{
+  display:flex;align-items:center;gap:0;
+  background:var(--card);border-radius:var(--radius-sm);
+  border:1px solid rgba(201,168,76,.1);
+  overflow:hidden;
+}
+.qty-ctrl button{
+  width:40px;height:40px;background:rgba(201,168,76,.08);color:var(--gold);
+  font-size:18px;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.qty-ctrl button:hover{background:var(--gold);color:var(--bg)}
+.qty-ctrl .qty-display{
+  width:50px;text-align:center;font-size:18px;font-weight:700;color:var(--text);
+}
+.add-lens-btn{
+  padding:14px 36px;border-radius:var(--radius-sm);
+  background:var(--gold);color:var(--bg);
+  font-weight:700;font-size:15px;transition:.3s;
+  display:flex;align-items:center;gap:8px;
+}
+.add-lens-btn:hover{background:var(--gold-light);transform:translateY(-2px)}
+.add-lens-btn:disabled{background:var(--text-dim);opacity:.5;cursor:not-allowed}
+.slider-nav{
+  display:flex;justify-content:center;gap:16px;margin-top:24px;
+}
+.slider-nav button{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(201,168,76,.08);color:var(--gold);
+  font-size:18px;transition:.3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.slider-nav button:hover{background:var(--gold);color:var(--bg)}
+.slider-nav button:disabled{opacity:.2;cursor:not-allowed}
+.slider-dots{display:flex;align-items:center;gap:8px}
+.slider-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(201,168,76,.2);transition:.3s;cursor:pointer;
+}
+.slider-dot.active{background:var(--gold);transform:scale(1.3)}
+
+/* CART */
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;
+  opacity:0;visibility:hidden;transition:.3s;
+}
+.cart-overlay.open{opacity:1;visibility:visible}
+.cart-panel{
+  position:fixed;top:0;left:0;width:440px;max-width:100vw;height:100vh;
+  background:var(--bg);z-index:3001;
+  transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  border-right:1px solid rgba(201,168,76,.08);
+}
+.cart-panel.open{transform:translateX(0)}
+.cart-top{
+  padding:24px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid rgba(201,168,76,.08);
+}
+.cart-top h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold)}
+.cart-items-list{flex:1;overflow-y:auto;padding:16px 24px}
+.cart-empty{text-align:center;padding:60px 20px;color:var(--text-dim)}
+.cart-empty .ce-icon{font-size:56px;margin-bottom:12px;opacity:.4}
+.ci{
+  display:flex;gap:14px;padding:16px 0;
+  border-bottom:1px solid rgba(201,168,76,.04);
+  animation:fadeInUp .3s ease;
+}
+.ci-color{
+  width:50px;height:50px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.08);
+}
+.ci-info{flex:1}
+.ci-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.ci-cat{font-size:11px;color:var(--text-dim);margin-bottom:8px}
+.ci-bottom{display:flex;justify-content:space-between;align-items:center}
+.ci-price{font-size:16px;font-weight:700;color:var(--gold)}
+.ci-qty{display:flex;align-items:center;gap:6px}
+.ci-qty button{
+  width:26px;height:26px;border-radius:6px;
+  background:rgba(201,168,76,.1);color:var(--gold);
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.ci-qty button:hover{background:var(--gold);color:var(--bg)}
+.ci-qty span{font-size:14px;font-weight:600;min-width:20px;text-align:center}
+.ci-remove{
+  background:none;color:var(--danger);font-size:16px;
+  padding:4px;transition:.2s;
+}
+.ci-remove:hover{transform:scale(1.3)}
+.cart-bottom{padding:24px;border-top:1px solid rgba(201,168,76,.08)}
+.cb-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px}
+.cb-row.total{
+  font-size:20px;font-weight:700;color:var(--gold);
+  padding-top:12px;border-top:1px solid rgba(201,168,76,.1);margin-top:8px;
+}
+.checkout-btn{
+  width:100%;padding:14px;border-radius:var(--radius-sm);
+  background:var(--gold);color:var(--bg);font-weight:700;font-size:15px;
+  margin-top:16px;transition:.3s;
+}
+.checkout-btn:hover{background:var(--gold-light)}
+.checkout-btn:disabled{background:var(--text-dim);opacity:.5;cursor:not-allowed}
+
+/* INVOICE */
+.inv-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:4000;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:.3s;padding:20px;
+  backdrop-filter:blur(10px);
+}
+.inv-overlay.open{opacity:1;visibility:visible}
+.inv-box{
+  background:#faf8f5;color:#222;border-radius:var(--radius);
+  width:100%;max-width:580px;max-height:90vh;overflow-y:auto;
+  padding:40px;
+}
+.inv-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid var(--gold)}
+.inv-brand{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold)}
+.inv-brand small{display:block;font-size:11px;color:#999;font-family:'Inter',sans-serif;margin-top:4px}
+.inv-info{text-align:left;font-size:12px;color:#888;line-height:1.8}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.inv-table th{background:var(--gold);color:var(--bg);padding:10px 12px;font-size:11px;text-align:right;font-weight:700}
+.inv-table td{padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;text-align:right}
+.inv-color-dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle;border:1px solid rgba(0,0,0,.1);margin-left:6px}
+.inv-totals{text-align:left}
+.inv-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.inv-total{font-size:22px;font-weight:700;color:var(--gold);border-top:2px solid var(--gold);padding-top:12px;margin-top:8px}
+.inv-actions{display:flex;gap:12px;margin-top:24px;justify-content:center}
+.inv-btn{padding:12px 28px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;transition:.3s}
+.inv-print{background:var(--gold);color:var(--bg)}
+.inv-print:hover{background:var(--gold-light)}
+.inv-done{background:#eee;color:#333}
+.inv-done:hover{background:#ddd}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--card);border:1px solid var(--gold);color:var(--text);
+  padding:14px 28px;border-radius:var(--radius-sm);font-size:14px;
+  z-index:9999;transition:transform .4s ease;display:flex;align-items:center;gap:10px;
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* FOOTER */
+.footer{text-align:center;padding:40px 5%;border-top:1px solid rgba(201,168,76,.06);color:var(--text-dim);font-size:13px}
+.footer a{color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .color-grid{grid-template-columns:1fr}
+  .lens-slide{flex-direction:column;text-align:center}
+  .lens-visual{width:180px;height:180px}
+  .lens-visual-inner{width:140px;height:140px}
+  .lens-meta{justify-content:center}
+  .qty-selector{justify-content:center}
+  .add-lens-btn{margin:0 auto}
+  .slider-area{padding:20px}
+  .lens-slider-container{padding:20px}
+  .cart-panel{width:100%}
+  .inv-box{padding:24px}
+  .modal-box{max-height:95vh}
+}
+
+@media print{
+  body *{visibility:hidden}
+  .inv-box,.inv-box *{visibility:visible}
+  .inv-box{position:absolute;top:0;left:0;width:100%;padding:20px}
+  .inv-actions{display:none!important}
+}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">LENSORA<span>✨ عدسات ملونة فاخرة</span></div>
+  <div class="nav-actions">
+    <button class="cart-btn" onclick="openCart()">
+      🛒 السلة
+      <span class="cart-badge" id="cartBadge"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <h1>LENSORA</h1>
+  <p>اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي بأمان تام وجودة عالمية</p>
+</header>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <h2 class="section-title">👁️ اختاري لونك المفضل</h2>
+  <p class="section-sub">كل لون يحتوي على تدرجات متعددة — اكتشفيها بنفسك</p>
+  <div class="color-grid" id="colorGrid"></div>
+</section>
+
+<!-- LENS MODAL -->
+<div class="modal-bg" id="lensModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modalTitle">اسم اللون</h2>
+      <button class="modal-close" onclick="closeLensModal()">✕</button>
+    </div>
+    <div class="slider-area">
+      <div class="lens-slider-container">
+        <div class="lens-slider-track" id="lensTrack"></div>
+      </div>
+      <div class="slider-nav">
+        <button onclick="slideMove(-1)">→</button>
+        <div class="slider-dots" id="sliderDots"></div>
+        <button onclick="slideMove(1)">←</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-top">
+    <h2>🛒 سلة المشتريات</h2>
+    <button class="modal-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-bottom" id="cartBottom"></div>
+</div>
+
+<!-- INVOICE -->
+<div class="inv-overlay" id="invOverlay">
+  <div class="inv-box" id="invBox"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<div class="footer">© 2025 LENSORA — جميع الحقوق محفوظة | صُنع بـ ❤️ لعشاق الجمال</div>
+
+<script>
+// ========== DATA ==========
+const COLORS_DATA = [
+  {
+    id:'brown', name:'بني', arName:'بني دافئ',
+    swatch:'#8B5E3C',
+    lenses:[
+      {id:'b1',name:'عسل ذهبي',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 40%,#D4A056,#8B5E3C,#5C3A1E)'},
+      {id:'b2',name:'شوكولاتة',desc:'لون بني غامق عميق يعطي نظرة ساحرة',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 40%,#7B5230,#4A2A10,#2E1808)'},
+      {id:'b3',name:'كراميل',desc:'بني فاتح كريمي مثالي للبشرة السمراء',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 40%,#C68642,#8B5E3C,#5C3A1E)'},
+      {id:'b4',name:'بندق',desc:'بني متوسط مع لمسات ذهبية خفيفة',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 40%,#A0845C,#7B6B4F,#5A4D36)'},
+    ]
+  },
+  {
+    id:'blue', name:'أزرق', arName:'أزرق ساحر',
+    swatch:'#4A90D9',
+    lenses:[
+      {id:'bl1',name:'محيط',desc:'أزرق محيطي عميق مع لمعة طبيعية',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 40%,#5B9BD5,#2E6CB5,#1B3A5C)'},
+      {id:'bl2',name:'سماء',desc:'أزرق سماوي فاتح يعطي نظرة براقة',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 40%,#87CEEB,#5BA3D9,#3A7BBF)'},
+      {id:'bl3',name:'ثلجي',desc:'أزرق فاتح ثلجي مع تأثير مذهل',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 40%,#D0E4F0,#A8C8DC,#7BAFC8)'},
+      {id:'bl4',name:'زفير',desc:'أزرق بنفسجي غامض وساحر',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 40%,#7B8CDF,#4A5AAF,#2E3A7B)'},
+    ]
+  },
+  {
+    id:'green', name:'أخضر', arName:'أخضر زمردي',
+    swatch:'#5CAB68',
+    lenses:[
+      {id:'g1',name:'زيتون',desc:'أخضر زيتوني ناعم مع تدرج دافئ',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 40%,#8BA85C,#6B8E4E,#4A6B32)'},
+      {id:'g2',name:'زمردي',desc:'أخضر زمردي فاخر مع لمعة لامعة',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 40%,#3CB371,#2E8B57,#1B5E3B)'},
+      {id:'g3',name:'فيروزي',desc:'أخضر فيروزي مائي منعش',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 40%,#5CD4C4,#40B5A5,#2A8A7B)'},
+      {id:'g4',name:'غابة',desc:'أخضر غامق غامض يشبه الغابة',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 40%,#3E8B4B,#2E6B3B,#1B4B28)'},
+    ]
+  },
+  {
+    id:'gray', name:'رمادي', arName:'رمادي أنيق',
+    smudge:'#8A8A8A',
+    swatch:'#8A8A8A',
+    lenses:[
+      {id:'gr1',name:'فضي',desc:'رمادي فضي لامع مع تدرج أنيق',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 40%,#D0D0D0,#A8A8A8,#787878)'},
+      {id:'gr2',name:'فحمي',desc:'رمادي فحمي غامق يعطي نظرة قوية',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 40%,#6A6A6A,#3A3A3A,#202020)'},
+      {id:'gr3',name:'دخاني',desc:'رمادي دخاني مع لمسة بنفسجية خفيفة',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 40%,#8B8B9B,#6B6B7B,#4A4A5A)'},
+    ]
+  },
+  {
+    id:'hazel', name:'عسلي', arName:'عسلي مميز',
+    swatch:'#A0845C',
+    lenses:[
+      {id:'hz1',name:'لوز',desc:'عسلي لوزي فاتح مع تدرج طبيعي',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 40%,#D4B878,#C4A265,#8B7355)'},
+      {id:'hz2',name:'نحاسي',desc:'عسلي نحاسي دافئ مع بريق معدني',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 40%,#D4944A,#B87333,#7B4A1E)'},
+      {id:'hz3',name:'ذهبي',desc:'عسلي ذهبي لامع مع تأثير شمش',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 40%,#E8C070,#D4A056,#8B6A32)'},
+    ]
+  },
+  {
+    id:'purple', name:'بنفسجي', arName:'بنفسجي ملكي',
+    swatch:'#7B5EA7',
+    lenses:[
+      {id:'p1',name:'لافندر',desc:'بنفسجي لافندر ناعم ورومانسي',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 40%,#C5A8DC,#A88BC5,#7B5EA7)'},
+      {id:'p2',name:'أرجواني',desc:'بنفسجي غامق ملكي مع عمق مذهل',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 40%,#8B5FC0,#6B3FA0,#4B2A70)'},
+      {id:'p3',name:'ليلكي',desc:'بنفسجي فاتح ليلكي ساحر',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 40%,#B89FD4,#9B7FBF,#7B5FA0)'},
+    ]
+  }
+];
+
+// ========== STATE ==========
+let products = JSON.parse(localStorage.getItem('lensora_products')) || initProducts();
+let cart = JSON.parse(localStorage.getItem('lensora_cart')) || [];
+let orders = JSON.parse(localStorage.getItem('lensora_orders')) || [];
+let currentColorIdx = 0;
+let currentLensIdx = 0;
+
+function initProducts(){
+  let prods = [];
+  COLORS_DATA.forEach(c => {
+    c.lenses.forEach(l => {
+      prods.push({...l, categoryId: c.id, categoryName: c.arName, colorHex: l.color});
+    });
+  });
+  return prods;
+}
+
+function saveData(){
+  localStorage.setItem('lensora_products', JSON.stringify(products));
+  localStorage.setItem('lensora_cart', JSON.stringify(cart));
+  localStorage.setItem('lensora_orders', JSON.stringify(orders));
+}
+
+function getProduct(id){ return products.find(p => p.id === id); }
+
+// ========== RENDER CATEGORIES ==========
+function renderCategories(){
+  const grid = document.getElementById('colorGrid');
+  grid.innerHTML = COLORS_DATA.map((c, ci) => {
+    const totalStock = c.lenses.reduce((s,l) => s + getProduct(l.id).stock, 0);
+    const dotsHTML = c.lenses.map(l =>
+      `<div class="color-dot" style="background:${l.color}"></div>`
+    ).join('');
+    return `
+      <div class="color-card" style="animation-delay:${ci * .1}s">
+        <div class="color-card-header">
+          <div class="color-swatch" style="background:${c.swatch}"></div>
+          <div>
+            <h3>${c.arName}</h3>
+            <span>${c.lenses.length} تدرج · ${totalStock} قطعة متاحة</span>
+          </div>
+        </div>
+        <div class="color-card-body">
+          <div class="color-preview">${dotsHTML}</div>
+        </div>
+        <div class="color-card-footer">
+          <span>ابدأ ${getProduct(c.lenses[0].id).price} ر.س</span>
+          <button class="open-btn" onclick="openLensModal(${ci})">تصفحي التدرجات ←</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ========== LENS MODAL / SLIDER ==========
+function openLensModal(catIdx){
+  currentColorIdx = catIdx;
+  currentLensIdx = 0;
+  const cat = COLORS_DATA[catIdx];
+  document.getElementById('modalTitle').textContent = cat.arName;
+  renderSlider();
+  document.getElementById('lensModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLensModal(){
+  document.getElementById('lensModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderSlider(){
+  const cat = COLORS_DATA[currentColorIdx];
+  const track = document.getElementById('lensTrack');
+  const dots = document.getElementById('sliderDots');
+
+  track.innerHTML = cat.lenses.map((l, li) => {
+    const prod = getProduct(l.id);
+    const stockClass = prod.stock === 0 ? 'stock-out' : prod.stock <= 5 ? 'stock-low' : '';
+    const stockText = prod.stock === 0 ? 'نفذ من المخزن' : prod.stock <= 5 ? `باقي ${prod.stock} فقط!` : `${prod.stock} قطعة`;
+    return `
+      <div class="lens-slide">
+        <div class="lens-visual">
+          <div class="lens-visual-inner">
+            <div class="lens-circle" style="background:${l.gradient};box-shadow:0 0 40px ${l.color}40"></div>
+          </div>
+        </div>
+        <div class="lens-details">
+          <h3>${l.name}</h3>
+          <p class="lens-desc">${l.desc}</p>
+          <div class="lens-meta">
+            <div class="meta-item">
+              <div class="label">السعر</div>
+              <div class="value">${l.price} ر.س</div>
+            </div>
+            <div class="meta-item">
+              <div class="label">المتاح</div>
+              <div class="value ${stockClass}">${stockText}</div>
+            </div>
+          </div>
+          <div class="qty-selector">
+            <label>الكمية:</label>
+            <div class="qty-ctrl">
+              <button onclick="changeModalQty(-1,${li})">−</button>
+              <div class="qty-display" id="modalQty_${li}">1</div>
+              <button onclick="changeModalQty(1,${li})">+</button>
+            </div>
+          </div>
+          <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${prod.stock === 0 ? 'disabled' : ''}>
+            ${prod.stock === 0 ? ' غير متوفر' : '🛒 أضف للسلة'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  dots.innerHTML = cat.lenses.map((l, li) =>
+    `<div class="slider-dot ${li === currentLensIdx ? 'active' : ''}" onclick="goToSlide(${li})"></div>`
+  ).join('');
+
+  updateSliderPosition();
+}
+
+function updateSliderPosition(){
+  const track = document.getElementById('lensTrack');
+  track.style.transform = `translateX(${currentLensIdx * 100}%)`;
+
+  document.querySelectorAll('.slider-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentLensIdx);
+  });
+}
+
+function slideMove(dir){
+  const cat = COLORS_DATA[currentColorIdx];
+  currentLensIdx = Math.max(0, Math.min(cat.lenses.length - 1, currentLensIdx + dir));
+  updateSliderPosition();
+}
+
+function goToSlide(idx){
+  currentLensIdx = idx;
+  updateSliderPosition();
+}
+
+function changeModalQty(delta, li){
+  const el = document.getElementById(`modalQty_${li}`);
+  let val = parseInt(el.textContent) + delta;
+  const prod = getProduct(COLORS_DATA[currentColorIdx].lenses[li].id);
+  val = Math.max(1, Math.min(val, Math.max(1, prod.stock)));
+  el.textContent = val;
+}
+
+function addFromSlider(lensId, li){
+  const prod = getProduct(lensId);
+  if (!prod || prod.stock <= 0) return;
+
+  const qtyEl = document.getElementById(`modalQty_${li}`);
+  const qty = parseInt(qtyEl.textContent);
+
+  const inCart = cart.find(c => c.productId === lensId);
+  const currentInCart = inCart ? inCart.qty : 0;
+
+  if (currentInCart + qty > prod.stock){
+    showToast('⚠️ الكمية المطلوبة تتجاوز المتاح في المخزن');
+    return;
+  }
+
+  if (inCart){
+    inCart.qty += qty;
+  } else {
+    cart.push({productId: lensId, qty: qty});
+  }
+
+  saveData();
+  updateCartBadge();
+  showToast(`✅ تمت إضافة "${prod.name}" (${qty} قطعة)`);
+  qtyEl.textContent = '1';
+  renderSlider();
+}
+
+// ========== CART ==========
+function updateCartBadge(){
+  const total = cart.reduce((s, c) => s + c.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total > 0 ? total : '';
+  badge.setAttribute('data-count', total);
+}
+
+function openCart(){
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartPanel').classList.add('open');
+  renderCart();
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderCart(){
+  const list = document.getElementById('cartItemsList');
+  const bottom = document.getElementById('cartBottom');
+
+  if (cart.length === 0){
+    list.innerHTML = `<div class="cart-empty">
+      <div class="ce-icon">👁️</div>
+      <p>السلة فارغة</p>
+      <p style="font-size:13px;margin-top:8px">تصفحي الألوان وأضيفي عدساتك المفضلة!</p>
+    </div>`;
+    bottom.innerHTML = '';
+    return;
+  }
+
+  list.innerHTML = cart.map(c => {
+    const prod = getProduct(c.productId);
+    if (!prod) return '';
+    return `
+      <div class="ci">
+        <div class="ci-color" style="background:${prod.gradient || prod.color}"></div>
+        <div class="ci-info">
+          <div class="ci-name">${prod.name}</div>
+          <div class="ci-cat">${prod.categoryName}</div>
+          <div class="ci-bottom">
+            <span class="ci-price">${prod.price * c.qty} ر.س</span>
+            <div class="ci-qty">
+              <button onclick="changeCartQty('${c.productId}',-1)">−</button>
+              <span>${c.qty}</span>
+              <button onclick="changeCartQty('${c.productId}',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button>
+      </div>
+    `;
+  }).join('');
+
+  const subtotal = cart.reduce((s, c) => {
+    const p = getProduct(c.productId);
+    return s + (p ? p.price * c.qty : 0);
+  }, 0);
+
+  const shipping = subtotal >= 200 ? 0 : 15;
+  const total = subtotal + shipping;
+
+  bottom.innerHTML = `
+    <div class="cb-row"><span>المجموع</span><span>${subtotal} ر.س</span></div>
+    <div class="cb-row"><span>الشحن ${shipping === 0 ? '(مجاني)' : ''}</span><span>${shipping === 0 ? 'مجاني' : shipping + ' ر.س'}</span></div>
+    <div class="cb-row total"><span>الإجمالي</span><span>${total} ر.س</span></div>
+    <button class="checkout-btn" onclick="checkout()">🧾 إتمام الشراء وإصدار الفاتورة</button>
+  `;
+}
+
+function changeCartQty(prodId, delta){
+  const item = cart.find(c => c.productId === prodId);
+  const prod = getProduct(prodId);
+  if (!item || !prod) return;
+
+  item.qty += delta;
+  if (item.qty <= 0){ removeFromCart(prodId); return; }
+  if (item.qty > prod.stock){
+    item.qty = prod.stock;
+    showToast('⚠️ وصلت الحد الأقصى المتاح');
+  }
+  saveData();
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(prodId){
+  cart = cart.filter(c => c.productId !== prodId);
+  saveData();
+  updateCartBadge();
+  renderCart();
+}
+
+// ========== CHECKOUT ==========
+function checkout(){
+  if (cart.length === 0) return;
+
+  // Reduce stock
+  cart.forEach(c => {
+    const prod = getProduct(c.productId);
+    if (prod){
+      prod.stock = Math.max(0, prod.stock - c.qty);
+    }
+  });
+
+  // Build order
+  let subtotal = 0;
+  const items = cart.map(c => {
+    const prod = getProduct(c.productId);
+    const line = prod.price * c.qty;
+    subtotal += line;
+    return {
+      name: prod.name,
+      category: prod.categoryName,
+      price: prod.price,
+      qty: c.qty,
+      lineTotal: line,
+      color: prod.color,
+      gradient: prod.gradient
+    };
+  });
+
+  const shipping = subtotal >= 200 ? 0 : 15;
+  const total = subtotal + shipping;
+
+  const order = {
+    id: 'LSR-' + Date.now().toString(36).toUpperCase(),
+    date: new Date().toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+    items,
+    subtotal,
+    shipping,
+    total,
+    status: 'completed'
+  };
+
+  orders.push(order);
+  saveData();
+
+  showInvoice(order);
+
+  cart = [];
+  saveData();
+  updateCartBadge();
+  closeCart();
+  renderCategories();
+  showToast('✅ تم الشراء بنجاح! تم إصدار الفاتورة');
+}
+
+// ========== INVOICE ==========
+function showInvoice(order){
+  const overlay = document.getElementById('invOverlay');
+  const box = document.getElementById('invBox');
+
+  box.innerHTML = `
+    <div class="inv-top">
+      <div class="inv-brand">LENSORA<small>عدسات ملونة فاخرة</small></div>
+      <div class="inv-info">
+        <div>فاتورة #: <strong>${order.id}</strong></div>
+        <div>التاريخ: ${order.date}</div>
+        <div>الحالة: ✅ مكتمل</div>
+      </div>
+    </div>
+    <table class="inv-table">
+      <thead>
+        <tr><th>المنتج</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th></tr>
+      </thead>
+      <tbody>
+        ${order.items.map(it => `
+          <tr>
+            <td>
+              <span class="inv-color-dot" style="background:${it.gradient || it.color}"></span>
+              ${it.name}
+              <br><small style="color:#999">${it.category}</small>
+            </td>
+            <td>${it.price} ر.س</td>
+            <td>${it.qty}</td>
+            <td><strong>${it.lineTotal} ر.س</strong></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <div class="inv-totals">
+      <div class="inv-row"><span>المجموع</span><span>${order.subtotal} ر.س</span></div>
+      <div class="inv-row"><span>الشحن</span><span>${order.shipping === 0 ? 'مجاني' : order.shipping + ' ر.س'}</span></div>
+      <div class="inv-total"><span>الإجمالي</span><span>${order.total} ر.س</span></div>
+    </div>
+    <div class="inv-actions">
+      <button class="inv-btn inv-print" onclick="window.print()">🖨️ طباعة</button>
+      <button class="inv-btn inv-done" onclick="closeInvoice()">إغلاق</button>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+
+function closeInvoice(){
+  document.getElementById('invOverlay').classList.remove('open');
+}
+
+// ========== TOAST ==========
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ========== CLOSE MODALS ON ESC ==========
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){
+    closeLensModal();
+    closeCart();
+    closeInvoice();
+  }
+});
+
+// ========== INIT ==========
+renderCategories();
+updateCartBadge();
+</script>
+</body>
+</html>
+
