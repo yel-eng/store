@@ -113,7 +113,7 @@ button{cursor:pointer;border:none;font-family:inherit}
 .scroll-line{width:1px;height:45px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
 @keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.4);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
 
-/* ========== CATEGORIES SECTION - SLIDER VERSION ========== */
+/* ========== CATEGORIES SECTION - INFINITE SLIDER ========== */
 .categories-section{padding:60px 5% 120px;max-width:1400px;margin:0 auto;position:relative;z-index:2}
 .section-header{text-align:center;margin-bottom:50px}
 .section-label{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -123,19 +123,20 @@ button{cursor:pointer;border:none;font-family:inherit}
 .section-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,44px);margin-bottom:12px}
 .section-sub{color:var(--text-dim);font-size:14px}
 
-/* ✨ CREATIVE SLIDER CONTAINER */
-.slider-wrapper{position:relative;overflow:visible;padding:40px 0}
+/* ✨ INFINITE SLIDER CONTAINER */
+.slider-wrapper{position:relative;overflow:hidden;padding:40px 0}
+.slider-viewport{overflow:hidden}
 .slider-track{
   display:flex;gap:24px;transition:transform .6s cubic-bezier(.22,1,.36,1);
-  padding:20px 40px;scroll-snap-type:x mandatory;scroll-behavior:smooth;
-  cursor:grab;
+  padding:20px 40px;cursor:grab;will-change:transform;
 }
 .slider-track:active{cursor:grabbing}
+.slider-track.dragging{transition:none!important}
 .slider-track::-webkit-scrollbar{display:none}
 
 /* ✨ SLIDER CARD */
 .slider-card{
-  flex:0 0 340px;scroll-snap-align:center;
+  flex:0 0 340px;
   position:relative;border-radius:var(--radius);overflow:hidden;
   cursor:pointer;transform-style:preserve-3d;
   transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .4s ease;
@@ -144,7 +145,7 @@ button{cursor:pointer;border:none;font-family:inherit}
 }
 .slider-card:hover{transform:translateY(-12px) scale(1.03);z-index:10;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(201,168,76,.15)}
 
-/* Nature Background for Slider Card - FIXED & CLEAR */
+/* Nature Background - CLEAR & VISIBLE */
 .slider-card::before{
   content:'';position:absolute;inset:0;z-index:0;
   background-size:cover;background-position:center;background-repeat:no-repeat;
@@ -231,7 +232,7 @@ button{cursor:pointer;border:none;font-family:inherit}
 .card-btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(201,168,76,.35)}
 .card-btn span{position:relative;z-index:1}
 
-/* Slider Navigation */
+/* Slider Navigation - Infinite */
 .slider-nav{
   position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);
   display:flex;justify-content:space-between;padding:0 10px;pointer-events:none;z-index:20;
@@ -244,9 +245,8 @@ button{cursor:pointer;border:none;font-family:inherit}
   transition:all .3s;pointer-events:auto;cursor:pointer;
 }
 .slider-btn:hover{background:var(--gold);color:var(--bg);transform:scale(1.1)}
-.slider-btn:disabled{opacity:.2;cursor:not-allowed;transform:none}
 
-/* Slider Dots */
+/* Slider Dots - Infinite */
 .slider-dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
 .slider-dot{
   width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,.2);
@@ -458,20 +458,22 @@ button{cursor:pointer;border:none;font-family:inherit}
   <div class="hero-scroll"><span>اكتشفي</span><div class="scroll-line"></div></div>
 </header>
 
-<!-- CATEGORIES - SLIDER -->
+<!-- CATEGORIES - INFINITE SLIDER -->
 <section class="categories-section">
   <div class="section-header">
     <div class="section-label">👁️ مجموعتنا</div>
     <h2 class="section-title">اختاري لونك المفضل</h2>
-    <p class="section-sub">اسحبي يمين أو شمال لاكتشاف كل الألوان ✨</p>
+    <p class="section-sub">اسحبي يمين أو شمال - سلايدر لا نهائي ✨</p>
   </div>
   
   <div class="slider-wrapper">
     <div class="slider-nav">
-      <button class="slider-btn" id="prevBtn" onclick="slideMove(-1)">←</button>
-      <button class="slider-btn" id="nextBtn" onclick="slideMove(1)">→</button>
+      <button class="slider-btn" id="prevBtn" onclick="infiniteSlider.prev()">←</button>
+      <button class="slider-btn" id="nextBtn" onclick="infiniteSlider.next()">→</button>
     </div>
-    <div class="slider-track" id="sliderTrack"></div>
+    <div class="slider-viewport">
+      <div class="slider-track" id="sliderTrack"></div>
+    </div>
     <div class="slider-dots" id="sliderDots"></div>
   </div>
 </section>
@@ -545,32 +547,67 @@ const COLORS_DATA=[
 let products=JSON.parse(localStorage.getItem('lensora_products'))||initProducts();
 let cart=JSON.parse(localStorage.getItem('lensora_cart'))||[];
 let orders=JSON.parse(localStorage.getItem('lensora_orders'))||[];
-let currentSlide=0,currentLensIdx=0;
+let currentLensIdx=0;
 
 function initProducts(){let p=[];COLORS_DATA.forEach(c=>c.lenses.forEach(l=>p.push({...l,categoryId:c.id,categoryName:c.arName})));return p}
 function saveData(){localStorage.setItem('lensora_products',JSON.stringify(products));localStorage.setItem('lensora_cart',JSON.stringify(cart));localStorage.setItem('lensora_orders',JSON.stringify(orders))}
 function getProd(id){return products.find(p=>p.id===id)}
 
-/* ========== GET CARD WIDTH DYNAMICALLY ========== */
-function getCardWidth(){
-  const card=document.querySelector('.slider-card');
-  if(!card) return 364;
-  const style=window.getComputedStyle(card);
-  const gap=24;
-  return card.offsetWidth + gap;
-}
-
-/* ========== RENDER SLIDER CARDS ========== */
-function renderSlider(){
-  const track=document.getElementById('sliderTrack');
-  const dots=document.getElementById('sliderDots');
+/* ========== ♾️ INFINITE SLIDER CLASS ========== */
+class InfiniteSlider{
+  constructor(trackSelector,items,opts={}){
+    this.track=document.querySelector(trackSelector);
+    this.items=items;
+    this.opts={gap:24,transition:.6,...opts};
+    this.cardWidth=0;
+    this.currentIndex=0;
+    this.isDragging=false;
+    this.startX=0;
+    this.startTranslate=0;
+    this.clones=[];
+    this.init();
+  }
   
-  track.innerHTML=COLORS_DATA.map((c,ci)=>{
+  init(){
+    this.render();
+    this.setupDimensions();
+    this.bindEvents();
+    this.goTo(0,false);
+  }
+  
+  getCardWidth(){
+    const card=this.track.querySelector('.slider-card:not(.clone)');
+    return card?card.offsetWidth+this.opts.gap:364;
+  }
+  
+  render(){
+    // Original items
+    let html=this.items.map((c,i)=>this.createCard(c,i,false)).join('');
+    // Clone first 3 at end
+    html+=this.items.slice(0,3).map((c,i)=>this.createCard(c,i,true)).join('');
+    // Clone last 3 at start
+    html=this.items.slice(-3).map((c,i)=>this.createCard(this.items.length-3+i,i,true)).join('')+html;
+    
+    this.track.innerHTML=html;
+    
+    // Set backgrounds
+    this.track.querySelectorAll('.slider-card:not(.clone)').forEach((card,i)=>{
+      card.style.setProperty('--nature-bg',`url('${this.items[i].natureBg}')`);
+    });
+    
+    // Render dots for original items only
+    const dots=document.getElementById('sliderDots');
+    if(dots){
+      dots.innerHTML=this.items.map((_,i)=>`<div class="slider-dot ${i===0?'active':''}" onclick="infiniteSlider.goTo(${i})"></div>`).join('');
+    }
+  }
+  
+  createCard(c,index,isClone){
     const totalStock=c.lenses.reduce((s,l)=>s+getProd(l.id).stock,0);
     const dots=c.lenses.map(l=>`<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
     const mainLens=c.lenses[0];
     return `
-      <div class="slider-card" onclick="openLensModal(${ci})" style="background-image:url('${c.natureBg}')">
+      <div class="slider-card ${isClone?'clone':''}" data-index="${index}" onclick="openLensModal(${index})">
         <div class="card-border"></div>
         <div class="shimmer"></div>
         <div class="card-visual">
@@ -591,146 +628,98 @@ function renderSlider(){
         </div>
       </div>
     `;
-  }).join('');
-  
-  // Set background images after render
-  document.querySelectorAll('.slider-card').forEach((card,i)=>{
-    card.style.setProperty('--nature-bg',`url('${COLORS_DATA[i].natureBg}')`);
-  });
-  
-  // Render dots
-  dots.innerHTML=COLORS_DATA.map((_,i)=>`<div class="slider-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
-  
-  // Wait for cards to render then update dimensions
-  setTimeout(()=>{
-    setupSliderDimensions();
-    updateSlider();
-    animateCardsEntrance();
-  }, 150);
-}
-
-/* ========== SETUP SLIDER DIMENSIONS ========== */
-function setupSliderDimensions(){
-  const track=document.getElementById('sliderTrack');
-  const cards=track.querySelectorAll('.slider-card');
-  if(!cards.length) return;
-  
-  // Force equal width for all cards
-  const cardWidth=cards[0].offsetWidth;
-  cards.forEach(card=>{
-    card.style.flex=`0 0 ${cardWidth}px`;
-  });
-}
-
-/* ========== ANIMATE CARDS ENTRANCE ========== */
-function animateCardsEntrance(){
-  const cards=document.querySelectorAll('.slider-card');
-  cards.forEach((card,i)=>{
-    setTimeout(()=>{
-      card.style.opacity='1';
-      card.style.transform='translateX(0) rotateY(0)';
-    }, i * 120);
-  });
-}
-
-/* ========== UPDATE SLIDER POSITION ========== */
-function updateSlider(){
-  const track=document.getElementById('sliderTrack');
-  const cardWidth=getCardWidth();
-  const translateX=currentSlide * cardWidth;
-  
-  track.style.transform=`translateX(-${translateX}px)`;
-  
-  // Update dots
-  document.querySelectorAll('.slider-dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
-  
-  // Update buttons
-  document.getElementById('prevBtn').disabled=currentSlide===0;
-  document.getElementById('nextBtn').disabled=currentSlide>=COLORS_DATA.length-1;
-}
-
-/* ========== SLIDE NAVIGATION ========== */
-function slideMove(dir){
-  const max=COLORS_DATA.length-1;
-  currentSlide=Math.max(0,Math.min(max,currentSlide+dir));
-  updateSlider();
-}
-
-function goToSlide(i){
-  currentSlide=i;
-  updateSlider();
-}
-
-/* ========== RESIZE HANDLER ========== */
-let resizeTimer;
-window.addEventListener('resize',()=>{
-  clearTimeout(resizeTimer);
-  resizeTimer=setTimeout(()=>{
-    setupSliderDimensions();
-    updateSlider();
-  }, 250);
-});
-
-/* ========== TOUCH/SWIPE SUPPORT ========== */
-let touchStartX=0,touchEndX=0;
-const sliderTrack=document.getElementById('sliderTrack');
-
-if(sliderTrack){
-  sliderTrack.addEventListener('touchstart',e=>{
-    touchStartX=e.changedTouches[0].screenX;
-  },{passive:true});
-  
-  sliderTrack.addEventListener('touchend',e=>{
-    touchEndX=e.changedTouches[0].screenX;
-    handleSwipe();
-  },{passive:true});
-}
-
-function handleSwipe(){
-  const threshold=50;
-  const diff=touchStartX-touchEndX;
-  
-  if(Math.abs(diff)>threshold){
-    if(diff>0) slideMove(1);
-    else slideMove(-1);
   }
+  
+  setupDimensions(){
+    this.cardWidth=this.getCardWidth();
+    const totalItems=this.items.length+6; // originals + clones
+    this.track.style.width=`${totalItems*this.cardWidth}px`;
+    this.track.querySelectorAll('.slider-card').forEach(card=>{
+      card.style.flex=`0 0 ${this.cardWidth-this.opts.gap}px`;
+    });
+  }
+  
+  bindEvents(){
+    // Touch
+    this.track.addEventListener('touchstart',e=>this.onDragStart(e.touches[0].clientX),{passive:true});
+    this.track.addEventListener('touchmove',e=>{if(this.isDragging)this.onDragMove(e.touches[0].clientX)},{passive:true});
+    this.track.addEventListener('touchend',()=>this.onDragEnd());
+    
+    // Mouse
+    this.track.addEventListener('mousedown',e=>{e.preventDefault();this.onDragStart(e.clientX)});
+    document.addEventListener('mousemove',e=>{if(this.isDragging)this.onDragMove(e.clientX)});
+    document.addEventListener('mouseup',()=>this.onDragEnd());
+    
+    // Resize
+    window.addEventListener('resize',()=>{
+      clearTimeout(this.resizeTimer);
+      this.resizeTimer=setTimeout(()=>{
+        const oldIndex=this.currentIndex;
+        this.setupDimensions();
+        this.goTo(oldIndex,false);
+      },200);
+    });
+  }
+  
+  onDragStart(x){
+    this.isDragging=true;
+    this.startX=x;
+    this.startTranslate=-this.currentIndex*this.cardWidth;
+    this.track.classList.add('dragging');
+  }
+  
+  onDragMove(x){
+    if(!this.isDragging)return;
+    const diff=x-this.startX;
+    this.track.style.transform=`translateX(${this.startTranslate+diff}px)`;
+  }
+  
+  onDragEnd(){
+    if(!this.isDragging)return;
+    this.isDragging=false;
+    this.track.classList.remove('dragging');
+    
+    const diff=this.startX-(window.event?.clientX||this.startX);
+    if(Math.abs(diff)>50){
+      diff>0?this.next():this.prev();
+    }else{
+      this.goTo(this.currentIndex);
+    }
+  }
+  
+  goTo(index,animate=true){
+    if(!animate)this.track.style.transition='none';
+    else this.track.style.transition=`transform ${this.opts.transition}s cubic-bezier(.22,1,.36,1)`;
+    
+    this.track.style.transform=`translateX(${-index*this.cardWidth}px)`;
+    this.currentIndex=index;
+    
+    // Update dots
+    const realIndex=index%this.items.length;
+    document.querySelectorAll('.slider-dot').forEach((d,i)=>d.classList.toggle('active',i===realIndex));
+    
+    // Infinite loop handling
+    setTimeout(()=>{
+      if(index<3){
+        this.track.style.transition='none';
+        this.currentIndex=this.items.length;
+        this.track.style.transform=`translateX(${-this.currentIndex*this.cardWidth}px)`;
+      }else if(index>=this.items.length+3){
+        this.track.style.transition='none';
+        this.currentIndex=3;
+        this.track.style.transform=`translateX(${-this.currentIndex*this.cardWidth}px)`;
+      }
+    },animate?this.opts.transition*1000:0);
+  }
+  
+  next(){this.goTo(this.currentIndex+1);}
+  prev(){this.goTo(this.currentIndex-1);}
 }
 
-/* ========== MOUSE DRAG SUPPORT ========== */
-let isDragging=false,startX=0,startSlide=0;
-
-if(sliderTrack){
-  sliderTrack.addEventListener('mousedown',e=>{
-    isDragging=true;
-    startX=e.pageX;
-    startSlide=currentSlide;
-    sliderTrack.style.cursor='grabbing';
-    sliderTrack.style.transition='none';
-  });
-  
-  document.addEventListener('mousemove',e=>{
-    if(!isDragging) return;
-    const diff=startX-e.pageX;
-    const cardWidth=getCardWidth();
-    const slideOffset=diff/cardWidth;
-    const newPos=startSlide+slideOffset;
-    
-    sliderTrack.style.transform=`translateX(-${newPos*cardWidth}px)`;
-  });
-  
-  document.addEventListener('mouseup',()=>{
-    if(!isDragging) return;
-    isDragging=false;
-    sliderTrack.style.cursor='grab';
-    sliderTrack.style.transition='transform .6s cubic-bezier(.22,1,.36,1)';
-    
-    // Snap to nearest slide
-    const cardWidth=getCardWidth();
-    const currentPos=-parseFloat(sliderTrack.style.transform.replace(/[^-\d.]/g,''))||0;
-    const nearestSlide=Math.round(currentPos/cardWidth);
-    currentSlide=Math.max(0,Math.min(COLORS_DATA.length-1,nearestSlide));
-    updateSlider();
-  });
+// Initialize infinite slider
+let infiniteSlider;
+function initInfiniteSlider(){
+  infiniteSlider=new InfiniteSlider('#sliderTrack',COLORS_DATA);
 }
 
 /* ========== LENS MODAL ========== */
@@ -741,11 +730,7 @@ function openLensModal(ci){
   document.getElementById('lensModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
-
-function closeLensModal(){
-  document.getElementById('lensModal').classList.remove('open');
-  document.body.style.overflow='';
-}
+function closeLensModal(){document.getElementById('lensModal').classList.remove('open');document.body.style.overflow=''}
 
 function renderLensSlider(ci){
   const cat=COLORS_DATA[ci];
@@ -781,7 +766,6 @@ function renderLensSlider(ci){
       </div>
     `;
   }).join('');
-  
   document.getElementById('lensSliderDots').innerHTML=cat.lenses.map((_,li)=>`<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
   updateLensSlider();
 }
@@ -793,14 +777,8 @@ function updateLensSlider(){
   document.getElementById('lensPrevBtn').disabled=currentLensIdx===0;
   document.getElementById('lensNextBtn').disabled=currentLensIdx>=cat.lenses.length-1;
 }
-
-function slideLensMove(dir){
-  const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];
-  currentLensIdx=Math.max(0,Math.min(cat.lenses.length-1,currentLensIdx+dir));
-  updateLensSlider();
-}
-
-function goToLensSlide(i){currentLensIdx=i;updateLensSlider();}
+function slideLensMove(dir){const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];currentLensIdx=Math.max(0,Math.min(cat.lenses.length-1,currentLensIdx+dir));updateLensSlider()}
+function goToLensSlide(i){currentLensIdx=i;updateLensSlider()}
 
 function changeModalQty(delta,li){
   const el=document.getElementById(`mq_${li}`);
@@ -829,28 +807,13 @@ function updateCartBadge(){
   const b=document.getElementById('cartBadge');
   b.textContent=t;b.style.display=t>0?'flex':'none';
 }
-
-function openCart(){
-  document.getElementById('cartOverlay').classList.add('open');
-  document.getElementById('cartPanel').classList.add('open');
-  renderCart();
-}
-
-function closeCart(){
-  document.getElementById('cartOverlay').classList.remove('open');
-  document.getElementById('cartPanel').classList.remove('open');
-}
+function openCart(){document.getElementById('cartOverlay').classList.add('open');document.getElementById('cartPanel').classList.add('open');renderCart()}
+function closeCart(){document.getElementById('cartOverlay').classList.remove('open');document.getElementById('cartPanel').classList.remove('open')}
 
 function renderCart(){
   const list=document.getElementById('cartItemsList');
   const bottom=document.getElementById('cartBottom');
-  
-  if(cart.length===0){
-    list.innerHTML=`<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><p style="font-size:13px;margin-top:8px">تصفحي الألوان وأضيفي عدساتك!</p></div>`;
-    bottom.innerHTML='';
-    return;
-  }
-  
+  if(cart.length===0){list.innerHTML=`<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><p style="font-size:13px;margin-top:8px">تصفحي الألوان وأضيفي عدساتك!</p></div>`;bottom.innerHTML='';return}
   list.innerHTML=cart.map(c=>{
     const p=getProd(c.productId);if(!p)return'';
     return `<div class="ci">
@@ -870,11 +833,9 @@ function renderCart(){
       <button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button>
     </div>`;
   }).join('');
-  
   const sub=cart.reduce((s,c)=>{const p=getProd(c.productId);return s+(p?p.price*c.qty:0)},0);
   const ship=sub>=200?0:15;
   const total=sub+ship;
-  
   bottom.innerHTML=`
     <div class="cb-row"><span>المجموع</span><span>${sub} ر.س</span></div>
     <div class="cb-row"><span>الشحن ${ship===0?'(مجاني)':''}</span><span>${ship===0?'مجاني':ship+' ر.س'}</span></div>
@@ -890,8 +851,7 @@ function changeCartQty(pid,delta){
   if(item.qty>p.stock){item.qty=p.stock;showToast('⚠️ الحد الأقصى')}
   saveData();updateCartBadge();renderCart();
 }
-
-function removeFromCart(pid){cart=cart.filter(c=>c.productId!==pid);saveData();updateCartBadge();renderCart();}
+function removeFromCart(pid){cart=cart.filter(c=>c.productId!==pid);saveData();updateCartBadge();renderCart()}
 
 /* ========== CHECKOUT ========== */
 function checkout(){
@@ -902,7 +862,7 @@ function checkout(){
   const ship=sub>=200?0:15;const total=sub+ship;
   const order={id:'LSR-'+Date.now().toString(36).toUpperCase(),date:new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}),items,sub,ship,total,status:'completed'};
   orders.push(order);saveData();showInvoice(order);
-  cart=[];saveData();updateCartBadge();closeCart();renderSlider();
+  cart=[];saveData();updateCartBadge();closeCart();
   showToast('✅ تم الشراء بنجاح!');
 }
 
@@ -922,37 +882,32 @@ function showInvoice(order){
   `;
   document.getElementById('invOverlay').classList.add('open');
 }
-function closeInvoice(){document.getElementById('invOverlay').classList.remove('open');}
+function closeInvoice(){document.getElementById('invOverlay').classList.remove('open')}
 
 /* ========== TOAST ========== */
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 
 /* ========== KEYBOARD ========== */
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeLensModal();closeCart();closeInvoice();}
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLensModal();closeCart();closeInvoice()}});
 
 /* ========== PARTICLES ========== */
 const canvas=document.getElementById('particlesCanvas');const ctx=canvas.getContext('2d');let particles=[];
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
-class Particle{constructor(){this.reset();}
-reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.5+.5;this.sx=(Math.random()-.5)*.25;this.sy=(Math.random()-.5)*.15;this.op=Math.random()*.35+.08;this.pulse=Math.random()*Math.PI*2;this.ps=Math.random()*.02+.005;}
-update(){this.x+=this.sx;this.y+=this.sy;this.pulse+=this.ps;if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset();}
-draw(){const a=this.op*(.5+.5*Math.sin(this.pulse));ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${a})`;ctx.fill();}}
+class Particle{constructor(){this.reset()}
+reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.5+.5;this.sx=(Math.random()-.5)*.25;this.sy=(Math.random()-.5)*.15;this.op=Math.random()*.35+.08;this.pulse=Math.random()*Math.PI*2;this.ps=Math.random()*.02+.005}
+update(){this.x+=this.sx;this.y+=this.sy;this.pulse+=this.ps;if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset()}
+draw(){const a=this.op*(.5+.5*Math.sin(this.pulse));ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${a})`;ctx.fill()}}
 for(let i=0;i<60;i++)particles.push(new Particle());
-(function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(anim);})();
+(function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(anim)})();
 
 /* ========== NAV SCROLL ========== */
-window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);});
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60)});
 
 /* ========== INIT ========== */
-renderSlider();updateCartBadge();
+initProducts();
+initInfiniteSlider();
+updateCartBadge();
 </script>
 </body>
 </html>
