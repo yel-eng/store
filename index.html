@@ -142,21 +142,20 @@ button{cursor:pointer;border:none;font-family:inherit}
 }
 .slider-card:hover{transform:translateY(-12px) scale(1.03);z-index:10;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(201,168,76,.15)}
 
-/* ✨ FIXED: Nature Background Element */
-.card-nature-bg{
-  position:absolute;inset:0;z-index:0;
-  background-size:cover;background-position:center;background-repeat:no-repeat;
-  opacity:.35;transition:opacity .4s,transform .6s ease;
-  filter:blur(1px) brightness(.85);
-}
-.slider-card:hover .card-nature-bg{opacity:.45;transform:scale(1.05)}
-
-/* Gradient Overlay for readability */
+/* Nature Background for Slider Card */
 .slider-card::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  opacity:.25;transition:opacity .4s,transform .6s ease;
+  filter:blur(3px) brightness(.7);
+}
+.slider-card:hover::before{opacity:.35;transform:scale(1.08)}
+
+/* Gradient Overlay */
+.slider-card::after{
   content:'';position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg,transparent 20%,rgba(18,14,12,.92) 80%),
-             linear-gradient(90deg,rgba(18,14,12,.2) 0%,transparent 30%,transparent 70%,rgba(18,14,12,.2) 100%);
-  pointer-events:none;
+  background:linear-gradient(180deg,transparent 20%,rgba(18,14,12,.95) 85%),
+             linear-gradient(90deg,rgba(18,14,12,.3) 0%,transparent 30%,transparent 70%,rgba(18,14,12,.3) 100%);
 }
 
 /* Animated Border */
@@ -559,13 +558,11 @@ function renderSlider(){
     const dots=c.lenses.map(l=>`<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
     const mainLens=c.lenses[0];
     return `
-      <div class="slider-card" onclick="openLensModal(${ci})">
-        <!-- ✨ FIXED: Direct nature background element -->
-        <div class="card-nature-bg" style="background-image:url('${c.natureBg}')"></div>
+      <div class="slider-card" style="--nature-bg:url('${c.natureBg}')" onclick="openLensModal(${ci})">
         <div class="card-border"></div>
         <div class="shimmer"></div>
         <div class="card-visual">
-          <div class="card-visual-bg"></div>
+          <div class="card-visual-bg" style="background:${c.natureBg} center/cover no-repeat"></div>
           <div class="card-lens-sphere">
             <div class="card-lens-inner" style="background:${mainLens.gradient}"></div>
           </div>
@@ -583,6 +580,13 @@ function renderSlider(){
       </div>
     `;
   }).join('');
+  
+  // Update nature backgrounds
+  document.querySelectorAll('.slider-card').forEach((card,i)=>{
+    card.style.setProperty('--nature-bg',`url('${COLORS_DATA[i].natureBg}')`);
+    card.querySelector('.card-visual-bg').style.backgroundImage=`url('${COLORS_DATA[i].natureBg}')`;
+    card.style.setProperty('--card-color',COLORS_DATA[i].swatch);
+  });
   
   // Render dots
   dots.innerHTML=COLORS_DATA.map((_,i)=>`<div class="slider-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
@@ -661,11 +665,11 @@ function renderLensSlider(ci){
 function updateLensSlider(){
   document.getElementById('lensTrack').style.transform=`translateX(${currentLensIdx*100}%)`;
   document.querySelectorAll('.slider-dot-modal').forEach((d,i)=>d.classList.toggle('active',i===currentLensIdx));
-  const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];
+  const cat=COLORS_DATA[COLORS_DATA.findIndex(c=>c.lenses.some(l=>l.id===document.getElementById('lensTrack').children[0]?.querySelector('.add-lens-btn')?.onclick?.toString().match(/'([^']+)'/)?.[1]))]||COLORS_DATA[0];
   document.getElementById('lensPrevBtn').disabled=currentLensIdx===0;
   document.getElementById('lensNextBtn').disabled=currentLensIdx>=cat.lenses.length-1;
 }
-function slideLensMove(dir){const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];currentLensIdx=Math.max(0,Math.min(cat.lenses.length-1,currentLensIdx+dir));updateLensSlider()}
+function slideLensMove(dir){const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx);if(!cat)return;currentLensIdx=Math.max(0,Math.min(cat.lenses.length-1,currentLensIdx+dir));updateLensSlider()}
 function goToLensSlide(i){currentLensIdx=i;updateLensSlider()}
 
 function changeModalQty(delta,li){
