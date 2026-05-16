@@ -87,16 +87,16 @@ button{cursor:pointer;border:none;font-family:inherit}
 .section-sub{color:var(--text-dim);font-size:14px}
 
 .slider-wrapper{position:relative;overflow:hidden;padding:40px 0}
-.slider-viewport{overflow:hidden}
-.slider-track{display:flex;gap:24px;padding:20px 0;transition:transform .6s cubic-bezier(.22,1,.36,1);cursor:grab}
+.slider-viewport{overflow:hidden;border-radius:var(--radius)}
+.slider-track{display:flex;gap:24px;padding:20px 0;transition:transform .6s cubic-bezier(.22,1,.36,1);cursor:grab;user-select:none}
 .slider-track.dragging{transition:none!important}
 
 .slider-card{flex:0 0 340px;position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .4s ease;background:var(--card-bg);backdrop-filter:blur(24px);border:1px solid rgba(201,168,76,.08)}
 .slider-card:hover{transform:translateY(-12px) scale(1.03);z-index:10;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(201,168,76,.15)}
 
-.slider-card::before{content:'';position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:.45;transition:opacity .4s,transform .6s ease;filter:blur(0.5px) brightness(.9)}
-.slider-card:hover::before{opacity:.55;transform:scale(1.05)}
-.slider-card::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 20%,rgba(18,14,12,.92) 85%),linear-gradient(90deg,rgba(18,14,12,.2) 0%,transparent 30%,transparent 70%,rgba(18,14,12,.2) 100%);pointer-events:none}
+.slider-card .card-bg{position:absolute;inset:0;z-index:0;opacity:.35;transition:opacity .4s,transform .6s ease}
+.slider-card:hover .card-bg{opacity:.5;transform:scale(1.05)}
+.slider-card::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 10%,rgba(18,14,12,.95) 80%),linear-gradient(90deg,rgba(18,14,12,.15) 0%,transparent 25%,transparent 75%,rgba(18,14,12,.15) 100%);pointer-events:none}
 
 .slider-card .card-border{position:absolute;inset:-2px;border-radius:calc(var(--radius)+2px);background:conic-gradient(from var(--angle,0deg),transparent,rgba(201,168,76,.4),transparent 30%,transparent 70%,rgba(201,168,76,.3),transparent);z-index:2;opacity:0;transition:opacity .4s;animation:borderSpin 5s linear infinite paused}
 .slider-card:hover .card-border{opacity:1;animation-play-state:running}
@@ -106,42 +106,42 @@ button{cursor:pointer;border:none;font-family:inherit}
 .slider-card .shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.12),transparent);transform:skewX(-20deg);transition:left .7s ease;z-index:3;pointer-events:none}
 .slider-card:hover .shimmer{left:150%}
 
-.card-visual{position:relative;height:200px;z-index:4;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.card-lens-sphere{position:relative;z-index:5;width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:lensFloat 5s ease-in-out infinite;transition:transform .5s ease,box-shadow .5s ease}
-@keyframes lensFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.slider-card:hover .card-lens-sphere{transform:scale(1.15) translateY(-5px);animation-play-state:paused;box-shadow:0 0 40px rgba(201,168,76,.3)}
-.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.1);animation:ringSpin 8s linear infinite}
+.card-visual{position:relative;height:220px;z-index:4;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card-lens-sphere{position:relative;z-index:5;width:140px;height:140px;border-radius:50%;display:flex;align-items:center;justify-content:center;animation:lensFloat 5s ease-in-out infinite;transition:transform .5s ease,box-shadow .5s ease}
+@keyframes lensFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.slider-card:hover .card-lens-sphere{transform:scale(1.2) translateY(-8px);animation-play-state:paused;box-shadow:0 0 50px rgba(201,168,76,.25)}
+.card-lens-sphere::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(255,255,255,.08);animation:ringSpin 8s linear infinite}
 @keyframes ringSpin{to{transform:rotate(360deg)}}
-.card-lens-inner{width:110px;height:110px;border-radius:50%;box-shadow:inset 0 0 25px rgba(0,0,0,.4)}
+.card-lens-inner{width:120px;height:120px;border-radius:50%;box-shadow:inset 0 0 30px rgba(0,0,0,.4)}
 
-.card-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:6}
-.card-dot{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.15);position:relative;overflow:hidden;transition:transform .3s}
-.card-dot::after{content:'';position:absolute;inset:25%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent)}
-.slider-card:hover .card-dot{transform:scale(1.2)}
+.card-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:6}
+.card-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.12);position:relative;overflow:hidden;transition:transform .3s}
+.card-dot::after{content:'';position:absolute;inset:20%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.3),transparent)}
+.slider-card:hover .card-dot{transform:scale(1.25)}
 
-.card-body{position:relative;z-index:4;padding:20px 24px}
-.card-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:50px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.15);font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.card-body{position:relative;z-index:4;padding:22px 26px}
+.card-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:50px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.15);font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
 .card-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulseDot 2s infinite}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
-.card-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;transition:color .3s}
+.card-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px;transition:color .3s}
 .slider-card:hover .card-name{color:var(--gold-light)}
-.card-count{font-size:11px;color:var(--text-dim);margin-bottom:16px}
+.card-count{font-size:11px;color:var(--text-dim);margin-bottom:18px}
 
-.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid rgba(201,168,76,.08)}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid rgba(201,168,76,.08)}
 .card-price{font-size:13px;color:var(--text-dim)}
-.card-price strong{font-size:18px;color:var(--gold);font-weight:700}
-.card-btn{padding:8px 20px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:11px;letter-spacing:1px;transition:all .3s;position:relative;overflow:hidden}
+.card-price strong{font-size:20px;color:var(--gold);font-weight:700}
+.card-btn{padding:9px 22px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:11px;letter-spacing:1px;transition:all .3s;position:relative;overflow:hidden}
 .card-btn::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.3);transform:translate(-50%,-50%);transition:width .5s,height .5s}
 .card-btn:hover::before{width:180px;height:180px}
 .card-btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(201,168,76,.35)}
 .card-btn span{position:relative;z-index:1}
 
-.slider-nav{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);display:flex;justify-content:space-between;padding:0 10px;pointer-events:none;z-index:20}
+.slider-nav{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);display:flex;justify-content:space-between;padding:0 16px;pointer-events:none;z-index:20}
 .slider-btn{width:50px;height:50px;border-radius:50%;background:rgba(201,168,76,.1);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.2);color:var(--gold);font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .3s;pointer-events:auto;cursor:pointer}
 .slider-btn:hover{background:var(--gold);color:var(--bg);transform:scale(1.1)}
 
-.slider-dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
-.slider-dot{width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,.2);transition:all .3s;cursor:pointer;border:2px solid transparent}
+.slider-dots{display:flex;justify-content:center;gap:10px;margin-top:28px}
+.slider-dot{width:12px;height:12px;border-radius:50%;background:rgba(201,168,76,.15);transition:all .3s;cursor:pointer;border:2px solid transparent}
 .slider-dot:hover{background:rgba(201,168,76,.4)}
 .slider-dot.active{background:var(--gold);transform:scale(1.4);box-shadow:0 0 15px rgba(201,168,76,.5)}
 
@@ -227,27 +227,6 @@ button{cursor:pointer;border:none;font-family:inherit}
 .checkout-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.3)}
 .checkout-btn:disabled{background:var(--text-dim);opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 
-/* INVOICE */
-.inv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:4000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s;padding:20px;backdrop-filter:blur(12px)}
-.inv-overlay.open{opacity:1;visibility:visible}
-.inv-box{background:#faf8f5;color:#222;border-radius:var(--radius);width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:44px;transform:scale(.9);transition:transform .6s cubic-bezier(.22,1,.36,1);box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.inv-overlay.open .inv-box{transform:scale(1)}
-.inv-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--gold)}
-.inv-brand{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold)}
-.inv-brand small{display:block;font-size:11px;color:#999;font-family:'Inter',sans-serif;margin-top:4px}
-.inv-info{text-align:left;font-size:12px;color:#888;line-height:2.2}
-.inv-table{width:100%;border-collapse:collapse;margin-bottom:24px}
-.inv-table th{background:var(--gold);color:var(--bg);padding:12px 14px;font-size:11px;text-align:right;font-weight:700}
-.inv-table td{padding:12px 14px;border-bottom:1px solid #eee;font-size:13px;text-align:right}
-.inv-color-dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle;border:1px solid rgba(0,0,0,.1);margin-left:6px}
-.inv-totals{text-align:left}
-.inv-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
-.inv-total{font-size:24px;font-weight:700;color:var(--gold);border-top:2px solid var(--gold);padding-top:14px;margin-top:10px}
-.inv-actions{display:flex;gap:14px;margin-top:28px;justify-content:center}
-.inv-btn{padding:14px 32px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;transition:all .3s}
-.inv-print{background:var(--gold);color:var(--bg)}.inv-print:hover{background:var(--gold-light)}
-.inv-done{background:#eee;color:#333}.inv-done:hover{background:#ddd}
-
 .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(120px);background:rgba(18,14,12,.95);backdrop-filter:blur(20px);border:1px solid rgba(201,168,76,.15);color:var(--text);padding:18px 36px;border-radius:var(--radius-sm);font-size:14px;z-index:9999;transition:transform .6s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:12px;white-space:nowrap;box-shadow:0 12px 50px rgba(0,0,0,.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .footer{text-align:center;padding:50px 5%;border-top:1px solid rgba(201,168,76,.04);color:var(--text-dim);font-size:13px;position:relative;z-index:2}
@@ -256,14 +235,13 @@ button{cursor:pointer;border:none;font-family:inherit}
 @media(max-width:768px){
   .hero-sphere-wrap{width:350px;height:350px}.hero-glass{padding:40px 28px;border-radius:28px}
   .hero-logo-wrap svg{width:80px;height:80px}.slider-card{flex:0 0 280px}
-  .card-visual{height:180px}.card-lens-sphere{width:110px;height:110px}.card-lens-inner{width:90px;height:90px}
+  .card-visual{height:200px}.card-lens-sphere{width:115px;height:115px}.card-lens-inner{width:95px;height:95px}
   .lens-slide{flex-direction:column;text-align:center}.lens-visual{width:200px;height:200px}.lens-visual-inner{width:170px;height:170px}
   .lens-meta{justify-content:center}.qty-selector{justify-content:center}.add-lens-btn{margin:0 auto}
   .slider-area{padding:24px 16px}.lens-slider-container{padding:28px 16px}.cart-panel{width:100%}
-  .inv-box{padding:28px}.modal-box{max-height:95vh}.slider-btn{width:40px;height:40px;font-size:16px}
+  .modal-box{max-height:95vh}.slider-btn{width:40px;height:40px;font-size:16px}
 }
 @media(max-width:480px){.hero-glass{padding:32px 20px}.card-body{padding:16px 20px}.slider-card{flex:0 0 260px}}
-@media print{body *{visibility:hidden}.inv-box,.inv-box *{visibility:visible}.inv-box{position:absolute;top:0;left:0;width:100%;padding:20px}.inv-actions{display:none!important}}
 </style>
 </head>
 <body>
@@ -336,41 +314,40 @@ button{cursor:pointer;border:none;font-family:inherit}
   <div class="cart-bottom" id="cartBottom"></div>
 </div>
 
-<div class="inv-overlay" id="invOverlay"><div class="inv-box" id="invBox"></div></div>
 <div class="toast" id="toast"></div>
-<div class="footer">© 2025 LENSORA — جميع الحقوق محفوظة ✨</div>
+<div class="footer">© 2026 LENSORA — جميع الحقوق محفوظة ✨</div>
 
 <script>
 const COLORS_DATA=[
-  {id:'brown',arName:'بني دافئ',natureBg:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',lenses:[
+  {id:'brown',arName:'بني دافئ',cardBg:'linear-gradient(135deg,#5C3A1E 0%,#8B5E3C 40%,#D4A056 100%)',lenses:[
     {id:'b1',name:'عسل ذهبي',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)'},
     {id:'b2',name:'شوكولاتة',desc:'بني غامق عميق يعطي نظرة ساحرة',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)'},
     {id:'b3',name:'كراميل',desc:'بني فاتح كريمي مثالي',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)'},
     {id:'b4',name:'بندق',desc:'بني متوسط مع لمسات ذهبية',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)'}
   ]},
-  {id:'blue',arName:'أزرق ساحر',natureBg:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',lenses:[
+  {id:'blue',arName:'أزرق ساحر',cardBg:'linear-gradient(135deg,#1B3A5C 0%,#2E6CB5 50%,#5B9BD5 100%)',lenses:[
     {id:'bl1',name:'محيط',desc:'أزرق محيطي عميق مع لمعة طبيعية',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)'},
     {id:'bl2',name:'سماء',desc:'أزرق سماوي فاتح براقة',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)'},
     {id:'bl3',name:'ثلجي',desc:'أزرق فاتح ثلجي مذهل',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)'},
     {id:'bl4',name:'زفير',desc:'أزرق بنفسجي غامض',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)'}
   ]},
-  {id:'green',arName:'أخضر زمردي',natureBg:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80',lenses:[
+  {id:'green',arName:'أخضر زمردي',cardBg:'linear-gradient(135deg,#1B4B28 0%,#2E8B57 50%,#3CB371 100%)',lenses:[
     {id:'g1',name:'زيتون',desc:'أخضر زيتوني ناعم',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)'},
     {id:'g2',name:'زمردي',desc:'أخضر زمردي فاخر لامع',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)'},
     {id:'g3',name:'فيروزي',desc:'أخضر فيروزي مائي منعش',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)'},
     {id:'g4',name:'غابة',desc:'أخضر غامق غامض',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)'}
   ]},
-  {id:'gray',arName:'رمادي أنيق',natureBg:'https://images.unsplash.com/photo-1464822759085-2f366f9c9c6b?w=800&q=80',lenses:[
+  {id:'gray',arName:'رمادي أنيق',cardBg:'linear-gradient(135deg,#202020 0%,#6A6A6A 50%,#B8B8B8 100%)',lenses:[
     {id:'gr1',name:'فضي',desc:'رمادي فضي لامع أنيق',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)'},
     {id:'gr2',name:'فحمي',desc:'رمادي فحمي قوي',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)'},
     {id:'gr3',name:'دخاني',desc:'رمادي دخاني بلمسة بنفسجية',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)'}
   ]},
-  {id:'hazel',arName:'عسلي مميز',natureBg:'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=800&q=80',lenses:[
+  {id:'hazel',arName:'عسلي مميز',cardBg:'linear-gradient(135deg,#8B7355 0%,#C4A265 50%,#D4B878 100%)',lenses:[
     {id:'hz1',name:'لوز',desc:'عسلي لوزي فاتح طبيعي',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)'},
     {id:'hz2',name:'نحاسي',desc:'عسلي نحاسي دافئ ببريق',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)'},
     {id:'hz3',name:'ذهبي',desc:'عسلي ذهبي لامع',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)'}
   ]},
-  {id:'purple',arName:'بنفسجي ملكي',natureBg:'https://images.unsplash.com/photo-1490750967868-58cb75069ed6?w=800&q=80',lenses:[
+  {id:'purple',arName:'بنفسجي ملكي',cardBg:'linear-gradient(135deg,#4B2A70 0%,#7B5EA7 50%,#C5A8DC 100%)',lenses:[
     {id:'p1',name:'لافندر',desc:'بنفسجي لافندر رومانسي',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)'},
     {id:'p2',name:'أرجواني',desc:'بنفسجي غامق ملكي',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)'},
     {id:'p3',name:'ليلكي',desc:'بنفسجي فاتح ليلكي',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)'}
@@ -386,7 +363,7 @@ if (!products.length) {
 let cart = JSON.parse(localStorage.getItem('lensora_cart') || 'null') || [];
 let currentLensIdx = 0;
 const GAP = 24;
-const CLONES = 2;
+const CLONES_COUNT = 2;
 
 function getProd(id) { return products.find(p => p.id === id) || { stock: 0, price: 0 }; }
 function saveData() {
@@ -394,44 +371,38 @@ function saveData() {
   localStorage.setItem('lensora_cart', JSON.stringify(cart));
 }
 
-/* ========== ♾️ INFINITE SLIDER (ROBUST) ========== */
+/* ========== INFINITE SLIDER ========== */
 function initSlider() {
   const track = document.getElementById('sliderTrack');
   if (!track) return;
 
-  // Generate HTML
   let html = '';
-  // Clones of LAST items at START
-  for (let i = COLORS_DATA.length - CLONES; i < COLORS_DATA.length; i++) {
+  for (let i = COLORS_DATA.length - CLONES_COUNT; i < COLORS_DATA.length; i++) {
     html += createCard(COLORS_DATA[i], i, true);
   }
-  // Original items
   for (let i = 0; i < COLORS_DATA.length; i++) {
     html += createCard(COLORS_DATA[i], i, false);
   }
-  // Clones of FIRST items at END
-  for (let i = 0; i < CLONES; i++) {
+  for (let i = 0; i < CLONES_COUNT; i++) {
     html += createCard(COLORS_DATA[i], i, true);
   }
   track.innerHTML = html;
 
-  // Dots
   document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => 
     `<div class="slider-dot" data-idx="${i}"></div>`
   ).join('');
 
-  // Measure & Init Position
   requestAnimationFrame(() => {
-    const firstRealCard = track.querySelector('.slider-card:not(.clone)');
-    if (!firstRealCard) return;
-    
-    const cardWidth = firstRealCard.offsetWidth + GAP;
-    const startPos = CLONES * cardWidth;
-    
-    track.querySelectorAll('.slider-card').forEach(c => c.style.flex = `0 0 ${cardWidth - GAP}px`);
+    const firstReal = track.querySelector('.slider-card:not(.clone)');
+    if (!firstReal) return;
+
+    const cardW = firstReal.offsetWidth + GAP;
+    const startPos = CLONES_COUNT * cardW;
+
+    track.querySelectorAll('.slider-card').forEach(c => c.style.flex = `0 0 ${firstReal.offsetWidth}px`);
     track.style.transform = `translateX(-${startPos}px)`;
-    
-    setupSliderEvents(track, { cardWidth, GAP, startPos, originalsCount: COLORS_DATA.length });
+
+    setupSliderEvents(track, { cardWidth: cardW, gap: GAP, startPos: startPos, originalsCount: COLORS_DATA.length, clonesCount: CLONES_COUNT });
   });
 }
 
@@ -439,9 +410,10 @@ function createCard(c, idx, isClone) {
   const mainLens = c.lenses[0];
   const totalStock = c.lenses.reduce((sum, l) => sum + (getProd(l.id)?.stock || 0), 0);
   const dots = c.lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
-  
+
   return `
     <div class="slider-card ${isClone ? 'clone' : ''}" data-idx="${idx}">
+      <div class="card-bg" style="background:${c.cardBg}"></div>
       <div class="card-border"></div>
       <div class="shimmer"></div>
       <div class="card-visual">
@@ -464,57 +436,57 @@ function createCard(c, idx, isClone) {
 }
 
 function setupSliderEvents(track, opts) {
-  let pos = opts.startPos;
+  let currentPos = opts.startPos;
   let isDragging = false;
   let startX = 0;
-  let startPos = 0;
+  let startDragPos = 0;
 
   const update = (newPos) => {
-    pos = newPos;
-    track.style.transform = `translateX(-${pos}px)`;
+    currentPos = newPos;
+    track.style.transform = `translateX(-${currentPos}px)`;
   };
 
   const checkLoop = () => {
-    const threshold = opts.cardWidth * 0.6;
-    // Scrolled into start clones
-    if (pos < opts.startPos - threshold) {
-      pos += opts.originalsCount * opts.cardWidth;
+    const threshold = opts.cardWidth * 0.5;
+    if (currentPos < opts.startPos - threshold) {
+      currentPos += opts.originalsCount * opts.cardWidth;
       track.style.transition = 'none';
-      update(pos);
-      requestAnimationFrame(() => track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)');
-    } 
-    // Scrolled into end clones
-    else if (pos > opts.startPos + (opts.originalsCount * opts.cardWidth) - threshold) {
-      pos -= opts.originalsCount * opts.cardWidth;
-      track.style.transition = 'none';
-      update(pos);
-      requestAnimationFrame(() => track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)');
+      update(currentPos);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+      }));
     }
-    updateDots(pos);
+    else if (currentPos > opts.startPos + (opts.originalsCount * opts.cardWidth) - threshold) {
+      currentPos -= opts.originalsCount * opts.cardWidth;
+      track.style.transition = 'none';
+      update(currentPos);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+      }));
+    }
+    updateDots(currentPos);
   };
 
-  const updateDots = (currentPos) => {
-    const realIdx = Math.round((currentPos / opts.cardWidth) - opts.CLONES);
+  const updateDots = (pos) => {
+    const realIdx = Math.round((pos / opts.cardWidth) - opts.clonesCount);
     const normalized = ((realIdx % opts.originalsCount) + opts.originalsCount) % opts.originalsCount;
-    document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === normalized));
+    document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => d.classList.toggle('active', i === normalized));
   };
 
-  updateDots(pos);
+  updateDots(currentPos);
 
-  // Buttons
   document.getElementById('prevBtn').onclick = () => {
     track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
-    update(pos - opts.cardWidth);
-    setTimeout(checkLoop, 650);
-  };
-  
-  document.getElementById('nextBtn').onclick = () => {
-    track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
-    update(pos + opts.cardWidth);
+    update(currentPos - opts.cardWidth);
     setTimeout(checkLoop, 650);
   };
 
-  // Dots
+  document.getElementById('nextBtn').onclick = () => {
+    track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
+    update(currentPos + opts.cardWidth);
+    setTimeout(checkLoop, 650);
+  };
+
   document.getElementById('sliderDots').onclick = (e) => {
     const dot = e.target.closest('.slider-dot');
     if (!dot) return;
@@ -524,7 +496,6 @@ function setupSliderEvents(track, opts) {
     updateDots(opts.startPos + idx * opts.cardWidth);
   };
 
-  // Card Click
   track.onclick = (e) => {
     const card = e.target.closest('.slider-card');
     if (!card || isDragging) return;
@@ -532,34 +503,32 @@ function setupSliderEvents(track, opts) {
     openLensModal(idx);
   };
 
-  // Drag
   const startDrag = (x) => {
     isDragging = true;
     startX = x;
-    startPos = pos;
+    startDragPos = currentPos;
     track.classList.add('dragging');
   };
-  
+
   const moveDrag = (x) => {
     if (!isDragging) return;
     const diff = x - startX;
-    update(startPos - diff);
+    update(startDragPos - diff);
   };
-  
+
   const endDrag = () => {
     if (!isDragging) return;
     isDragging = false;
     track.classList.remove('dragging');
     track.style.transition = 'transform .6s cubic-bezier(.22,1,.36,1)';
-    pos = Math.round(pos / opts.cardWidth) * opts.cardWidth;
-    update(pos);
+    currentPos = Math.round(currentPos / opts.cardWidth) * opts.cardWidth;
+    update(currentPos);
     setTimeout(checkLoop, 650);
   };
 
   track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive: true});
   track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive: true});
   track.addEventListener('touchend', endDrag);
-  
   track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
   document.addEventListener('mousemove', e => moveDrag(e.clientX));
   document.addEventListener('mouseup', endDrag);
@@ -567,115 +536,248 @@ function setupSliderEvents(track, opts) {
 
 /* ========== LENS MODAL ========== */
 function openLensModal(ci){
-  currentLensIdx=0;
-  document.getElementById('modalTitle').textContent=COLORS_DATA[ci].arName;
+  currentLensIdx = 0;
+  document.getElementById('modalTitle').textContent = COLORS_DATA[ci].arName;
   renderLensSlider(ci);
   document.getElementById('lensModal').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
-function closeLensModal(){document.getElementById('lensModal').classList.remove('open');document.body.style.overflow=''}
+function closeLensModal(){
+  document.getElementById('lensModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 function renderLensSlider(ci){
-  const cat=COLORS_DATA[ci];
-  document.getElementById('lensTrack').innerHTML=cat.lenses.map((l,li)=>{
-    const p=getProd(l.id);
-    const sc=p.stock===0?'stock-out':p.stock<=5?'stock-low':'';
-    const st=p.stock===0?'نفذ':p.stock<=5?`باقي ${p.stock}`:`${p.stock} قطعة`;
+  const cat = COLORS_DATA[ci];
+  document.getElementById('lensTrack').innerHTML = cat.lenses.map((l, li) => {
+    const p = getProd(l.id);
+    const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
+    const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
     return `<div class="lens-slide">
-      <div class="lens-visual"><div class="lens-visual-ring"></div><div class="lens-visual-inner"><div class="lens-circle" style="background:${l.gradient};box-shadow:0 0 60px ${l.color}25"></div></div></div>
+      <div class="lens-visual">
+        <div class="lens-visual-ring"></div>
+        <div class="lens-visual-inner"><div class="lens-circle" style="background:${l.gradient};box-shadow:0 0 60px ${l.color}25"></div></div>
+      </div>
       <div class="lens-details">
-        <h3>${l.name}</h3><p class="lens-desc">${l.desc}</p>
+        <h3>${l.name}</h3>
+        <p class="lens-desc">${l.desc}</p>
         <div class="lens-meta">
           <div class="meta-item"><div class="label">السعر</div><div class="value">${l.price} ر.س</div></div>
           <div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div>
         </div>
-        <div class="qty-selector"><label>الكمية:</label><div class="qty-ctrl">
-          <button onclick="changeModalQty(-1,${li})">−</button><div class="qty-display" id="mq_${li}">1</div><button onclick="changeModalQty(1,${li})">+</button>
-        </div></div>
-        <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
+        <div class="qty-selector">
+          <label>الكمية:</label>
+          <div class="qty-ctrl">
+            <button onclick="changeModalQty(-1,${li})">−</button>
+            <div class="qty-display" id="mq_${li}">1</div>
+            <button onclick="changeModalQty(1,${li})">+</button>
+          </div>
+        </div>
+        <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${p.stock===0?'disabled':''}>
+          <span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span>
+        </button>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('lensSliderDots').innerHTML=cat.lenses.map((_,li)=>`<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
+  document.getElementById('lensSliderDots').innerHTML = cat.lenses.map((_, li) => 
+    `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`
+  ).join('');
   updateLensSlider();
 }
 
 function updateLensSlider(){
-  document.getElementById('lensTrack').style.transform=`translateX(${currentLensIdx*100}%)`;
-  document.querySelectorAll('.slider-dot-modal').forEach((d,i)=>d.classList.toggle('active',i===currentLensIdx));
-  const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];
-  document.getElementById('lensPrevBtn').disabled=currentLensIdx===0;
-  document.getElementById('lensNextBtn').disabled=currentLensIdx>=cat.lenses.length-1;
+  document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
+  document.querySelectorAll('.slider-dot-modal').forEach((d, i) => d.classList.toggle('active', i === currentLensIdx));
+  document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
+  document.getElementById('lensNextBtn').disabled = true;
 }
-function slideLensMove(dir){const cat=COLORS_DATA.find(c=>c.lenses.length>currentLensIdx)||COLORS_DATA[0];currentLensIdx=Math.max(0,Math.min(cat.lenses.length-1,currentLensIdx+dir));updateLensSlider()}
-function goToLensSlide(i){currentLensIdx=i;updateLensSlider()}
+function slideLensMove(dir){
+  const cat = COLORS_DATA.find(c => c.arName === document.getElementById('modalTitle').textContent) || COLORS_DATA[0];
+  currentLensIdx = Math.max(0, Math.min(cat.lenses.length - 1, currentLensIdx + dir));
+  updateLensSlider();
+}
+function goToLensSlide(i){
+  currentLensIdx = i;
+  updateLensSlider();
+}
 
-function changeModalQty(delta,li){const el=document.getElementById(`mq_${li}`);let v=parseInt(el.textContent)+delta;const p=getProd(COLORS_DATA.find(c=>c.lenses[li])?.lenses[li]?.id);v=Math.max(1,Math.min(v,Math.max(1,p?.stock||1)));el.textContent=v}
+function changeModalQty(delta, li){
+  const el = document.getElementById(`mq_${li}`);
+  if (!el) return;
+  let v = parseInt(el.textContent) + delta;
+  const cat = COLORS_DATA.find(c => c.arName === document.getElementById('modalTitle').textContent) || COLORS_DATA[0];
+  const p = getProd(cat.lenses[li]?.id);
+  v = Math.max(1, Math.min(v, Math.max(1, p?.stock || 1)));
+  el.textContent = v;
+}
 
-function addFromSlider(lensId,li){
-  const p=getProd(lensId);if(!p||p.stock<=0)return;
-  const qty=parseInt(document.getElementById(`mq_${li}`).textContent);
-  const inCart=cart.find(c=>c.productId===lensId);
-  if(inCart){if(inCart.qty+qty>p.stock){showToast('⚠️ الكمية تتجاوز المتاح');return}inCart.qty+=qty}
-  else{if(qty>p.stock){showToast('⚠️ الكمية غير متاحة');return}cart.push({productId:lensId,qty})}
-  saveData();updateCartBadge();showToast(`✅ تمت إضافة "${p.name}" (${qty} قطعة)`);
-  document.getElementById(`mq_${li}`).textContent='1';
+function addFromSlider(lensId, li){
+  const p = getProd(lensId);
+  if (!p || p.stock <= 0) return;
+  const el = document.getElementById(`mq_${li}`);
+  const qty = el ? parseInt(el.textContent) : 1;
+  const inCart = cart.find(c => c.productId === lensId);
+  if (inCart) {
+    if (inCart.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح'); return; }
+    inCart.qty += qty;
+  } else {
+    if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة'); return; }
+    cart.push({ productId: lensId, qty });
+  }
+  saveData();
+  updateCartBadge();
+  showToast(`✅ تمت إضافة "${p.name}" (${qty} قطعة)`);
+  const qtyEl = document.getElementById(`mq_${li}`);
+  if (qtyEl) qtyEl.textContent = '1';
 }
 
 /* ========== CART ========== */
-function updateCartBadge(){const t=cart.reduce((s,c)=>s+c.qty,0);const b=document.getElementById('cartBadge');b.textContent=t;b.style.display=t>0?'flex':'none'}
-function openCart(){document.getElementById('cartOverlay').classList.add('open');document.getElementById('cartPanel').classList.add('open');renderCart()}
-function closeCart(){document.getElementById('cartOverlay').classList.remove('open');document.getElementById('cartPanel').classList.remove('open')}
+function updateCartBadge(){
+  const t = cart.reduce((s, c) => s + c.qty, 0);
+  const b = document.getElementById('cartBadge');
+  b.textContent = t;
+  b.style.display = t > 0 ? 'flex' : 'none';
+}
+function openCart(){
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartPanel').classList.add('open');
+  renderCart();
+}
+function closeCart(){
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartPanel').classList.remove('open');
+}
 
 function renderCart(){
-  const list=document.getElementById('cartItemsList');const bottom=document.getElementById('cartBottom');
-  if(cart.length===0){list.innerHTML='<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p></div>';bottom.innerHTML='';return}
-  list.innerHTML=cart.map(c=>{const p=getProd(c.productId);if(!p)return'';return `<div class="ci">
-    <div class="ci-color" style="background:${p.gradient}"></div>
-    <div class="ci-info"><div class="ci-name">${p.name}</div><div class="ci-cat">${p.categoryName}</div>
-      <div class="ci-bottom"><span class="ci-price">${p.price*c.qty} ر.س</span>
-        <div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)">−</button><span>${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)">+</button></div>
-      </div></div>
-    <button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button>
-  </div>`}).join('');
-  const sub=cart.reduce((s,c)=>{const p=getProd(c.productId);return s+(p?p.price*c.qty:0)},0);
-  const ship=sub>=200?0:15;const total=sub+ship;
-  bottom.innerHTML=`<div class="cb-row"><span>المجموع</span><span>${sub} ر.س</span></div><div class="cb-row"><span>الشحن ${ship===0?'(مجاني)':''}</span><span>${ship===0?'مجاني':ship+' ر.س'}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ر.س</span></div><button class="checkout-btn" onclick="checkout()">🧾 إتمام الشراء</button>`;
+  const list = document.getElementById('cartItemsList');
+  const bottom = document.getElementById('cartBottom');
+  if (cart.length === 0) {
+    list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p></div>';
+    bottom.innerHTML = '';
+    return;
+  }
+  list.innerHTML = cart.map(c => {
+    const p = getProd(c.productId);
+    if (!p) return '';
+    return `<div class="ci">
+      <div class="ci-color" style="background:${p.gradient}"></div>
+      <div class="ci-info">
+        <div class="ci-name">${p.name}</div>
+        <div class="ci-cat">${p.categoryName}</div>
+        <div class="ci-bottom">
+          <span class="ci-price">${p.price * c.qty} ر.س</span>
+          <div class="ci-qty">
+            <button onclick="changeCartQty('${c.productId}',-1)">−</button>
+            <span>${c.qty}</span>
+            <button onclick="changeCartQty('${c.productId}',1)">+</button>
+          </div>
+        </div>
+      </div>
+      <button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button>
+    </div>`;
+  }).join('');
+  const sub = cart.reduce((s, c) => { const p = getProd(c.productId); return s + (p ? p.price * c.qty : 0); }, 0);
+  const ship = sub >= 200 ? 0 : 15;
+  const total = sub + ship;
+  bottom.innerHTML = `
+    <div class="cb-row"><span>المجموع</span><span>${sub} ر.س</span></div>
+    <div class="cb-row"><span>الشحن ${ship===0?'(مجاني)':''}</span><span>${ship===0?'مجاني':ship+' ر.س'}</span></div>
+    <div class="cb-row total"><span>الإجمالي</span><span>${total} ر.س</span></div>
+    <button class="checkout-btn" onclick="checkout()">🧾 إتمام الشراء</button>
+  `;
 }
 
-function changeCartQty(pid,delta){const item=cart.find(c=>c.productId===pid);const p=getProd(pid);if(!item||!p)return;item.qty+=delta;if(item.qty<=0){removeFromCart(pid);return}if(item.qty>p.stock){item.qty=p.stock;showToast('⚠️ الحد الأقصى')}saveData();updateCartBadge();renderCart()}
-function removeFromCart(pid){cart=cart.filter(c=>c.productId!==pid);saveData();updateCartBadge();renderCart()}
+function changeCartQty(pid, delta){
+  const item = cart.find(c => c.productId === pid);
+  const p = getProd(pid);
+  if (!item || !p) return;
+  item.qty += delta;
+  if (item.qty <= 0) { removeFromCart(pid); return; }
+  if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى'); }
+  saveData();
+  updateCartBadge();
+  renderCart();
+}
+function removeFromCart(pid){
+  cart = cart.filter(c => c.productId !== pid);
+  saveData();
+  updateCartBadge();
+  renderCart();
+}
 
 function checkout(){
-  if(cart.length===0)return;
-  cart.forEach(c=>{const p=getProd(c.productId);if(p)p.stock=Math.max(0,p.stock-c.qty)});
-  showToast('✅ تم الشراء بنجاح!');cart=[];saveData();updateCartBadge();closeCart();
+  if (cart.length === 0) return;
+  cart.forEach(c => {
+    const p = getProd(c.productId);
+    if (p) p.stock = Math.max(0, p.stock - c.qty);
+  });
+  showToast('✅ تم الشراء بنجاح!');
+  cart = [];
+  saveData();
+  updateCartBadge();
+  closeCart();
 }
-
-/* ========== INVOICE ========== */
-function showInvoice(order){
-  document.getElementById('invBox').innerHTML=`<div class="inv-top"><div class="inv-brand">LENSORA<small>عدسات ملونة فاخرة</small></div><div class="inv-info"><div>فاتورة #: <strong>${order.id}</strong></div><div>التاريخ: ${order.date}</div></div></div><table class="inv-table"><thead><tr><th>المنتج</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th></tr></thead><tbody>${order.items.map(it=>`<tr><td>${it.name}</td><td>${it.price} ر.س</td><td>${it.qty}</td><td><strong>${it.lineTotal} ر.س</strong></td></tr>`).join('')}</tbody></table><div class="inv-total"><span>الإجمالي</span><span>${order.total} ر.س</span></div><div class="inv-actions"><button class="inv-btn inv-done" onclick="closeInvoice()">إغلاق</button></div>`;
-  document.getElementById('invOverlay').classList.add('open');
-}
-function closeInvoice(){document.getElementById('invOverlay').classList.remove('open')}
 
 /* ========== TOAST ========== */
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 
 /* ========== KEYBOARD & PARTICLES ========== */
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLensModal();closeCart();closeInvoice()}});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLensModal(); closeCart(); }
+});
 
-const canvas=document.getElementById('particlesCanvas');const ctx=canvas.getContext('2d');let particles=[];
-function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-resizeCanvas();window.addEventListener('resize',resizeCanvas);
-class Particle{constructor(){this.reset()}
-reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.5+.5;this.sx=(Math.random()-.5)*.25;this.sy=(Math.random()-.5)*.15;this.op=Math.random()*.35+.08;this.pulse=Math.random()*Math.PI*2;this.ps=Math.random()*.02+.005}
-update(){this.x+=this.sx;this.y+=this.sy;this.pulse+=this.ps;if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset()}
-draw(){const a=this.op*(.5+.5*Math.sin(this.pulse));ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${a})`;ctx.fill()}}
-for(let i=0;i<60;i++)particles.push(new Particle());
-(function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});requestAnimationFrame(anim)})();
+const canvas = document.getElementById('particlesCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60)});
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle{
+  constructor(){ this.reset(); }
+  reset(){
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.sx = (Math.random() - 0.5) * 0.25;
+    this.sy = (Math.random() - 0.5) * 0.15;
+    this.op = Math.random() * 0.35 + 0.08;
+    this.pulse = Math.random() * Math.PI * 2;
+    this.ps = Math.random() * 0.02 + 0.005;
+  }
+  update(){
+    this.x += this.sx;
+    this.y += this.sy;
+    this.pulse += this.ps;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw(){
+    const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse));
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${a})`;
+    ctx.fill();
+  }
+}
+for (let i = 0; i < 60; i++) particles.push(new Particle());
+(function anim(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(anim);
+})();
+
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
 
 /* ========== INIT ========== */
 initSlider();
@@ -683,3 +785,4 @@ updateCartBadge();
 </script>
 </body>
 </html>
+
