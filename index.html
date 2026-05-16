@@ -57,29 +57,23 @@
   ]
 }
 </script>
-
-<!-- Product Schema (Dynamic - Generated via JS) -->
 <script id="product-schema" type="application/ld+json">[]</script>
 
 <!-- Analytics Placeholders -->
 <script>
-  // Google Analytics 4 - Replace G-XXXXXXXXXX with your ID
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX', { 'anonymize_ip': true });
-  
-  // Meta Pixel - Replace with your Pixel ID
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
   document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', 'XXXXXXXXXXXXXXX');
-  fbq('track', 'PageView');
+  fbq('init', 'XXXXXXXXXXXXXXX'); fbq('track', 'PageView');
 </script>
 
-<!-- Fonts & Styles -->
+<!-- Fonts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
 
@@ -129,25 +123,24 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @keyframes logoSpin{to{transform:rotate(360deg)}}
 .nav-logo span{font-size:10px;letter-spacing:3px;color:var(--text-dim);font-family:'Inter',sans-serif;display:block;font-weight:400}
 .nav-actions{display:flex;gap:12px;align-items:center}
-
-/* Language & Currency Switcher */
 .lang-currency{display:flex;gap:8px;align-items:center}
 .lang-currency select{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);color:var(--text);padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer}
 .lang-currency select:focus{outline:2px solid var(--gold)}
-
 .cart-btn{background:rgba(201,168,76,.06);color:var(--gold);padding:12px 22px;border-radius:50px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,.08);transition:all var(--transition-normal);position:relative;backdrop-filter:blur(10px)}
 .cart-btn:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 30px rgba(201,168,76,.2)}
 .cart-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .cart-badge{background:#e74c3c;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;position:absolute;top:-6px;left:-6px;animation:popBadge .4s cubic-bezier(.68,-.55,.27,1.55)}
 @keyframes popBadge{from{transform:scale(0)}to{transform:scale(1)}}
-
 .admin-link{display:none;padding:12px 18px;border-radius:50px;background:rgba(201,168,76,.1);color:var(--gold);font-size:13px;font-weight:600;border:1px solid rgba(201,168,76,.2);transition:all var(--transition-normal)}
 .admin-link:hover{background:var(--gold);color:var(--bg)}
 body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 
-/* ========== HERO SECTION ========== */
+/* ========== HERO SECTION WITH IMAGES ========== */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 5% 80px}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(201,168,76,.04) 0%,transparent 70%),radial-gradient(ellipse 35% 35% at 15% 85%,rgba(74,144,217,.03) 0%,transparent 50%),radial-gradient(ellipse 35% 35% at 85% 85%,rgba(123,94,167,.03) 0%,transparent 50%)}
+.hero-bg-image{position:absolute;inset:0;overflow:hidden;border-radius:inherit}
+.hero-bg-img{width:100%;height:100%;object-fit:cover;filter:blur(2px) brightness(0.6);transform:scale(1.1);transition:transform 8s ease}
+.hero.loaded .hero-bg-img{transform:scale(1)}
 .hero-sphere-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;pointer-events:none;z-index:1}
 .hero-sphere{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(201,168,76,.12),transparent 60%),radial-gradient(circle at 70% 75%,rgba(201,168,76,.06),transparent 50%);box-shadow:0 0 80px rgba(201,168,76,.1),inset 0 0 60px rgba(201,168,76,.04);animation:sphereFloat 8s ease-in-out infinite,sphereGlow 4s ease-in-out infinite;filter:blur(1px)}
 .hero-sphere::before{content:'';position:absolute;inset:20%;border-radius:50%;border:1px solid rgba(201,168,76,.15);animation:sphereRing 10s linear infinite}
@@ -161,6 +154,18 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .sphere-particle:nth-child(3){bottom:25%;left:10%;animation-delay:2s}.sphere-particle:nth-child(4){bottom:40%;right:25%;animation-delay:0.5s}
 .sphere-particle:nth-child(5){top:50%;left:5%;animation-delay:1.5s}.sphere-particle:nth-child(6){top:15%;right:30%;animation-delay:2.5s}
 @keyframes particleFloat{0%,100%{transform:translateY(0) scale(1);opacity:.5}50%{transform:translateY(-30px) scale(1.3);opacity:1}}
+
+/* Hero Lens Image */
+.hero-lens-image{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:280px;height:280px;object-fit:contain;
+  filter:drop-shadow(0 20px 60px rgba(201,168,76,.4));
+  animation:lensHeroFloat 6s ease-in-out infinite;z-index:3;border-radius:50%
+}
+@keyframes lensHeroFloat{
+  0%,100%{transform:translate(-50%,-50%) translateY(0) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) translateY(-15px) rotate(2deg)}
+}
 
 .hero-glass{position:relative;z-index:2;background:rgba(201,168,76,.015);backdrop-filter:blur(50px);border:1px solid rgba(201,168,76,.06);border-radius:36px;padding:70px 90px;max-width:820px;animation:heroIn 1.4s cubic-bezier(.22,1,.36,1) both;box-shadow:0 0 100px rgba(201,168,76,.02),inset 0 1px 0 rgba(255,255,255,.02)}
 @keyframes heroIn{from{opacity:0;transform:translateY(50px) scale(.94);filter:blur(12px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
@@ -191,7 +196,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .scroll-line{width:1px;height:45px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
 @keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.4);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
 
-/* ========== CATEGORIES SLIDER ========== */
+/* ========== CATEGORIES SLIDER WITH IMAGES ========== */
 .categories-section{padding:80px 5% 140px;max-width:1500px;margin:0 auto;position:relative;z-index:2}
 .section-header{text-align:center;margin-bottom:60px}
 .section-label{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -212,11 +217,16 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-card:hover .card-bg{opacity:.55;transform:scale(1.05)}
 .slider-card::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 5%,rgba(18,14,12,.92) 75%);pointer-events:none}
 
+/* Card Image Container */
+.card-image-container{position:absolute;top:20px;left:20px;right:20px;height:280px;z-index:3;border-radius:var(--radius);overflow:hidden}
+.card-main-image{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.slider-card:hover .card-main-image{transform:scale(1.05)}
+.stock-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;z-index:2;box-shadow:0 4px 15px rgba(231,76,60,.3)}
+
 .slider-card .card-border{position:absolute;inset:-2px;border-radius:calc(var(--radius)+2px);background:conic-gradient(from var(--angle,0deg),transparent,rgba(201,168,76,.4),transparent 30%,transparent 70%,rgba(201,168,76,.3),transparent);z-index:2;opacity:0;transition:opacity var(--transition-normal);animation:borderSpin 5s linear infinite paused}
 .slider-card:hover .card-border{opacity:1;animation-play-state:running}
 @keyframes borderSpin{to{--angle:360deg}}
 @property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
-
 .slider-card .shimmer{position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.12),transparent);transform:skewX(-20deg);transition:left var(--transition-normal);z-index:3;pointer-events:none}
 .slider-card:hover .shimmer{left:150%}
 
@@ -228,7 +238,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 @keyframes ringSpin{to{transform:rotate(360deg)}}
 .card-lens-inner{width:120px;height:120px;border-radius:50%;box-shadow:inset 0 0 30px rgba(0,0,0,.4)}
 .card-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:6}
-.card-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.1);position:relative;overflow:hidden;transition:transform var(--transition-fast)}
+.card-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.1);position:relative;overflow:hidden;transition:transform var(--transition-fast);background-size:cover;background-position:center}
 .card-dot::after{content:'';position:absolute;inset:20%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent)}
 .slider-card:hover .card-dot{transform:scale(1.25)}
 
@@ -264,7 +274,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-dot:hover{background:rgba(201,168,76,.3)}
 .slider-dot.active{background:var(--gold);transform:scale(1.4);box-shadow:0 0 15px rgba(201,168,76,.5)}
 
-/* ========== MODAL ========== */
+/* ========== MODAL WITH IMAGES ========== */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all var(--transition-normal);padding:20px;backdrop-filter:blur(12px)}
 .modal-bg.open{opacity:1;visibility:visible}
 .modal-box{background:var(--preview-dark);backdrop-filter:blur(40px);border-radius:var(--radius);width:100%;max-width:1000px;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.06);transform:scale(.92) translateY(40px);transition:transform var(--transition-slow),background-color var(--transition-slow),box-shadow var(--transition-slow);box-shadow:0 40px 100px rgba(0,0,0,.6)}
@@ -298,10 +308,13 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 
 .lens-slider-track{display:flex;transition:transform var(--transition-slow) cubic-bezier(.4,0,.2,1)}
 .lens-slide{min-width:100%;display:flex;gap:48px;align-items:center;padding:0 10px}
+
+/* Lens Visual with Image */
 .lens-visual{width:260px;height:260px;border-radius:50%;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:box-shadow var(--transition-slow)}
 .lens-visual.dark-bg{animation:lensGlow 4s ease-in-out infinite}
 @keyframes lensGlow{0%,100%{box-shadow:0 0 50px rgba(201,168,76,.06)}50%{box-shadow:0 0 100px rgba(201,168,76,.12)}}
 .lens-visual.light-bg{box-shadow:0 10px 40px rgba(0,0,0,.1)}
+.lens-visual-image{width:100%;height:100%;object-fit:cover;border-radius:50%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 
 .lens-visual-ring{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(255,255,255,.04);animation:ringRotate 12s linear infinite}
 .modal-box.light-bg .lens-visual-ring{border-color:rgba(0,0,0,.04)}
@@ -482,6 +495,11 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .footer-social a{width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.06);display:flex;align-items:center;justify-content:center;color:var(--gold);transition:all var(--transition-fast)}
 .footer-social a:hover{background:var(--gold);color:var(--bg);transform:translateY(-2px)}
 
+/* ========== IMAGE LOADING STATES ========== */
+.image-loading{filter:blur(10px);opacity:.6}
+.image-loaded{filter:blur(0);opacity:1;transition:opacity .4s ease,filter .4s ease}
+.image-error{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.05))}
+
 /* ========== LOADING STATES ========== */
 .loading-skeleton{background:linear-gradient(90deg,rgba(201,168,76,.05) 25%,rgba(201,168,76,.1) 50%,rgba(201,168,76,.05) 75%);background-size:200% 100%;animation:loading 1.5s infinite}
 @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -492,6 +510,8 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
   .hero-sphere-wrap{width:350px;height:350px}.hero-glass{padding:40px 28px;border-radius:28px}
   .hero-logo-wrap svg{width:80px;height:80px}.slider-card{flex:0 0 280px}
   .card-visual{height:200px}.card-lens-sphere{width:115px;height:115px}.card-lens-inner{width:95px;height:95px}
+  .card-image-container{height:220px}
+  .hero-lens-image{width:180px;height:180px}
   .lens-slide{flex-direction:column;text-align:center;gap:32px}.lens-visual{width:200px;height:200px}.lens-visual-inner{width:170px;height:170px}
   .lens-meta{justify-content:center}.qty-selector{justify-content:center}.add-lens-btn{margin:0 auto}
   .slider-area{padding:24px 16px}.lens-slider-container{padding:28px 16px}.cart-panel,.wishlist-panel{width:100%}
@@ -531,11 +551,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 
 <!-- Cookie Consent Banner -->
 <div class="cookie-banner" id="cookieBanner" role="region" aria-label="إشعار ملفات تعريف الارتباط">
-  <p class="cookie-text">
-    نستخدم ملفات تعريف الارتباط لتحسين تجربتك. 
-    <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a> | 
-    <a href="#terms" onclick="showTerms()">الشروط</a>
-  </p>
+  <p class="cookie-text">نستخدم ملفات تعريف الارتباط لتحسين تجربتك. <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a> | <a href="#terms" onclick="showTerms()">الشروط</a></p>
   <div class="cookie-actions">
     <button class="cookie-btn accept" onclick="acceptCookies()">قبول الكل</button>
     <button class="cookie-btn settings" onclick="showCookieSettings()">الإعدادات</button>
@@ -553,26 +569,19 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
   <div class="nav-actions">
     <div class="lang-currency" role="group" aria-label="تغيير اللغة والعملة">
       <select id="langSelect" aria-label="اختر اللغة" onchange="changeLanguage(this.value)">
-        <option value="ar">العربية</option>
-        <option value="en">English</option>
+        <option value="ar">العربية</option><option value="en">English</option>
       </select>
       <select id="currencySelect" aria-label="اختر العملة" onchange="changeCurrency(this.value)">
-        <option value="SAR">ر.س</option>
-        <option value="USD">$</option>
-        <option value="AED">د.إ</option>
+        <option value="SAR">ر.س</option><option value="USD">$</option><option value="AED">د.إ</option>
       </select>
     </div>
     <button class="cart-btn" onclick="openCart()" aria-label="فتح سلة المشتريات">
-      🛒 <span class="sr-only">السلة</span>
-      <span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite"></span>
+      🛒 <span class="sr-only">السلة</span><span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite"></span>
     </button>
-    <a href="#admin" class="admin-link" id="adminLink" aria-label="لوحة التحكم">
-      ⚙️ <span>الداشبورد</span>
-    </a>
+    <a href="#admin" class="admin-link" id="adminLink" aria-label="لوحة التحكم">⚙️ <span>الداشبورد</span></a>
   </div>
 </nav>
 
-<!-- Screen Reader Only Text -->
 <span class="sr-only" style="position:absolute;left:-9999px">موقع Lensora للعدسات الملونة الفاخرة</span>
 
 <header class="hero" role="banner">
@@ -623,8 +632,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
       <h2 id="modalTitle"></h2>
       <div class="modal-actions">
         <button class="bg-toggle" onclick="toggleModalBg()" title="تبديل الخلفية" aria-label="تبديل بين الخلفية الفاتحة والداكنة">
-          <span class="icon-moon" aria-hidden="true">🌙</span>
-          <span class="icon-sun" aria-hidden="true">☀️</span>
+          <span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span>
         </button>
         <button class="modal-close" onclick="closeLensModal()" aria-label="إغلاق">✕</button>
       </div>
@@ -645,10 +653,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <!-- Cart Panel -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()" aria-hidden="true"></div>
 <div class="cart-panel" id="cartPanel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-  <div class="cart-top">
-    <h2 id="cartTitle">🛒 سلة المشتريات</h2>
-    <button class="modal-close" onclick="closeCart()" aria-label="إغلاق السلة">✕</button>
-  </div>
+  <div class="cart-top"><h2 id="cartTitle">🛒 سلة المشتريات</h2><button class="modal-close" onclick="closeCart()" aria-label="إغلاق السلة">✕</button></div>
   <div class="cart-items-list" id="cartItemsList" role="list"></div>
   <div class="cart-bottom" id="cartBottom"></div>
 </div>
@@ -656,10 +661,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <!-- Wishlist Panel -->
 <div class="cart-overlay" id="wishlistOverlay" onclick="closeWishlist()" aria-hidden="true"></div>
 <div class="wishlist-panel" id="wishlistPanel" role="dialog" aria-modal="true" aria-labelledby="wishlistTitle">
-  <div class="wishlist-top">
-    <h2 id="wishlistTitle">♡ المفضلة</h2>
-    <button class="modal-close" onclick="closeWishlist()" aria-label="إغلاق المفضلة">✕</button>
-  </div>
+  <div class="wishlist-top"><h2 id="wishlistTitle">♡ المفضلة</h2><button class="modal-close" onclick="closeWishlist()" aria-label="إغلاق المفضلة">✕</button></div>
   <div class="wishlist-items" id="wishlistItems" role="list"></div>
 </div>
 
@@ -669,10 +671,8 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <!-- Footer -->
 <footer class="footer" role="contentinfo">
   <div class="footer-links">
-    <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a>
-    <a href="#terms" onclick="showTerms()">الشروط والأحكام</a>
-    <a href="#shipping" onclick="showShipping()">سياسة الشحن</a>
-    <a href="#returns" onclick="showReturns()">الإرجاع والاستبدال</a>
+    <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a><a href="#terms" onclick="showTerms()">الشروط والأحكام</a>
+    <a href="#shipping" onclick="showShipping()">سياسة الشحن</a><a href="#returns" onclick="showReturns()">الإرجاع والاستبدال</a>
     <a href="#contact" onclick="showContact()">تواصل معنا</a>
   </div>
   <div class="footer-social" role="social" aria-label="تابعنا على">
@@ -682,218 +682,121 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
     <a href="#" aria-label="واتساب" onclick="trackSocial('whatsapp')">💬</a>
   </div>
   <p>© 2026 LENSORA — جميع الحقوق محفوظة ✨</p>
-  <p style="font-size:11px;margin-top:8px;color:var(--text-dim)">
-    منتجات معتمدة من هيئة الغذاء والدواء | شحن آمن | دفع عند الاستلام
-  </p>
+  <p style="font-size:11px;margin-top:8px;color:var(--text-dim)">منتجات معتمدة من هيئة الغذاء والدواء | شحن آمن | دفع عند الاستلام</p>
 </footer>
+
+<!-- ========== IMAGE CONFIGURATION & SMART LOADER ========== -->
+<script>
+// ========== IMAGE CONFIG ==========
+const IMAGE_CONFIG = {
+  baseUrl: 'https://cdn.lensora.com/images/',
+  hero: { main: 'hero-luxury-lenses.jpg', lifestyle: 'hero-lifestyle-model.jpg', macro: 'hero-macro-lens.png' },
+  categories: { brown: 'category-brown.jpg', blue: 'category-blue.jpg', green: 'category-green.jpg', gray: 'category-gray.jpg', hazel: 'category-hazel.jpg', purple: 'category-purple.jpg' },
+  products: {
+    'b1':'brown-honey.jpg','b2':'brown-chocolate.jpg','b3':'brown-caramel.jpg','b4':'brown-hazelnut.jpg',
+    'bl1':'blue-ocean.jpg','bl2':'blue-sky.jpg','bl3':'blue-snowy.jpg','bl4':'blue-zephyr.jpg',
+    'g1':'green-olive.jpg','g2':'green-emerald.jpg','g3':'green-turquoise.jpg','g4':'green-forest.jpg',
+    'gr1':'gray-silver.jpg','gr2':'gray-charcoal.jpg','gr3':'gray-smoky.jpg',
+    'hz1':'hazel-almond.jpg','hz2':'hazel-copper.jpg','hz3':'hazel-golden.jpg',
+    'p1':'purple-lavender.jpg','p2':'purple-majestic.jpg','p3':'purple-lilac.jpg'
+  },
+  placeholders: {
+    lens: (color) => `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3CradialGradient id='g' cx='40%25' cy='35%25'%3E%3Cstop offset='0%25' stop-color='${encodeURIComponent(color)}' stop-opacity='0.8'/%3E%3Cstop offset='60%25' stop-color='${encodeURIComponent(color)}' stop-opacity='0.4'/%3E%3Cstop offset='100%25' stop-color='%231a1a1a' stop-opacity='0.6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='200' cy='200' r='180' fill='url(%23g)'/%3E%3Ccircle cx='200' cy='200' r='120' fill='none' stroke='%23c9a84c' stroke-width='2' opacity='0.3'/%3E%3Ccircle cx='200' cy='200' r='80' fill='none' stroke='%23c9a84c' stroke-width='1' opacity='0.2'/%3E%3Ccircle cx='140' cy='140' r='30' fill='white' opacity='0.1'/%3E%3C/svg%3E`,
+    hero: `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='hg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231a1a1a'/%3E%3Cstop offset='50%25' stop-color='%232a2520'/%3E%3Cstop offset='100%25' stop-color='%231a1510'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23hg)' width='1920' height='1080'/%3E%3Ccircle cx='960' cy='540' r='300' fill='none' stroke='%23c9a84c' stroke-width='2' opacity='0.2'/%3E%3Ctext x='50%25' y='50%25' font-family='Playfair Display' font-size='72' fill='%23c9a84c' opacity='0.3' text-anchor='middle'%3ELENSORA%3C/text%3E%3C/svg%3E`
+  }
+};
+
+// ========== SMART IMAGE LOADER ==========
+class SmartImage {
+  constructor() { this.observer = null; this.init(); }
+  init() {
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { this.loadImage(entry.target); this.observer.unobserve(entry.target); } });
+    }, { rootMargin: '200px', threshold: 0.01 });
+  }
+  create(src, alt, options = {}) {
+    const img = document.createElement('img');
+    img.src = options.placeholder || IMAGE_CONFIG.placeholders.lens('#D4A056');
+    img.alt = alt; img.loading = 'lazy'; img.decoding = 'async';
+    if (options.class) img.className = options.class;
+    if (options.width) img.width = options.width;
+    if (options.height) img.height = options.height;
+    if (src) { img.dataset.src = src; this.observer.observe(img); }
+    img.onerror = () => { img.src = IMAGE_CONFIG.placeholders.lens('#c9a84c'); img.classList.add('image-error'); };
+    return img;
+  }
+  loadImage(img) {
+    const src = img.dataset.src; if (!src) return;
+    const tempImg = new Image();
+    tempImg.onload = () => { img.src = src; img.classList.add('image-loaded'); };
+    tempImg.src = src;
+  }
+}
+window.smartImage = new SmartImage();
+
+// ========== HERO WITH IMAGES ==========
+function createHeroWithImages() {
+  const sphere = document.querySelector('.hero-sphere');
+  const lensImg = smartImage.create(`${IMAGE_CONFIG.baseUrl}${IMAGE_CONFIG.hero.macro}`, 'عدسة Lensora فاخرة مقربة', { class: 'hero-lens-image', placeholder: IMAGE_CONFIG.placeholders.lens('#c9a84c') });
+  sphere.appendChild(lensImg);
+  const bgImages = [{ src: IMAGE_CONFIG.hero.lifestyle, alt: 'موديل يرتدي عدسات Lensora', opacity: 0.3 }, { src: IMAGE_CONFIG.hero.main, alt: 'مجموعة عدسات Lensora', opacity: 0.2 }];
+  bgImages.forEach((imgData, index) => {
+    const div = document.createElement('div'); div.className = 'hero-bg-image'; div.style.opacity = imgData.opacity; div.style.zIndex = -index;
+    const img = smartImage.create(`${IMAGE_CONFIG.baseUrl}${imgData.src}`, imgData.alt, { class: 'hero-bg-img' });
+    div.appendChild(img); document.querySelector('.hero-bg').appendChild(div);
+  });
+  document.querySelector('.hero').classList.add('loaded');
+}
+</script>
 
 <!-- API Configuration for Dashboard Integration -->
 <script>
-// ========== CONFIGURATION FOR DASHBOARD ==========
 window.LENSORA_CONFIG = {
-  // API Endpoints (to be replaced with actual backend)
-  api: {
-    baseUrl: 'https://api.lensora.com/v1',
-    endpoints: {
-      products: '/products',
-      categories: '/categories',
-      cart: '/cart',
-      wishlist: '/wishlist',
-      orders: '/orders',
-      auth: '/auth',
-      admin: '/admin'
-    },
-    timeout: 10000,
-    retryAttempts: 3
-  },
-  
-  // Authentication
-  auth: {
-    tokenKey: 'lensora_auth_token',
-    adminRole: 'admin',
-    userRole: 'customer',
-    tokenExpiry: 24 * 60 * 60 * 1000 // 24 hours
-  },
-  
-  // Analytics
-  analytics: {
-    ga4Id: 'G-XXXXXXXXXX',
-    pixelId: 'XXXXXXXXXXXXXXX',
-    trackPageViews: true,
-    trackConversions: true,
-    anonymizeIp: true
-  },
-  
-  // Security
-  security: {
-    csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || generateCSRFToken(),
-    sanitizeInput: true,
-    rateLimit: { requests: 100, window: 60000 } // 100 requests per minute
-  },
-  
-  // Localization
-  i18n: {
-    defaultLang: 'ar',
-    supportedLangs: ['ar', 'en'],
-    defaultCurrency: 'SAR',
-    supportedCurrencies: ['SAR', 'USD', 'AED'],
-    exchangeRates: { SAR: 1, USD: 0.27, AED: 0.99 }
-  },
-  
-  // Performance
-  performance: {
-    lazyLoadThreshold: 300,
-    cacheTTL: 3600000, // 1 hour
-    enablePreload: true
-  }
+  api: { baseUrl: 'https://api.lensora.com/v1', endpoints: { products: '/products', categories: '/categories', cart: '/cart', wishlist: '/wishlist', orders: '/orders', auth: '/auth', admin: '/admin' }, timeout: 10000, retryAttempts: 3 },
+  auth: { tokenKey: 'lensora_auth_token', adminRole: 'admin', userRole: 'customer', tokenExpiry: 24 * 60 * 60 * 1000 },
+  analytics: { ga4Id: 'G-XXXXXXXXXX', pixelId: 'XXXXXXXXXXXXXXX', trackPageViews: true, trackConversions: true, anonymizeIp: true },
+  security: { csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || generateCSRFToken(), sanitizeInput: true, rateLimit: { requests: 100, window: 60000 } },
+  i18n: { defaultLang: 'ar', supportedLangs: ['ar', 'en'], defaultCurrency: 'SAR', supportedCurrencies: ['SAR', 'USD', 'AED'], exchangeRates: { SAR: 1, USD: 0.27, AED: 0.99 } },
+  performance: { lazyLoadThreshold: 300, cacheTTL: 3600000, enablePreload: true }
 };
-
-// CSRF Token Generator
-function generateCSRFToken() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
-    .map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-// Secure Storage Wrapper
+function generateCSRFToken() { return Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b => b.toString(16).padStart(2, '0')).join(''); }
 const SecureStorage = {
-  set: (key, value, isSensitive = false) => {
-    try {
-      if (isSensitive) {
-        // In production, encrypt sensitive data before storing
-        const encrypted = btoa(encodeURIComponent(JSON.stringify(value)));
-        localStorage.setItem(`secure_${key}`, encrypted);
-      } else {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
-      return true;
-    } catch (e) {
-      console.error('Storage error:', e);
-      return false;
-    }
-  },
-  get: (key, isSensitive = false) => {
-    try {
-      const data = localStorage.getItem(isSensitive ? `secure_${key}` : key);
-      if (!data) return null;
-      if (isSensitive) {
-        return JSON.parse(decodeURIComponent(atob(data)));
-      }
-      return JSON.parse(data);
-    } catch { return null; }
-  },
-  remove: (key, isSensitive = false) => {
-    localStorage.removeItem(isSensitive ? `secure_${key}` : key);
-  }
+  set: (key, value, isSensitive = false) => { try { if (isSensitive) { const encrypted = btoa(encodeURIComponent(JSON.stringify(value))); localStorage.setItem(`secure_${key}`, encrypted); } else { localStorage.setItem(key, JSON.stringify(value)); } return true; } catch (e) { console.error('Storage error:', e); return false; } },
+  get: (key, isSensitive = false) => { try { const data = localStorage.getItem(isSensitive ? `secure_${key}` : key); if (!data) return null; if (isSensitive) { return JSON.parse(decodeURIComponent(atob(data))); } return JSON.parse(data); } catch { return null; } },
+  remove: (key, isSensitive = false) => { localStorage.removeItem(isSensitive ? `secure_${key}` : key); }
 };
-
-// API Client for Dashboard Integration
 class ApiClient {
-  constructor(config) {
-    this.config = config;
-    this.requestQueue = [];
-    this.lastRequestTime = 0;
-  }
-  
+  constructor(config) { this.config = config; this.requestQueue = []; this.lastRequestTime = 0; }
   async request(endpoint, options = {}) {
-    // Rate limiting
     await this.applyRateLimit();
-    
     const url = `${this.config.api.baseUrl}${endpoint}`;
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-CSRF-Token': this.config.security.csrfToken,
-      ...options.headers
-    };
-    
-    // Add auth token if available
+    const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-Token': this.config.security.csrfToken, ...options.headers };
     const token = SecureStorage.get(window.LENSORA_CONFIG.auth.tokenKey, true);
     if (token) headers['Authorization'] = `Bearer ${token}`;
-    
-    const config = {
-      ...options,
-      headers,
-      signal: AbortSignal.timeout(this.config.api.timeout)
-    };
-    
+    const config = { ...options, headers, signal: AbortSignal.timeout(this.config.api.timeout) };
     try {
       const response = await fetch(url, config);
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Handle unauthorized - redirect to login
-          this.handleUnauthorized();
-          throw new Error('Unauthorized');
-        }
-        throw new Error(`HTTP ${response.status}`);
-      }
-      
+      if (!response.ok) { if (response.status === 401) { this.handleUnauthorized(); throw new Error('Unauthorized'); } throw new Error(`HTTP ${response.status}`); }
       return await response.json();
-    } catch (error) {
-      console.error('API Error:', error);
-      // Retry logic could be implemented here
-      throw error;
-    }
+    } catch (error) { console.error('API Error:', error); throw error; }
   }
-  
   async applyRateLimit() {
-    const now = Date.now();
-    const { requests, window: timeWindow } = this.config.security.rateLimit;
-    
+    const now = Date.now(); const { requests, window: timeWindow } = this.config.security.rateLimit;
     this.requestQueue = this.requestQueue.filter(t => now - t < timeWindow);
-    
-    if (this.requestQueue.length >= requests) {
-      const waitTime = timeWindow - (now - this.requestQueue[0]);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
-    }
-    
+    if (this.requestQueue.length >= requests) { const waitTime = timeWindow - (now - this.requestQueue[0]); await new Promise(resolve => setTimeout(resolve, waitTime)); }
     this.requestQueue.push(now);
   }
-  
-  handleUnauthorized() {
-    SecureStorage.remove(window.LENSORA_CONFIG.auth.tokenKey, true);
-    showToast('⚠️ جلسة منتهية، يرجى تسجيل الدخول مجددًا', 'warning');
-    // Redirect to login in production
-  }
-  
-  // CRUD helpers
+  handleUnauthorized() { SecureStorage.remove(window.LENSORA_CONFIG.auth.tokenKey, true); showToast('⚠️ جلسة منتهية، يرجى تسجيل الدخول مجددًا', 'warning'); }
   get(endpoint) { return this.request(endpoint, { method: 'GET' }); }
   post(endpoint, data) { return this.request(endpoint, { method: 'POST', body: JSON.stringify(data) }); }
   put(endpoint, data) { return this.request(endpoint, { method: 'PUT', body: JSON.stringify(data) }); }
   delete(endpoint) { return this.request(endpoint, { method: 'DELETE' }); }
 }
-
-// Initialize API Client
 window.api = new ApiClient(window.LENSORA_CONFIG);
-
-// Analytics Helper
 const Analytics = {
-  trackPageView: (url = window.location.pathname) => {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'page_view', { page_path: url });
-    }
-    if (typeof fbq !== 'undefined') {
-      fbq('track', 'PageView');
-    }
-  },
-  
-  trackEvent: (eventName, params = {}) => {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', eventName, params);
-    }
-    if (typeof fbq !== 'undefined') {
-      fbq('track', eventName, params);
-    }
-    console.log(`[Analytics] ${eventName}`, params);
-  },
-  
-  trackConversion: (value, currency = 'SAR') => {
-    Analytics.trackEvent('purchase', {
-      value,
-      currency,
-      transaction_id: `TXN_${Date.now()}`
-    });
-  }
+  trackPageView: (url = window.location.pathname) => { if (typeof gtag !== 'undefined') gtag('event', 'page_view', { page_path: url }); if (typeof fbq !== 'undefined') fbq('track', 'PageView'); },
+  trackEvent: (eventName, params = {}) => { if (typeof gtag !== 'undefined') gtag('event', eventName, params); if (typeof fbq !== 'undefined') fbq('track', eventName, params); console.log(`[Analytics] ${eventName}`, params); },
+  trackConversion: (value, currency = 'SAR') => { Analytics.trackEvent('purchase', { value, currency, transaction_id: `TXN_${Date.now()}` }); }
 };
 </script>
 
@@ -902,927 +805,186 @@ const Analytics = {
 // ========== DATA & STATE ==========
 const COLORS_DATA = [
   {id:'brown',arName:'بني دافئ',enName:'Warm Brown',cardBg:'linear-gradient(135deg,#5C3A1E 0%,#8B5E3C 40%,#D4A056 100%)',lenses:[
-    {id:'b1',name:'عسل ذهبي',enName:'Golden Honey',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',rating:4.8,reviews:124},
-    {id:'b2',name:'شوكولاتة',enName:'Chocolate',desc:'بني غامق عميق يعطي نظرة ساحرة',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',rating:4.9,reviews:89},
-    {id:'b3',name:'كراميل',enName:'Caramel',desc:'بني فاتح كريمي مثالي',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',rating:4.7,reviews:156},
-    {id:'b4',name:'بندق',enName:'Hazelnut',desc:'بني متوسط مع لمسات ذهبية',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',rating:4.6,reviews:67}
+    {id:'b1',name:'عسل ذهبي',enName:'Golden Honey',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',rating:4.8,reviews:124,image:'brown-honey.jpg'},
+    {id:'b2',name:'شوكولاتة',enName:'Chocolate',desc:'بني غامق عميق يعطي نظرة ساحرة',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',rating:4.9,reviews:89,image:'brown-chocolate.jpg'},
+    {id:'b3',name:'كراميل',enName:'Caramel',desc:'بني فاتح كريمي مثالي',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',rating:4.7,reviews:156,image:'brown-caramel.jpg'},
+    {id:'b4',name:'بندق',enName:'Hazelnut',desc:'بني متوسط مع لمسات ذهبية',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',rating:4.6,reviews:67,image:'brown-hazelnut.jpg'}
   ]},
   {id:'blue',arName:'أزرق ساحر',enName:'Enchanting Blue',cardBg:'linear-gradient(135deg,#1B3A5C 0%,#2E6CB5 50%,#5B9BD5 100%)',lenses:[
-    {id:'bl1',name:'محيط',enName:'Ocean',desc:'أزرق محيطي عميق مع لمعة طبيعية',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',rating:4.9,reviews:203},
-    {id:'bl2',name:'سماء',enName:'Sky',desc:'أزرق سماوي فاتح براقة',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',rating:4.7,reviews:145},
-    {id:'bl3',name:'ثلجي',enName:'Snowy',desc:'أزرق فاتح ثلجي مذهل',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',rating:5.0,reviews:78},
-    {id:'bl4',name:'زفير',enName:'Zephyr',desc:'أزرق بنفسجي غامض',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',rating:4.8,reviews:92}
+    {id:'bl1',name:'محيط',enName:'Ocean',desc:'أزرق محيطي عميق مع لمعة طبيعية',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',rating:4.9,reviews:203,image:'blue-ocean.jpg'},
+    {id:'bl2',name:'سماء',enName:'Sky',desc:'أزرق سماوي فاتح براقة',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',rating:4.7,reviews:145,image:'blue-sky.jpg'},
+    {id:'bl3',name:'ثلجي',enName:'Snowy',desc:'أزرق فاتح ثلجي مذهل',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',rating:5.0,reviews:78,image:'blue-snowy.jpg'},
+    {id:'bl4',name:'زفير',enName:'Zephyr',desc:'أزرق بنفسجي غامض',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',rating:4.8,reviews:92,image:'blue-zephyr.jpg'}
   ]},
   {id:'green',arName:'أخضر زمردي',enName:'Emerald Green',cardBg:'linear-gradient(135deg,#1B4B28 0%,#2E8B57 50%,#3CB371 100%)',lenses:[
-    {id:'g1',name:'زيتون',enName:'Olive',desc:'أخضر زيتوني ناعم',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',rating:4.6,reviews:134},
-    {id:'g2',name:'زمردي',enName:'Emerald',desc:'أخضر زمردي فاخر لامع',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',rating:4.9,reviews:187},
-    {id:'g3',name:'فيروزي',enName:'Turquoise',desc:'أخضر فيروزي مائي منعش',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',rating:4.8,reviews:56},
-    {id:'g4',name:'غابة',enName:'Forest',desc:'أخضر غامق غامض',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',rating:4.7,reviews:98}
+    {id:'g1',name:'زيتون',enName:'Olive',desc:'أخضر زيتوني ناعم',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',rating:4.6,reviews:134,image:'green-olive.jpg'},
+    {id:'g2',name:'زمردي',enName:'Emerald',desc:'أخضر زمردي فاخر لامع',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',rating:4.9,reviews:187,image:'green-emerald.jpg'},
+    {id:'g3',name:'فيروزي',enName:'Turquoise',desc:'أخضر فيروزي مائي منعش',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',rating:4.8,reviews:56,image:'green-turquoise.jpg'},
+    {id:'g4',name:'غابة',enName:'Forest',desc:'أخضر غامق غامض',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',rating:4.7,reviews:98,image:'green-forest.jpg'}
   ]},
   {id:'gray',arName:'رمادي أنيق',enName:'Elegant Gray',cardBg:'linear-gradient(135deg,#202020 0%,#6A6A6A 50%,#B8B8B8 100%)',lenses:[
-    {id:'gr1',name:'فضي',enName:'Silver',desc:'رمادي فضي لامع أنيق',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',rating:4.7,reviews:167},
-    {id:'gr2',name:'فحمي',enName:'Charcoal',desc:'رمادي فحمي قوي',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',rating:4.8,reviews:112},
-    {id:'gr3',name:'دخاني',enName:'Smoky',desc:'رمادي دخاني بلمسة بنفسجية',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',rating:4.9,reviews:84}
+    {id:'gr1',name:'فضي',enName:'Silver',desc:'رمادي فضي لامع أنيق',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',rating:4.7,reviews:167,image:'gray-silver.jpg'},
+    {id:'gr2',name:'فحمي',enName:'Charcoal',desc:'رمادي فحمي قوي',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',rating:4.8,reviews:112,image:'gray-charcoal.jpg'},
+    {id:'gr3',name:'دخاني',enName:'Smoky',desc:'رمادي دخاني بلمسة بنفسجية',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',rating:4.9,reviews:84,image:'gray-smoky.jpg'}
   ]},
   {id:'hazel',arName:'عسلي مميز',enName:'Special Hazel',cardBg:'linear-gradient(135deg,#8B7355 0%,#C4A265 50%,#D4B878 100%)',lenses:[
-    {id:'hz1',name:'لوز',enName:'Almond',desc:'عسلي لوزي فاتح طبيعي',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',rating:4.8,reviews:201},
-    {id:'hz2',name:'نحاسي',enName:'Copper',desc:'عسلي نحاسي دافئ ببريق',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',rating:4.7,reviews:143},
-    {id:'hz3',name:'ذهبي',enName:'Golden',desc:'عسلي ذهبي لامع',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',rating:5.0,reviews:45}
+    {id:'hz1',name:'لوز',enName:'Almond',desc:'عسلي لوزي فاتح طبيعي',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',rating:4.8,reviews:201,image:'hazel-almond.jpg'},
+    {id:'hz2',name:'نحاسي',enName:'Copper',desc:'عسلي نحاسي دافئ ببريق',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',rating:4.7,reviews:143,image:'hazel-copper.jpg'},
+    {id:'hz3',name:'ذهبي',enName:'Golden',desc:'عسلي ذهبي لامع',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',rating:5.0,reviews:45,image:'hazel-golden.jpg'}
   ]},
   {id:'purple',arName:'بنفسجي ملكي',enName:'Royal Purple',cardBg:'linear-gradient(135deg,#4B2A70 0%,#7B5EA7 50%,#C5A8DC 100%)',lenses:[
-    {id:'p1',name:'لافندر',enName:'Lavender',desc:'بنفسجي لافندر رومانسي',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',rating:4.8,reviews:156},
-    {id:'p2',name:'أرجواني',enName:'Majestic',desc:'بنفسجي غامق ملكي',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',rating:4.9,reviews:89},
-    {id:'p3',name:'ليلكي',enName:'Lilac',desc:'بنفسجي فاتح ليلكي',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',rating:4.7,reviews:72}
+    {id:'p1',name:'لافندر',enName:'Lavender',desc:'بنفسجي لافندر رومانسي',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',rating:4.8,reviews:156,image:'purple-lavender.jpg'},
+    {id:'p2',name:'أرجواني',enName:'Majestic',desc:'بنفسجي غامق ملكي',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',rating:4.9,reviews:89,image:'purple-majestic.jpg'},
+    {id:'p3',name:'ليلكي',enName:'Lilac',desc:'بنفسجي فاتح ليلكي',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',rating:4.7,reviews:72,image:'purple-lilac.jpg'}
   ]}
 ];
 
-// State Management
-let state = {
-  products: [],
-  cart: [],
-  wishlist: [],
-  currentLang: 'ar',
-  currentCurrency: 'SAR',
-  isAdmin: false,
-  ageVerified: false,
-  cookiesAccepted: false
-};
+let state = { products: [], cart: [], wishlist: [], currentLang: 'ar', currentCurrency: 'SAR', isAdmin: false, ageVerified: false, cookiesAccepted: false };
+let currentLensIdx = 0;
 
-// ========== INITIALIZATION ==========
 document.addEventListener('DOMContentLoaded', async () => {
-  // Check age verification
-  checkAgeVerification();
-  
-  // Check cookie consent
-  checkCookieConsent();
-  
-  // Load data from storage or API
-  await loadData();
-  
-  // Initialize components
-  initSmoothSlider();
-  updateCartBadge();
-  updateWishlistBadge();
-  updateStructuredData();
-  
-  // Track page view
-  Analytics.trackPageView();
-  
-  // Setup event listeners
-  setupEventListeners();
-  
-  // Check for admin access
-  checkAdminAccess();
-  
-  // Remove loading state
+  checkAgeVerification(); checkCookieConsent(); await loadData();
+  createHeroWithImages(); // Initialize hero images
+  initSmoothSlider(); updateCartBadge(); updateWishlistBadge(); updateStructuredData();
+  Analytics.trackPageView(); setupEventListeners(); checkAdminAccess();
   document.body.classList.remove('loading');
 });
 
-// ========== AGE VERIFICATION ==========
-function checkAgeVerification() {
-  const verified = SecureStorage.get('age_verified');
-  if (verified) {
-    state.ageVerified = true;
-    document.getElementById('ageModal').classList.add('hidden');
-  }
-}
-
-function confirmAge() {
-  state.ageVerified = true;
-  SecureStorage.set('age_verified', true);
-  document.getElementById('ageModal').classList.add('hidden');
-  Analytics.trackEvent('age_verified');
-}
-
-function exitSite() {
-  window.location.href = 'https://www.google.com';
-}
-
-// ========== COOKIE CONSENT ==========
-function checkCookieConsent() {
-  const accepted = SecureStorage.get('cookies_accepted');
-  if (accepted) {
-    state.cookiesAccepted = true;
-  } else {
-    setTimeout(() => document.getElementById('cookieBanner').classList.add('show'), 2000);
-  }
-}
-
-function acceptCookies() {
-  state.cookiesAccepted = true;
-  SecureStorage.set('cookies_accepted', true);
-  document.getElementById('cookieBanner').classList.remove('show');
-  Analytics.trackEvent('cookies_accepted');
-  // Initialize analytics that require consent
-  if (typeof gtag !== 'undefined') gtag('consent', 'update', { analytics_storage: 'granted' });
-}
-
-function showCookieSettings() {
-  showToast('🔧 إعدادات ملفات تعريف الارتباط قيد التطوير', 'info');
-}
-
+function checkAgeVerification() { const verified = SecureStorage.get('age_verified'); if (verified) { state.ageVerified = true; document.getElementById('ageModal').classList.add('hidden'); } }
+function confirmAge() { state.ageVerified = true; SecureStorage.set('age_verified', true); document.getElementById('ageModal').classList.add('hidden'); Analytics.trackEvent('age_verified'); }
+function exitSite() { window.location.href = 'https://www.google.com'; }
+function checkCookieConsent() { const accepted = SecureStorage.get('cookies_accepted'); if (accepted) { state.cookiesAccepted = true; } else { setTimeout(() => document.getElementById('cookieBanner').classList.add('show'), 2000); } }
+function acceptCookies() { state.cookiesAccepted = true; SecureStorage.set('cookies_accepted', true); document.getElementById('cookieBanner').classList.remove('show'); Analytics.trackEvent('cookies_accepted'); if (typeof gtag !== 'undefined') gtag('consent', 'update', { analytics_storage: 'granted' }); }
+function showCookieSettings() { showToast('🔧 إعدادات ملفات تعريف الارتباط قيد التطوير', 'info'); }
 function showPrivacy() { showToast('📄 سياسة الخصوصية: نحمي بياناتك وفقًا لأعلى المعايير', 'info'); }
 function showTerms() { showToast('📋 الشروط: بالشراء توافق على شروطنا', 'info'); }
 function showShipping() { showToast('🚚 الشحن: مجاني للطلبات فوق 200 ر.س، خلال 2-4 أيام', 'info'); }
 function showReturns() { showToast('🔄 الإرجاع: خلال 14 يوم مع بقاء المنتج مغلقًا', 'info'); }
 function showContact() { showToast('💬 تواصل: support@lensora.com | 920000000', 'info'); }
 
-// ========== DATA LOADING ==========
 async function loadData() {
   try {
-    // Try to load from API first (dashboard integration ready)
     const apiData = await window.api.get('/products').catch(() => null);
-    
-    if (apiData?.products) {
-      state.products = apiData.products;
-    } else {
-      // Fallback to local data
-      COLORS_DATA.forEach(c => c.lenses.forEach(l => {
-        state.products.push({...l, categoryId: c.id, categoryName: c.arName, categoryNameEn: c.enName});
-      }));
-    }
-    
-    // Load cart and wishlist
-    state.cart = SecureStorage.get('lensora_cart') || [];
-    state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-    
-  } catch (error) {
-    console.error('Failed to load data:', error);
-    // Fallback to local initialization
-    COLORS_DATA.forEach(c => c.lenses.forEach(l => {
-      state.products.push({...l, categoryId: c.id, categoryName: c.arName, categoryNameEn: c.enName});
-    }));
-  }
+    if (apiData?.products) { state.products = apiData.products; }
+    else { COLORS_DATA.forEach(c => c.lenses.forEach(l => { state.products.push({...l, categoryId: c.id, categoryName: c.arName, categoryNameEn: c.enName}); })); }
+    state.cart = SecureStorage.get('lensora_cart') || []; state.wishlist = SecureStorage.get('lensora_wishlist') || [];
+  } catch (error) { console.error('Failed to load data:', error); COLORS_DATA.forEach(c => c.lenses.forEach(l => { state.products.push({...l, categoryId: c.id, categoryName: c.arName, categoryNameEn: c.enName}); })); }
 }
+function saveData() { SecureStorage.set('lensora_cart', state.cart); SecureStorage.set('lensora_wishlist', state.wishlist); SecureStorage.set('lensora_products', state.products); }
+function getProduct(id) { return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '', image: '' }; }
+function getPrice(product, currency = state.currentCurrency) { const basePrice = product.price; const rate = window.LENSORA_CONFIG.i18n.exchangeRates[currency] || 1; return Math.round(basePrice * rate); }
+function getCurrencySymbol(currency = state.currentCurrency) { const symbols = { SAR: 'ر.س', USD: '$', AED: 'د.إ' }; return symbols[currency] || currency; }
+function getText(ar, en) { return state.currentLang === 'ar' ? ar : en; }
 
-function saveData() {
-  SecureStorage.set('lensora_cart', state.cart);
-  SecureStorage.set('lensora_wishlist', state.wishlist);
-  SecureStorage.set('lensora_products', state.products);
-}
-
-// ========== PRODUCT HELPERS ==========
-function getProduct(id) { 
-  return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '' }; 
-}
-
-function getPrice(product, currency = state.currentCurrency) {
-  const basePrice = product.price;
-  const rate = window.LENSORA_CONFIG.i18n.exchangeRates[currency] || 1;
-  return Math.round(basePrice * rate);
-}
-
-function getCurrencySymbol(currency = state.currentCurrency) {
-  const symbols = { SAR: 'ر.س', USD: '$', AED: 'د.إ' };
-  return symbols[currency] || currency;
-}
-
-function getText(ar, en) {
-  return state.currentLang === 'ar' ? ar : en;
-}
-
-// ========== SLIDER INIT ==========
 function initSmoothSlider() {
-  const track = document.getElementById('sliderTrack');
-  const GAP = 28;
-  const CARD_W = 340;
-  const ITEM_W = CARD_W + GAP;
-  const total = COLORS_DATA.length;
-
-  let html = '';
-  for (let c = 0; c < 6; c++) {
-    for (let i = 0; i < total; i++) {
-      html += createCard(COLORS_DATA[i], i);
-    }
-  }
-  track.innerHTML = html;
-
-  const cards = track.querySelectorAll('.slider-card');
-  cards.forEach(c => c.style.flex = `0 0 ${CARD_W}px`);
-
-  document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) =>
-    `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`
-  ).join('');
-
-  let activeCatIdx = 0;
-  let currentPos = 0;
-  let isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, velocity = 0, isAnimating = false;
-
-  function getCenterOffset() {
-    const vp = document.querySelector('.slider-viewport');
-    return (vp.offsetWidth - CARD_W) / 2;
-  }
-
-  function snapToIndex(idx) {
-    isAnimating = true;
-    activeCatIdx = idx;
-    const target = idx * ITEM_W;
-    const centerOffset = getCenterOffset();
-    const pos = target - centerOffset;
-    cancelAnimationFrame(animFrame);
-    animateTo(pos, () => { isAnimating = false; });
-    updateDots(idx);
-  }
-
-  function animateTo(targetPos, callback) {
-    const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
-    function step(now) {
-      const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 4);
-      currentPos = start + diff * ease;
-      track.style.transform = `translateX(-${currentPos}px)`;
-      if (progress < 1) animFrame = requestAnimationFrame(step);
-      else if (callback) callback();
-    }
-    animFrame = requestAnimationFrame(step);
-  }
-
-  function updateDots(idx) {
-    const normalized = ((idx % total) + total) % total;
-    document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
-      const active = i === normalized;
-      d.classList.toggle('active', active);
-      d.setAttribute('aria-selected', active);
-    });
-  }
-
-  function getVisibleIndex() {
-    const centerOffset = getCenterOffset();
-    return Math.round((currentPos + centerOffset) / ITEM_W);
-  }
-
-  currentPos = -getCenterOffset();
-  track.style.transform = `translateX(-${currentPos}px)`;
-  updateDots(0);
-
-  let autoplayInterval = setInterval(() => {
-    if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); }
-  }, 3500);
-
-  function resetAutoplay() {
-    clearInterval(autoplayInterval);
-    autoplayInterval = setInterval(() => {
-      if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); }
-    }, 3500);
-  }
-
+  const track = document.getElementById('sliderTrack'); const GAP = 28; const CARD_W = 340; const ITEM_W = CARD_W + GAP; const total = COLORS_DATA.length;
+  let html = ''; for (let c = 0; c < 6; c++) { for (let i = 0; i < total; i++) { html += createCard(COLORS_DATA[i], i); } }
+  track.innerHTML = html; const cards = track.querySelectorAll('.slider-card'); cards.forEach(c => c.style.flex = `0 0 ${CARD_W}px`);
+  document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
+  let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, velocity = 0, isAnimating = false;
+  function getCenterOffset() { const vp = document.querySelector('.slider-viewport'); return (vp.offsetWidth - CARD_W) / 2; }
+  function snapToIndex(idx) { isAnimating = true; activeCatIdx = idx; const target = idx * ITEM_W; const centerOffset = getCenterOffset(); const pos = target - centerOffset; cancelAnimationFrame(animFrame); animateTo(pos, () => { isAnimating = false; }); updateDots(idx); }
+  function animateTo(targetPos, callback) { const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now(); function step(now) { const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1); const ease = 1 - Math.pow(1 - progress, 4); currentPos = start + diff * ease; track.style.transform = `translateX(-${currentPos}px)`; if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback(); } animFrame = requestAnimationFrame(step); }
+  function updateDots(idx) { const normalized = ((idx % total) + total) % total; document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => { const active = i === normalized; d.classList.toggle('active', active); d.setAttribute('aria-selected', active); }); }
+  function getVisibleIndex() { const centerOffset = getCenterOffset(); return Math.round((currentPos + centerOffset) / ITEM_W); }
+  currentPos = -getCenterOffset(); track.style.transform = `translateX(-${currentPos}px)`; updateDots(0);
+  let autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500);
+  function resetAutoplay() { clearInterval(autoplayInterval); autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500); }
   document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
   document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
-  document.getElementById('sliderDots').onclick = (e) => {
-    const dot = e.target.closest('.slider-dot');
-    if (!dot) return;
-    const idx = parseInt(dot.dataset.idx);
-    const cur = getVisibleIndex();
-    const offset = idx - ((cur % total) + total) % total;
-    activeCatIdx = cur + offset;
-    snapToIndex(activeCatIdx);
-    resetAutoplay();
-  };
-
-  track.onclick = (e) => {
-    const card = e.target.closest('.slider-card');
-    if (!card || isDragging) return;
-    const idx = parseInt(card.dataset.idx);
-    openLensModal(idx);
-  };
-
-  // Drag handlers
+  document.getElementById('sliderDots').onclick = (e) => { const dot = e.target.closest('.slider-dot'); if (!dot) return; const idx = parseInt(dot.dataset.idx); const cur = getVisibleIndex(); const offset = idx - ((cur % total) + total) % total; activeCatIdx = cur + offset; snapToIndex(activeCatIdx); resetAutoplay(); };
+  track.onclick = (e) => { const card = e.target.closest('.slider-card'); if (!card || isDragging) return; const idx = parseInt(card.dataset.idx); openLensModal(idx); };
   const startDrag = (x) => { isDragging = true; dragStartX = x; dragStartPos = currentPos; velocity = 0; cancelAnimationFrame(animFrame); isAnimating = false; track.style.transition = 'none'; };
   const moveDrag = (x) => { if (!isDragging) return; const diff = x - dragStartX; velocity = diff; currentPos = dragStartPos - diff; track.style.transform = `translateX(-${currentPos}px)`; };
   const endDrag = () => { if (!isDragging) return; isDragging = false; const centerOffset = getCenterOffset(); const rawIdx = (currentPos + centerOffset) / ITEM_W; let targetIdx = Math.round(rawIdx); if (Math.abs(velocity) > 50) targetIdx = velocity > 0 ? Math.floor(rawIdx) : Math.ceil(rawIdx); activeCatIdx = targetIdx; snapToIndex(targetIdx); resetAutoplay(); };
-
-  track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
-  track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
-  track.addEventListener('touchend', endDrag);
-  track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
-  document.addEventListener('mousemove', e => moveDrag(e.clientX));
-  document.addEventListener('mouseup', endDrag);
+  track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true}); track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true}); track.addEventListener('touchend', endDrag);
+  track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); }); document.addEventListener('mousemove', e => moveDrag(e.clientX)); document.addEventListener('mouseup', endDrag);
 }
 
 function createCard(c, idx) {
-  const mainLens = c.lenses[0];
-  const totalStock = c.lenses.reduce((sum, l) => sum + (getProduct(l.id)?.stock || 0), 0);
-  const dots = c.lenses.map(l => `<div class="card-dot" style="background:${l.gradient}" aria-label="${l.name}"></div>`).join('');
+  const mainLens = c.lenses[0]; const totalStock = c.lenses.reduce((sum, l) => sum + (getProduct(l.id)?.stock || 0), 0);
+  const dots = c.lenses.map(l => `<div class="card-dot" style="background-image:url(${IMAGE_CONFIG.baseUrl}thumbs/${c.id}-${l.id}.jpg);background:${l.gradient}" aria-label="${l.name}"></div>`).join('');
   const inWishlist = state.wishlist.some(w => w.productId === mainLens.id);
-  
+  const productImage = IMAGE_CONFIG.products[mainLens.id] ? `${IMAGE_CONFIG.baseUrl}products/${IMAGE_CONFIG.products[mainLens.id]}` : null;
   return `
     <div class="slider-card" data-idx="${idx}" role="listitem" tabindex="0">
-      <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation(); toggleWishlist('${mainLens.id}')" aria-label="${inWishlist?'إزالة من المفضلة':'إضافة للمفضلة'}">
-        ${inWishlist?'❤️':'♡'}
-      </button>
-      <div class="card-bg" style="background:${c.cardBg}" aria-hidden="true"></div>
-      <div class="card-border" aria-hidden="true"></div>
-      <div class="shimmer" aria-hidden="true"></div>
-      <div class="card-visual">
-        <div class="card-lens-sphere"><div class="card-lens-inner" style="background:${mainLens.gradient}"></div></div>
-        <div class="card-dots">${dots}</div>
-      </div>
-      <div class="card-body">
-        <div class="card-badge"><span class="dot"></span>${getText(c.arName, c.enName)}</div>
-        <div class="card-name">${getText(mainLens.name, mainLens.enName)}</div>
-        <div class="card-count">${c.lenses.length} ${getText('تدرجات', 'variations')} · ${totalStock} ${getText('قطعة', 'items')}</div>
-        <div class="card-footer">
-          <div class="card-price">${getText('من', 'from')} <strong>${getPrice(mainLens)} ${getCurrencySymbol()}</strong></div>
-          <button class="card-btn" onclick="event.stopPropagation(); openLensModal(${idx})"><span>${getText('اكتشفي ✦', 'Explore ✦')}</span></button>
-        </div>
+      <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation(); toggleWishlist('${mainLens.id}')" aria-label="${inWishlist?'إزالة من المفضلة':'إضافة للمفضلة'}">${inWishlist?'❤️':'♡'}</button>
+      ${productImage ? `<div class="card-image-container">${smartImage.create(productImage, `${c.arName} - ${mainLens.name}`, {class:'card-main-image'}).outerHTML}${totalStock < 10 ? '<span class="stock-badge">آخر قطع!</span>' : ''}</div>` : ''}
+      <div class="card-bg" style="background:${c.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
+      <div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${mainLens.gradient}"></div></div><div class="card-dots">${dots}</div></div>
+      <div class="card-body"><div class="card-badge"><span class="dot"></span>${getText(c.arName, c.enName)}</div><div class="card-name">${getText(mainLens.name, mainLens.enName)}</div><div class="card-count">${c.lenses.length} ${getText('تدرجات', 'variations')} · ${totalStock} ${getText('قطعة', 'items')}</div>
+        <div class="card-footer"><div class="card-price">${getText('من', 'from')} <strong>${getPrice(mainLens)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation(); openLensModal(${idx})"><span>${getText('اكتشفي ✦', 'Explore ✦')}</span></button></div>
       </div>
     </div>`;
 }
 
-// ========== WISHLIST FUNCTIONS ==========
-function toggleWishlist(productId) {
-  const product = getProduct(productId);
-  const index = state.wishlist.findIndex(w => w.productId === productId);
-  
-  if (index === -1) {
-    state.wishlist.push({ productId, addedAt: Date.now() });
-    showToast(`✅ "${getText(product.name, product.enName)}" أضيفت للمفضلة`, 'success');
-    Analytics.trackEvent('add_to_wishlist', { product_id: productId });
-  } else {
-    state.wishlist.splice(index, 1);
-    showToast(`🗑️ "${getText(product.name, product.enName)}" أزيلت من المفضلة`, 'info');
-    Analytics.trackEvent('remove_from_wishlist', { product_id: productId });
-  }
-  
-  saveData();
-  updateWishlistBadge();
-  // Re-render cards to update heart icons
-  document.querySelectorAll('.slider-card').forEach(card => {
-    const cardId = card.querySelector('.card-btn')?.onclick?.toString()?.match(/openLensModal\((\d+)\)/)?.[1];
-    if (cardId) {
-      const catIdx = parseInt(card.dataset.idx) % COLORS_DATA.length;
-      const cat = COLORS_DATA[catIdx];
-      if (cat) card.querySelector('.card-wishlist').outerHTML = createCard(cat, catIdx).match(/<button class="card-wishlist[^>]*>[\s\S]*?<\/button>/)[0];
-    }
-  });
-}
+function toggleWishlist(productId) { const product = getProduct(productId); const index = state.wishlist.findIndex(w => w.productId === productId); if (index === -1) { state.wishlist.push({ productId, addedAt: Date.now() }); showToast(`✅ "${getText(product.name, product.enName)}" أضيفت للمفضلة`, 'success'); Analytics.trackEvent('add_to_wishlist', { product_id: productId }); } else { state.wishlist.splice(index, 1); showToast(`🗑️ "${getText(product.name, product.enName)}" أزيلت من المفضلة`, 'info'); Analytics.trackEvent('remove_from_wishlist', { product_id: productId }); } saveData(); updateWishlistBadge(); document.querySelectorAll('.slider-card').forEach(card => { const cardId = card.querySelector('.card-btn')?.onclick?.toString()?.match(/openLensModal\((\d+)\)/)?.[1]; if (cardId) { const catIdx = parseInt(card.dataset.idx) % COLORS_DATA.length; const cat = COLORS_DATA[catIdx]; if (cat) card.querySelector('.card-wishlist').outerHTML = createCard(cat, catIdx).match(/<button class="card-wishlist[^>]*>[\s\S]*?<\/button>/)[0]; } }); }
+function updateWishlistBadge() {}
+function openWishlist() { renderWishlist(); document.getElementById('wishlistOverlay').classList.add('open'); document.getElementById('wishlistPanel').classList.add('open'); document.body.style.overflow = 'hidden'; Analytics.trackEvent('view_wishlist'); }
+function closeWishlist() { document.getElementById('wishlistOverlay').classList.remove('open'); document.getElementById('wishlistPanel').classList.remove('open'); document.body.style.overflow = ''; }
+function renderWishlist() { const container = document.getElementById('wishlistItems'); if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; } container.innerHTML = state.wishlist.map(w => { const p = getProduct(w.productId); if (!p) return ''; return `<div class="wi"><div class="wi-color" style="background:${p.gradient}"></div><div class="wi-info"><div class="wi-name">${getText(p.name, p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')">${getText('أضف للسلة', 'Add')}</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')">${getText('إزالة', 'Remove')}</button></div></div></div>`; }).join(''); }
+function removeFromWishlist(productId) { state.wishlist = state.wishlist.filter(w => w.productId !== productId); saveData(); updateWishlistBadge(); renderWishlist(); showToast('✅ تمت الإزالة من المفضلة', 'success'); }
+function addToCartFromWishlist(productId) { const p = getProduct(productId); if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; } const existing = state.cart.find(c => c.productId === productId); if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; } else { state.cart.push({ productId, qty: 1 }); } saveData(); updateCartBadge(); renderWishlist(); showToast(`✅ "${getText(p.name, p.enName)}" أضيف للسلة`, 'success'); Analytics.trackEvent('add_to_cart', { product_id: productId, source: 'wishlist' }); }
 
-function updateWishlistBadge() {
-  // Could add badge to wishlist button if needed
-}
+function toggleModalBg() { const box = document.getElementById('modalBox'); const container = document.getElementById('lensContainer'); const isLight = box.classList.toggle('light-bg'); container.classList.toggle('dark-bg', !isLight); container.classList.toggle('light-bg', isLight); container.querySelectorAll('.lens-visual, .lens-visual-inner, .lens-circle').forEach(el => { el.classList.toggle('dark-bg', !isLight); el.classList.toggle('light-bg', isLight); }); Analytics.trackEvent('toggle_modal_background', { mode: isLight ? 'light' : 'dark' }); }
 
-function openWishlist() {
-  renderWishlist();
-  document.getElementById('wishlistOverlay').classList.add('open');
-  document.getElementById('wishlistPanel').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  Analytics.trackEvent('view_wishlist');
-}
-
-function closeWishlist() {
-  document.getElementById('wishlistOverlay').classList.remove('open');
-  document.getElementById('wishlistPanel').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function renderWishlist() {
-  const container = document.getElementById('wishlistItems');
-  if (state.wishlist.length === 0) {
-    container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>';
-    return;
-  }
-  container.innerHTML = state.wishlist.map(w => {
-    const p = getProduct(w.productId);
-    if (!p) return '';
-    return `<div class="wi">
-      <div class="wi-color" style="background:${p.gradient}"></div>
-      <div class="wi-info">
-        <div class="wi-name">${getText(p.name, p.enName)}</div>
-        <div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div>
-        <div class="wi-actions">
-          <button class="wi-add" onclick="addToCartFromWishlist('${p.id}')">${getText('أضف للسلة', 'Add')}</button>
-          <button class="wi-remove" onclick="removeFromWishlist('${p.id}')">${getText('إزالة', 'Remove')}</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function removeFromWishlist(productId) {
-  state.wishlist = state.wishlist.filter(w => w.productId !== productId);
-  saveData();
-  updateWishlistBadge();
-  renderWishlist();
-  showToast('✅ تمت الإزالة من المفضلة', 'success');
-}
-
-function addToCartFromWishlist(productId) {
-  const p = getProduct(productId);
-  if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-  const existing = state.cart.find(c => c.productId === productId);
-  if (existing) {
-    if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; }
-    existing.qty++;
-  } else {
-    state.cart.push({ productId, qty: 1 });
-  }
-  saveData();
-  updateCartBadge();
-  renderWishlist();
-  showToast(`✅ "${getText(p.name, p.enName)}" أضيف للسلة`, 'success');
-  Analytics.trackEvent('add_to_cart', { product_id: productId, source: 'wishlist' });
-}
-
-// ========== MODAL BG TOGGLE ==========
-function toggleModalBg() {
-  const box = document.getElementById('modalBox');
-  const container = document.getElementById('lensContainer');
-  const isLight = box.classList.toggle('light-bg');
-  container.classList.toggle('dark-bg', !isLight);
-  container.classList.toggle('light-bg', isLight);
-  container.querySelectorAll('.lens-visual, .lens-visual-inner, .lens-circle').forEach(el => {
-    el.classList.toggle('dark-bg', !isLight);
-    el.classList.toggle('light-bg', isLight);
-  });
-  Analytics.trackEvent('toggle_modal_background', { mode: isLight ? 'light' : 'dark' });
-}
-
-// ========== LENS MODAL ==========
-function openLensModal(ci) {
-  currentLensIdx = 0;
-  const cat = COLORS_DATA[((ci % COLORS_DATA.length) + COLORS_DATA.length) % COLORS_DATA.length];
-  document.getElementById('modalTitle').textContent = getText(cat.arName, cat.enName);
-  document.getElementById('modalBox').classList.remove('light-bg');
-  document.getElementById('lensContainer').classList.add('dark-bg');
-  document.getElementById('lensContainer').classList.remove('light-bg');
-  renderLensSlider(cat);
-  document.getElementById('lensModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  Analytics.trackEvent('view_product_category', { category: cat.id });
-}
-
-function closeLensModal() {
-  document.getElementById('lensModal').classList.remove('open');
-  document.body.style.overflow = '';
-  Analytics.trackEvent('close_product_modal');
-}
+function openLensModal(ci) { currentLensIdx = 0; const cat = COLORS_DATA[((ci % COLORS_DATA.length) + COLORS_DATA.length) % COLORS_DATA.length]; document.getElementById('modalTitle').textContent = getText(cat.arName, cat.enName); document.getElementById('modalBox').classList.remove('light-bg'); document.getElementById('lensContainer').classList.add('dark-bg'); document.getElementById('lensContainer').classList.remove('light-bg'); renderLensSlider(cat); document.getElementById('lensModal').classList.add('open'); document.body.style.overflow = 'hidden'; Analytics.trackEvent('view_product_category', { category: cat.id }); }
+function closeLensModal() { document.getElementById('lensModal').classList.remove('open'); document.body.style.overflow = ''; Analytics.trackEvent('close_product_modal'); }
 
 function renderLensSlider(cat) {
   document.getElementById('lensTrack').innerHTML = cat.lenses.map((l, li) => {
-    const p = getProduct(l.id);
-    const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
+    const p = getProduct(l.id); const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
     const st = p.stock === 0 ? getText('نفذ', 'Out') : p.stock <= 5 ? `${getText('باقي', 'Only')} ${p.stock}` : `${p.stock} ${getText('قطعة', 'items')}`;
     const stars = '★'.repeat(Math.floor(l.rating)) + (l.rating % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(l.rating));
-    
+    const lensImage = IMAGE_CONFIG.products[l.id] ? `${IMAGE_CONFIG.baseUrl}products/${IMAGE_CONFIG.products[l.id]}` : null;
     return `<div class="lens-slide" role="tabpanel">
       <div class="lens-visual dark-bg">
         <div class="lens-visual-ring" aria-hidden="true"></div>
-        <div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${l.gradient}"></div></div>
+        ${lensImage ? smartImage.create(lensImage, `${l.name} - ${cat.arName}`, {class:'lens-visual-image'}).outerHTML : `<div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${l.gradient}"></div></div>`}
         <div class="color-label"><span class="dot-real" style="background:${l.color}"></span>${getText('اللون الفعلي', 'Actual color')}</div>
       </div>
-      <div class="lens-details">
-        <h3>${getText(l.name, l.enName)}</h3>
-        <p class="lens-desc">${getText(l.desc, l.desc)}</p>
-        
-        <div class="lens-reviews">
-          <div class="review-header">
-            <span class="review-stars" aria-label="${l.rating} من 5">${stars}</span>
-            <span class="review-count">(${l.reviews} ${getText('مراجعة', 'reviews')})</span>
-          </div>
-          <div class="review-item">
-            <div class="review-avatar">م</div>
-            <span class="review-text">"${getText('عدسات رائعة وجودة ممتازة!', 'Amazing lenses and excellent quality!')}"</span>
-          </div>
-        </div>
-        
-        <div class="lens-meta">
-          <div class="meta-item"><div class="label">${getText('السعر', 'Price')}</div><div class="value">${getPrice(l)} ${getCurrencySymbol()}</div></div>
-          <div class="meta-item"><div class="label">${getText('المتاح', 'Stock')}</div><div class="value ${sc}">${st}</div></div>
-        </div>
-        
-        <div class="coupon-section">
-          <div class="coupon-input">
-            <input type="text" placeholder="${getText('كود الخصم', 'Coupon code')}" id="couponInput_${li}" aria-label="كود الخصم">
-            <button class="coupon-apply" onclick="applyCoupon('${li}')">${getText('تطبيق', 'Apply')}</button>
-          </div>
-          <div class="coupon-msg" id="couponMsg_${li}"></div>
-        </div>
-        
-        <div class="qty-selector">
-          <label for="mq_${li}">${getText('الكمية:', 'Quantity:')}</label>
-          <div class="qty-ctrl">
-            <button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
-            <div class="qty-display" id="mq_${li}" role="status" aria-live="polite">1</div>
-            <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
-          </div>
-        </div>
-        <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${p.stock===0?'disabled':''} aria-label="${p.stock===0?getText('غير متوفر','Unavailable'):getText('أضف للسلة','Add to cart')}">
-          <span>${p.stock===0?getText('غير متوفر','Unavailable'):getText('🛒 أضف للسلة','🛒 Add to Cart')}</span>
-        </button>
+      <div class="lens-details"><h3>${getText(l.name, l.enName)}</h3><p class="lens-desc">${getText(l.desc, l.desc)}</p>
+        <div class="lens-reviews"><div class="review-header"><span class="review-stars" aria-label="${l.rating} من 5">${stars}</span><span class="review-count">(${l.reviews} ${getText('مراجعة', 'reviews')})</span></div><div class="review-item"><div class="review-avatar">م</div><span class="review-text">"${getText('عدسات رائعة وجودة ممتازة!', 'Amazing lenses and excellent quality!')}"</span></div></div>
+        <div class="lens-meta"><div class="meta-item"><div class="label">${getText('السعر', 'Price')}</div><div class="value">${getPrice(l)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">${getText('المتاح', 'Stock')}</div><div class="value ${sc}">${st}</div></div></div>
+        <div class="coupon-section"><div class="coupon-input"><input type="text" placeholder="${getText('كود الخصم', 'Coupon code')}" id="couponInput_${li}" aria-label="كود الخصم"><button class="coupon-apply" onclick="applyCoupon('${li}')">${getText('تطبيق', 'Apply')}</button></div><div class="coupon-msg" id="couponMsg_${li}"></div></div>
+        <div class="qty-selector"><label for="mq_${li}">${getText('الكمية:', 'Quantity:')}</label><div class="qty-ctrl"><button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button><div class="qty-display" id="mq_${li}" role="status" aria-live="polite">1</div><button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button></div></div>
+        <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${p.stock===0?'disabled':''} aria-label="${p.stock===0?getText('غير متوفر','Unavailable'):getText('أضف للسلة','Add to cart')}"><span>${p.stock===0?getText('غير متوفر','Unavailable'):getText('🛒 أضف للسلة','🛒 Add to Cart')}</span></button>
       </div>
     </div>`;
   }).join('');
-  
-  document.getElementById('lensSliderDots').innerHTML = cat.lenses.map((_, li) =>
-    `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})" role="tab" aria-selected="${li===0}" tabindex="${li===0?0:-1}"></div>`
-  ).join('');
+  document.getElementById('lensSliderDots').innerHTML = cat.lenses.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})" role="tab" aria-selected="${li===0}" tabindex="${li===0?0:-1}"></div>`).join('');
   updateLensSlider();
 }
 
-function updateLensSlider() {
-  document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
-  document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
-    const active = i === currentLensIdx;
-    d.classList.toggle('active', active);
-    d.setAttribute('aria-selected', active);
-    d.setAttribute('tabindex', active ? 0 : -1);
-  });
-  document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  document.getElementById('lensNextBtn').disabled = currentLensIdx >= cat.lenses.length - 1;
-}
-
-function slideLensMove(dir) {
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  currentLensIdx = Math.max(0, Math.min(cat.lenses.length - 1, currentLensIdx + dir));
-  updateLensSlider();
-  Analytics.trackEvent('navigate_lens_slider', { direction: dir > 0 ? 'next' : 'prev' });
-}
-
+function updateLensSlider() { document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`; document.querySelectorAll('.slider-dot-modal').forEach((d, i) => { const active = i === currentLensIdx; d.classList.toggle('active', active); d.setAttribute('aria-selected', active); d.setAttribute('tabindex', active ? 0 : -1); }); document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0; const catName = document.getElementById('modalTitle').textContent; const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0]; document.getElementById('lensNextBtn').disabled = currentLensIdx >= cat.lenses.length - 1; }
+function slideLensMove(dir) { const catName = document.getElementById('modalTitle').textContent; const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0]; currentLensIdx = Math.max(0, Math.min(cat.lenses.length - 1, currentLensIdx + dir)); updateLensSlider(); Analytics.trackEvent('navigate_lens_slider', { direction: dir > 0 ? 'next' : 'prev' }); }
 function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
+function changeModalQty(delta, li) { const el = document.getElementById(`mq_${li}`); if (!el) return; let v = parseInt(el.textContent) + delta; const catName = document.getElementById('modalTitle').textContent; const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0]; const p = getProduct(cat.lenses[li]?.id); v = Math.max(1, Math.min(v, Math.max(1, p?.stock || 1))); el.textContent = v; }
+function applyCoupon(li) { const input = document.getElementById(`couponInput_${li}`); const msg = document.getElementById(`couponMsg_${li}`); const code = input.value.trim().toUpperCase(); const validCoupons = { 'WELCOME10': { discount: 0.1, message: '✅ خصم 10% تم التطبيق!' }, 'FIRST20': { discount: 0.2, message: '✅ خصم 20% للعملاء الجدد!' }, 'FREESHIP': { discount: 0, message: '✅ شحن مجاني تم التطبيق!', freeShipping: true } }; if (validCoupons[code]) { msg.textContent = validCoupons[code].message; msg.className = 'coupon-msg success'; Analytics.trackEvent('coupon_applied', { code, discount: validCoupons[code].discount }); } else { msg.textContent = '❌ كود غير صالح'; msg.className = 'coupon-msg error'; } }
+function addFromSlider(lensId, li) { const p = getProduct(lensId); if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; } const el = document.getElementById(`mq_${li}`); const qty = el ? parseInt(el.textContent) : 1; const existing = state.cart.find(c => c.productId === lensId); if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; } else { if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); } saveData(); updateCartBadge(); showToast(`✅ "${getText(p.name, p.enName)}" (${qty} ${getText('قطعة', 'items')})`, 'success'); const qtyEl = document.getElementById(`mq_${li}`); if (qtyEl) qtyEl.textContent = '1'; Analytics.trackEvent('add_to_cart', { product_id: lensId, quantity: qty, price: getPrice(p), category: p.categoryId }); }
 
-function changeModalQty(delta, li) {
-  const el = document.getElementById(`mq_${li}`);
-  if (!el) return;
-  let v = parseInt(el.textContent) + delta;
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  const p = getProduct(cat.lenses[li]?.id);
-  v = Math.max(1, Math.min(v, Math.max(1, p?.stock || 1)));
-  el.textContent = v;
-}
+function updateCartBadge() { const total = state.cart.reduce((s, c) => s + c.qty, 0); const badge = document.getElementById('cartBadge'); badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; badge.setAttribute('aria-label', `${total} ${getText('عناصر في السلة', 'items in cart')}`); }
+function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); Analytics.trackEvent('view_cart'); }
+function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); }
+function renderCart() { const list = document.getElementById('cartItemsList'); const bottom = document.getElementById('cartBottom'); if (state.cart.length === 0) { list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>'; bottom.innerHTML = ''; return; } list.innerHTML = state.cart.map(c => { const p = getProduct(c.productId); if (!p) return ''; return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name, p.enName)}</div><div class="ci-cat">${getText(p.categoryName, p.categoryNameEn)}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل">−</button><span>${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة">🗑</button></div>`; }).join(''); const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0); const shipping = sub >= 200 ? 0 : 15; const total = sub + shipping; bottom.innerHTML = `<div class="cb-row"><span>${getText('المجموع', 'Subtotal')}</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>${getText('الشحن', 'Shipping')} ${shipping===0?getText('(مجاني)','(Free)'):''}</span><span>${shipping===0?getText('مجاني','Free'):shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>${getText('الإجمالي', 'Total')}</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 ${getText('إتمام الشراء', 'Checkout')}</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 ${getText('دفع آمن | استرجاع خلال 14 يوم', 'Secure payment | 14-day returns')}</p>`; }
+function changeCartQty(pid, delta) { const item = state.cart.find(c => c.productId === pid); const p = getProduct(pid); if (!item || !p) return; item.qty += delta; if (item.qty <= 0) { removeFromCart(pid); return; } if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); } saveData(); updateCartBadge(); renderCart(); Analytics.trackEvent('update_cart_quantity', { product_id: pid, new_qty: item.qty }); }
+function removeFromCart(pid) { state.cart = state.cart.filter(c => c.productId !== pid); saveData(); updateCartBadge(); renderCart(); showToast('✅ تمت الإزالة من السلة', 'success'); Analytics.trackEvent('remove_from_cart', { product_id: pid }); }
+async function checkout() { if (state.cart.length === 0) return; for (const item of state.cart) { const p = getProduct(item.productId); if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name, p.enName)}" الكمية غير متاحة`, 'error'); return; } } try { const btn = document.querySelector('.checkout-btn'); const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...'; await new Promise(resolve => setTimeout(resolve, 1500)); state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); }); const total = state.cart.reduce((s, c) => s + getProduct(c.productId).price * c.qty, 0); Analytics.trackConversion(total, state.currentCurrency); showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success'); state.cart = []; saveData(); updateCartBadge(); closeCart(); btn.disabled = false; btn.innerHTML = originalText; } catch (error) { showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error'); console.error('Checkout error:', error); } }
+function checkAdminAccess() { const token = SecureStorage.get(window.LENSORA_CONFIG.auth.tokenKey, true); if (token) { try { const payload = JSON.parse(atob(token.split('.')[1])); if (payload.role === window.LENSORA_CONFIG.auth.adminRole) { state.isAdmin = true; document.body.classList.add('is-admin'); document.getElementById('adminLink').href = '/admin/dashboard'; document.getElementById('adminLink').onclick = (e) => { e.preventDefault(); window.location.href = '/admin/dashboard'; }; } } catch { /* Invalid token */ } } }
+function showToast(msg, type = 'info') { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${type} show`; setTimeout(() => t.classList.remove('show'), 3000); }
+function setupEventListeners() { document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); } if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) { slideLensMove(-1); } if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) { slideLensMove(1); } }); window.addEventListener('scroll', () => { document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60); }, { passive: true }); document.getElementById('langSelect').addEventListener('change', (e) => { Analytics.trackEvent('language_changed', { language: e.target.value }); }); document.getElementById('currencySelect').addEventListener('change', (e) => { Analytics.trackEvent('currency_changed', { currency: e.target.value }); }); window.trackSocial = (platform) => { Analytics.trackEvent('social_click', { platform }); }; }
+function changeLanguage(lang) { state.currentLang = lang; document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; initSmoothSlider(); if (document.getElementById('lensModal').classList.contains('open')) { const catName = document.getElementById('modalTitle').textContent; const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName); if (cat) renderLensSlider(cat); } renderCart(); updateStructuredData(); }
+function changeCurrency(currency) { state.currentCurrency = currency; initSmoothSlider(); if (document.getElementById('lensModal').classList.contains('open')) { const catName = document.getElementById('modalTitle').textContent; const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName); if (cat) renderLensSlider(cat); } renderCart(); }
+function updateStructuredData() { const products = COLORS_DATA.flatMap(c => c.lenses.map(l => ({ "@type": "Product", "name": getText(l.name, l.enName), "image": `${IMAGE_CONFIG.baseUrl}products/${IMAGE_CONFIG.products[l.id] || l.id}.jpg`, "description": getText(l.desc, l.desc), "sku": l.id, "brand": { "@type": "Brand", "name": "Lensora" }, "offers": { "@type": "Offer", "price": getPrice(l), "priceCurrency": state.currentCurrency, "availability": l.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", "url": `https://lensora.com/product/${l.id}` }, "aggregateRating": { "@type": "AggregateRating", "ratingValue": l.rating, "reviewCount": l.reviews } }))); const script = document.getElementById('product-schema'); script.textContent = JSON.stringify(products); }
+function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); Analytics.trackEvent('scroll_to_products'); }
 
-function applyCoupon(li) {
-  const input = document.getElementById(`couponInput_${li}`);
-  const msg = document.getElementById(`couponMsg_${li}`);
-  const code = input.value.trim().toUpperCase();
-  
-  const validCoupons = {
-    'WELCOME10': { discount: 0.1, message: '✅ خصم 10% تم التطبيق!' },
-    'FIRST20': { discount: 0.2, message: '✅ خصم 20% للعملاء الجدد!' },
-    'FREESHIP': { discount: 0, message: '✅ شحن مجاني تم التطبيق!', freeShipping: true }
-  };
-  
-  if (validCoupons[code]) {
-    msg.textContent = validCoupons[code].message;
-    msg.className = 'coupon-msg success';
-    Analytics.trackEvent('coupon_applied', { code, discount: validCoupons[code].discount });
-  } else {
-    msg.textContent = '❌ كود غير صالح';
-    msg.className = 'coupon-msg error';
-  }
-}
-
-function addFromSlider(lensId, li) {
-  const p = getProduct(lensId);
-  if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-  const el = document.getElementById(`mq_${li}`);
-  const qty = el ? parseInt(el.textContent) : 1;
-  const existing = state.cart.find(c => c.productId === lensId);
-  
-  if (existing) {
-    if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; }
-    existing.qty += qty;
-  } else {
-    if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; }
-    state.cart.push({ productId: lensId, qty });
-  }
-  
-  saveData();
-  updateCartBadge();
-  showToast(`✅ "${getText(p.name, p.enName)}" (${qty} ${getText('قطعة', 'items')})`, 'success');
-  
-  const qtyEl = document.getElementById(`mq_${li}`);
-  if (qtyEl) qtyEl.textContent = '1';
-  
-  Analytics.trackEvent('add_to_cart', { 
-    product_id: lensId, 
-    quantity: qty, 
-    price: getPrice(p),
-    category: p.categoryId 
-  });
-}
-
-// ========== CART FUNCTIONS ==========
-function updateCartBadge() { 
-  const total = state.cart.reduce((s, c) => s + c.qty, 0); 
-  const badge = document.getElementById('cartBadge'); 
-  badge.textContent = total; 
-  badge.style.display = total > 0 ? 'flex' : 'none';
-  badge.setAttribute('aria-label', `${total} ${getText('عناصر في السلة', 'items in cart')}`);
-}
-
-function openCart() { 
-  renderCart(); 
-  document.getElementById('cartOverlay').classList.add('open'); 
-  document.getElementById('cartPanel').classList.add('open');
-  Analytics.trackEvent('view_cart');
-}
-
-function closeCart() { 
-  document.getElementById('cartOverlay').classList.remove('open'); 
-  document.getElementById('cartPanel').classList.remove('open'); 
-}
-
-function renderCart() {
-  const list = document.getElementById('cartItemsList');
-  const bottom = document.getElementById('cartBottom');
-  
-  if (state.cart.length === 0) { 
-    list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>'; 
-    bottom.innerHTML = ''; 
-    return; 
-  }
-  
-  list.innerHTML = state.cart.map(c => { 
-    const p = getProduct(c.productId); 
-    if (!p) return ''; 
-    return `<div class="ci" role="listitem">
-      <div class="ci-color" style="background:${p.gradient}" aria-hidden="true"></div>
-      <div class="ci-info">
-        <div class="ci-name">${getText(p.name, p.enName)}</div>
-        <div class="ci-cat">${getText(p.categoryName, p.categoryNameEn)}</div>
-        <div class="ci-bottom">
-          <span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span>
-          <div class="ci-qty">
-            <button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل">−</button>
-            <span>${c.qty}</span>
-            <button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة">+</button>
-          </div>
-        </div>
-      </div>
-      <button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة">🗑</button>
-    </div>`; 
-  }).join('');
-  
-  const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-  const shipping = sub >= 200 ? 0 : 15;
-  const total = sub + shipping;
-  
-  bottom.innerHTML = `
-    <div class="cb-row"><span>${getText('المجموع', 'Subtotal')}</span><span>${sub} ${getCurrencySymbol()}</span></div>
-    <div class="cb-row"><span>${getText('الشحن', 'Shipping')} ${shipping===0?getText('(مجاني)','(Free)'):''}</span><span>${shipping===0?getText('مجاني','Free'):shipping+' '+getCurrencySymbol()}</span></div>
-    <div class="cb-row total"><span>${getText('الإجمالي', 'Total')}</span><span>${total} ${getCurrencySymbol()}</span></div>
-    <button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>
-      🧾 ${getText('إتمام الشراء', 'Checkout')}
-    </button>
-    <p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">
-      🔒 ${getText('دفع آمن | استرجاع خلال 14 يوم', 'Secure payment | 14-day returns')}
-    </p>
-  `;
-}
-
-function changeCartQty(pid, delta) { 
-  const item = state.cart.find(c => c.productId === pid); 
-  const p = getProduct(pid); 
-  if (!item || !p) return; 
-  item.qty += delta; 
-  if (item.qty <= 0) { removeFromCart(pid); return; } 
-  if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); } 
-  saveData(); 
-  updateCartBadge(); 
-  renderCart();
-  Analytics.trackEvent('update_cart_quantity', { product_id: pid, new_qty: item.qty });
-}
-
-function removeFromCart(pid) { 
-  state.cart = state.cart.filter(c => c.productId !== pid); 
-  saveData(); 
-  updateCartBadge(); 
-  renderCart();
-  showToast('✅ تمت الإزالة من السلة', 'success');
-  Analytics.trackEvent('remove_from_cart', { product_id: pid });
-}
-
-async function checkout() { 
-  if (state.cart.length === 0) return;
-  
-  // Check stock availability
-  for (const item of state.cart) {
-    const p = getProduct(item.productId);
-    if (p.stock < item.qty) {
-      showToast(`⚠️ "${getText(p.name, p.enName)}" الكمية غير متاحة`, 'error');
-      return;
-    }
-  }
-  
-  // In production: send order to API
-  try {
-    // Show loading state
-    const btn = document.querySelector('.checkout-btn');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '⏳ جاري المعالجة...';
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Update stock locally (in production, server handles this)
-    state.cart.forEach(c => {
-      const p = getProduct(c.productId);
-      if (p) p.stock = Math.max(0, p.stock - c.qty);
-    });
-    
-    // Track conversion
-    const total = state.cart.reduce((s, c) => s + getProduct(c.productId).price * c.qty, 0);
-    Analytics.trackConversion(total, state.currentCurrency);
-    
-    showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
-    state.cart = [];
-    saveData();
-    updateCartBadge();
-    closeCart();
-    
-    // Reset button
-    btn.disabled = false;
-    btn.innerHTML = originalText;
-    
-  } catch (error) {
-    showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
-    console.error('Checkout error:', error);
-  }
-}
-
-// ========== ADMIN ACCESS ==========
-function checkAdminAccess() {
-  const token = SecureStorage.get(window.LENSORA_CONFIG.auth.tokenKey, true);
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role === window.LENSORA_CONFIG.auth.adminRole) {
-        state.isAdmin = true;
-        document.body.classList.add('is-admin');
-        document.getElementById('adminLink').href = '/admin/dashboard';
-        document.getElementById('adminLink').onclick = (e) => {
-          e.preventDefault();
-          window.location.href = '/admin/dashboard';
-        };
-      }
-    } catch { /* Invalid token */ }
-  }
-}
-
-// ========== TOAST NOTIFICATIONS ==========
-function showToast(msg, type = 'info') { 
-  const t = document.getElementById('toast'); 
-  t.textContent = msg; 
-  t.className = `toast ${type} show`; 
-  setTimeout(() => t.classList.remove('show'), 3000); 
-}
-
-// ========== EVENT LISTENERS ==========
-function setupEventListeners() {
-  // Keyboard navigation for modal
-  document.addEventListener('keydown', e => { 
-    if (e.key === 'Escape') { 
-      closeLensModal(); 
-      closeCart(); 
-      closeWishlist();
-    }
-    if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) {
-      slideLensMove(-1);
-    }
-    if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) {
-      slideLensMove(1);
-    }
-  });
-  
-  // Scroll effects
-  window.addEventListener('scroll', () => { 
-    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60); 
-  }, { passive: true });
-  
-  // Language/Currency change tracking
-  document.getElementById('langSelect').addEventListener('change', (e) => {
-    Analytics.trackEvent('language_changed', { language: e.target.value });
-  });
-  document.getElementById('currencySelect').addEventListener('change', (e) => {
-    Analytics.trackEvent('currency_changed', { currency: e.target.value });
-  });
-  
-  // Social tracking
-  window.trackSocial = (platform) => {
-    Analytics.trackEvent('social_click', { platform });
-  };
-}
-
-// ========== LANGUAGE & CURRENCY ==========
-function changeLanguage(lang) {
-  state.currentLang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  // Re-render dynamic content
-  initSmoothSlider();
-  if (document.getElementById('lensModal').classList.contains('open')) {
-    const catName = document.getElementById('modalTitle').textContent;
-    const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName);
-    if (cat) renderLensSlider(cat);
-  }
-  renderCart();
-  updateStructuredData();
-}
-
-function changeCurrency(currency) {
-  state.currentCurrency = currency;
-  // Re-render prices
-  initSmoothSlider();
-  if (document.getElementById('lensModal').classList.contains('open')) {
-    const catName = document.getElementById('modalTitle').textContent;
-    const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName);
-    if (cat) renderLensSlider(cat);
-  }
-  renderCart();
-}
-
-// ========== STRUCTURED DATA ==========
-function updateStructuredData() {
-  const products = COLORS_DATA.flatMap(c => c.lenses.map(l => ({
-    "@type": "Product",
-    "name": getText(l.name, l.enName),
-    "image": `https://lensora.com/products/${l.id}.jpg`,
-    "description": getText(l.desc, l.desc),
-    "sku": l.id,
-    "brand": { "@type": "Brand", "name": "Lensora" },
-    "offers": {
-      "@type": "Offer",
-      "price": getPrice(l),
-      "priceCurrency": state.currentCurrency,
-      "availability": l.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "url": `https://lensora.com/product/${l.id}`
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": l.rating,
-      "reviewCount": l.reviews
-    }
-  })));
-  
-  const script = document.getElementById('product-schema');
-  script.textContent = JSON.stringify(products);
-}
-
-// ========== UTILITY FUNCTIONS ==========
-function scrollToProducts() {
-  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-  Analytics.trackEvent('scroll_to_products');
-}
-
-// Initialize particles (optimized)
-const canvas = document.getElementById('particlesCanvas');
-const ctx = canvas.getContext('2d');
-let particles = [];
-
-function resizeCanvas() { 
-  canvas.width = window.innerWidth; 
-  canvas.height = window.innerHeight; 
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas, { passive: true });
-
-class Particle {
-  constructor() { this.reset(); }
-  reset() { 
-    this.x = Math.random() * canvas.width; 
-    this.y = Math.random() * canvas.height; 
-    this.size = Math.random() * 1.5 + 0.5; 
-    this.sx = (Math.random() - 0.5) * 0.25; 
-    this.sy = (Math.random() - 0.5) * 0.15; 
-    this.op = Math.random() * 0.35 + 0.08; 
-    this.pulse = Math.random() * Math.PI * 2; 
-    this.ps = Math.random() * 0.02 + 0.005; 
-  }
-  update() { 
-    this.x += this.sx; 
-    this.y += this.sy; 
-    this.pulse += this.ps; 
-    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); 
-  }
-  draw() { 
-    const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse)); 
-    ctx.beginPath(); 
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
-    ctx.fillStyle = `rgba(201,168,76,${a})`; 
-    ctx.fill(); 
-  }
-}
-
+const canvas = document.getElementById('particlesCanvas'); const ctx = canvas.getContext('2d'); let particles = [];
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas, { passive: true });
+class Particle { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5 + 0.5; this.sx = (Math.random() - 0.5) * 0.25; this.sy = (Math.random() - 0.5) * 0.15; this.op = Math.random() * 0.35 + 0.08; this.pulse = Math.random() * Math.PI * 2; this.ps = Math.random() * 0.02 + 0.005; } update() { this.x += this.sx; this.y += this.sy; this.pulse += this.ps; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); } draw() { const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse)); ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill(); } }
 for (let i = 0; i < 60; i++) particles.push(new Particle());
-(function anim() { 
-  ctx.clearRect(0, 0, canvas.width, canvas.height); 
-  particles.forEach(p => { p.update(); p.draw(); }); 
-  requestAnimationFrame(anim); 
-})();
-
-// Performance: Lazy load heavy animations
-if ('requestIdleCallback' in window) {
-  requestIdleCallback(() => {
-    // Load any non-critical features here
-  });
-}
-
-// Offline detection
+(function anim() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); })();
+if ('requestIdleCallback' in window) { requestIdleCallback(() => {}); }
 window.addEventListener('online', () => showToast('🌐 تم استعادة الاتصال', 'success'));
 window.addEventListener('offline', () => showToast('⚠️ وضع عدم الاتصال - بعض الميزات محدودة', 'warning'));
 </script>
