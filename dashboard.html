@@ -96,37 +96,42 @@ body.loading { overflow: hidden; }
   border-radius: var(--radius-sm); border: 1px dashed var(--card-border);
 }
 
-/* ===== DASHBOARD LAYOUT ===== */
+/* ===== DASHBOARD LAYOUT - FIXED ===== */
 .dashboard { display: none; }
 .dashboard.active {
-  display: grid; grid-template-columns: var(--side-w) 1fr;
-  min-height: 100vh; animation: fadeIn 0.4s;
-}
-@media (max-width: 900px) { 
-  .dashboard.active { grid-template-columns: 1fr; 
-  }
+  display: block; /* Changed from grid to fix layout */
+  min-height: 100vh;
+  animation: fadeIn 0.4s;
+  width: 100%;
 }
 
-/* ===== SIDEBAR ===== */
+/* ===== SIDEBAR - FIXED POSITIONING ===== */
 .sidebar {
-  position: fixed; top: 0; right: 0; width: var(--side-w);
-  height: 100vh; background: rgba(18,14,12,0.96);
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border-left: 1px solid var(--card-border); z-index: 1000;
-  display: flex; flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: var(--side-w);
+  height: 100vh;
+  background: rgba(18,14,12,0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid var(--card-border);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
   transition: transform var(--transition);
   box-shadow: var(--shadow);
 }
-/* FIX: Sidebar visible by default on desktop */
-.sidebar.closed { transform: translateX(100%); }
-.sidebar.open { transform: translateX(0); }
 
+/* Desktop: sidebar always visible */
+@media (min-width: 901px) {
+  .sidebar { transform: translateX(0) !important; }
+}
+
+/* Mobile: sidebar hidden by default */
 @media (max-width: 900px) {
   .sidebar { transform: translateX(100%); }
   .sidebar.open { transform: translateX(0); }
-}
-@media (min-width: 901px) {
-  .sidebar { transform: translateX(0); }
 }
 
 .side-head {
@@ -191,31 +196,51 @@ body.loading { overflow: hidden; }
 }
 .side-logout:hover { background: rgba(231,76,60,0.25); transform: scale(1.05); }
 
-/* ===== MAIN ===== */
+/* ===== MAIN - FIXED WIDTH ===== */
 .main {
-  padding: 24px; padding-top: calc(var(--nav-h) + 24px);
+  padding: 24px;
+  padding-top: calc(var(--nav-h) + 24px);
   padding-right: calc(var(--side-w) + 24px);
-  transition: padding-right 0.3s;
-}
-@media (max-width: 900px) { 
-  .main { padding-right: 20px; padding-left: 20px; 
-  }
-}
-@media (max-width: 900px) and .sidebar.open {
-  .main { padding-right: 20px; }
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  transition: padding-right var(--transition);
 }
 
-/* ===== TOP BAR ===== */
-.topbar {
-  position: fixed; top: 0; right: var(--side-w); left: 0;
-  height: var(--nav-h); background: rgba(10,8,8,0.92);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--card-border);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; z-index: 999; transition: right var(--transition);
-  box-shadow: var(--shadow);
+@media (max-width: 900px) {
+  .main {
+    padding-right: 20px !important;
+    padding-left: 20px;
+  }
 }
-@media (max-width: 900px) { .topbar { right: 0; } }
+
+/* ===== TOP BAR - FIXED POSITIONING ===== */
+.topbar {
+  position: fixed;
+  top: 0;
+  right: var(--side-w);
+  left: 0;
+  height: var(--nav-h);
+  background: rgba(10,8,8,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 999;
+  transition: right var(--transition);
+  box-shadow: var(--shadow);
+  width: auto;
+}
+
+@media (max-width: 900px) {
+  .topbar {
+    right: 0 !important;
+  }
+}
+
 .topbar-title {
   font-family: 'Playfair Display', serif;
   font-size: 20px; color: var(--gold); display: flex; align-items: center; gap: 8px;
@@ -225,6 +250,7 @@ body.loading { overflow: hidden; }
   background: linear-gradient(90deg, var(--gold), transparent);
 }
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
 .menu-btn {
   display: none; width: 44px; height: 44px; border-radius: 14px;
   background: rgba(201,168,76,0.1); color: var(--gold);
@@ -629,12 +655,10 @@ body.loading { overflow: hidden; }
 
     <!-- PAGE: OVERVIEW -->
     <div class="page active" id="page-overview">
-      <!-- QUICK ADD BUTTON - FIX: Added prominent add button -->
       <button class="quick-add-btn" onclick="goToPage('addproduct')">
         <span>➕</span> إضافة منتج جديد الآن
       </button>
       
-      <!-- Data Controls -->
       <div class="data-controls">
         <button class="data-btn" onclick="exportData()">📥 تصدير البيانات</button>
         <button class="data-btn" onclick="document.getElementById('importFile').click()">📤 استيراد بيانات</button>
@@ -975,11 +999,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDefaults(); loadState(); initDashboard();
   }
   document.body.classList.remove('loading');
-  // FIX: Ensure sidebar is visible on desktop after load
-  if(window.innerWidth > 900) {
-    document.getElementById('sidebar').classList.remove('closed');
-    document.getElementById('sidebar').classList.add('open');
-  }
 });
 
 function initDashboard() {
@@ -1137,7 +1156,6 @@ function saveProduct() {
   saveState(); updateStats(); renderProducts();
   toast('✅ تمت إضافة المنتج', 'success');
   
-  // Reset
   document.getElementById('pNameAr').value=''; document.getElementById('pNameEn').value='';
   document.getElementById('pPrice').value=''; document.getElementById('pStock').value='';
   document.getElementById('pDesc').value='';
