@@ -3,1091 +3,892 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>Lensora — عدسات ملونة فاخرة | جودة عالمية وشحن مجاني</title>
-<meta name="description" content="اكتشفي مجموعة Lensora من العدسات الملونة الفاخرة">
-<meta name="author" content="Lensora">
-
+<title>LENSORA — لوحة التحكم الكاملة</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
-
 <style>
 :root{
-  --bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--gold-light:#e8d5a3;
-  --text:#f5ede0;--text-dim:#8a7e73;--radius:20px;--radius-sm:12px;
-  --preview-dark:#121010;--preview-light:#f4f1ed;
+  --bg:#0a0808;--card-bg:rgba(26,22,20,.85);--gold:#c9a84c;--gold-light:#e8d5a3;
+  --text:#f5ede0;--text-dim:#8a7e73;--border:rgba(201,168,76,.1);
   --success:#2ecc71;--warning:#f39c12;--error:#e74c3c;
-  --transition-fast:.2s;--transition-normal:.3s;
-  --nav-height:60px;--safe-bottom:env(safe-area-inset-bottom, 0px);
+  --radius:16px;--radius-sm:10px;--nav-h:60px;--side-w:260px;
+  --transition:.25s ease;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;line-height:1.6;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-tap-highlight-color:transparent}
 body.loading{overflow:hidden}
-body.loading::after{content:'';position:fixed;inset:0;background:var(--bg);z-index:9999}
 
-button{cursor:pointer;border:none;font-family:inherit;background:none;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-button:disabled{opacity:.4;cursor:not-allowed}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-screen.hidden{display:none}
+.login-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:36px 28px;max-width:400px;width:100%;text-align:center}
+.login-logo{font-family:'Playfair Display',serif;font-size:32px;color:var(--gold);letter-spacing:4px;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--text-dim);margin-bottom:24px}
+.login-form{display:flex;flex-direction:column;gap:12px}
+.login-form input{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:13px;min-height:44px}
+.login-form input:focus{outline:2px solid var(--gold);border-color:transparent}
+.login-form button{padding:14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:14px;min-height:48px;margin-top:6px;cursor:pointer;border:none}
+.login-form button:active{transform:scale(.98)}
+.login-hint{font-size:10px;color:var(--text-dim);margin-top:12px}
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,4,4,.2);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.04);min-height:var(--nav-height);transition:all var(--transition-normal)}
-.nav.scrolled{background:rgba(8,6,6,.95);padding:8px 16px;box-shadow:0 4px 20px rgba(0,0,0,.15)}
-.nav-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);letter-spacing:3px;display:flex;align-items:center;gap:8px;text-decoration:none}
-.nav-logo svg{width:26px;height:26px;flex-shrink:0}
-.nav-logo span{font-size:8px;letter-spacing:2px;color:var(--text-dim);font-family:'Inter',sans-serif;display:block}
-.nav-actions{display:flex;gap:6px;align-items:center}
-.lang-currency{display:flex;gap:4px;align-items:center}
-.lang-currency select{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.1);color:var(--text);padding:6px 8px;border-radius:6px;font-size:11px;min-height:36px;-webkit-appearance:none;appearance:none}
-.cart-btn{background:rgba(201,168,76,.06);color:var(--gold);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;border:1px solid rgba(201,168,76,.08);min-height:36px;position:relative}
-.cart-badge{background:#e74c3c;color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;position:absolute;top:-4px;left:-4px}
+/* DASHBOARD LAYOUT */
+.dashboard{display:none}
+.dashboard.active{display:grid;grid-template-columns:var(--side-w) 1fr;min-height:100vh}
+@media(max-width:900px){.dashboard.active{grid-template-columns:1fr}}
 
-/* HERO */
-.hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav-height) + 30px) 20px 50px;position:relative;overflow:hidden}
-.hero-glass{position:relative;z-index:2;background:rgba(201,168,76,.015);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(201,168,76,.06);border-radius:24px;padding:32px 22px;width:100%;max-width:480px;margin:0 auto;animation:heroIn .8s ease both}
-@keyframes heroIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.hero-logo-wrap{margin-bottom:16px;display:flex;justify-content:center}
-.hero-logo-wrap svg{width:64px;height:64px;filter:drop-shadow(0 0 20px rgba(201,168,76,.15))}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,9vw,48px);color:var(--gold);letter-spacing:4px;margin-bottom:6px}
-.hero-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 16px}
-.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px;margin:0 auto;line-height:1.7;padding:0 4px}
-.hero-ctas{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
-.cta-primary{padding:12px 28px;border-radius:20px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:13px;min-height:44px}
-.cta-primary:active{transform:scale(.96)}
-.cta-secondary{padding:12px 28px;border-radius:20px;background:rgba(201,168,76,.08);color:var(--gold);font-weight:600;font-size:13px;border:1px solid rgba(201,168,76,.15);min-height:44px}
-.cta-secondary:active{transform:scale(.96)}
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;right:0;width:var(--side-w);height:100vh;background:rgba(18,14,12,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transition:transform var(--transition)}
+.sidebar.closed{transform:translateX(100%)}
+@media(max-width:900px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}}
+.side-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.side-logo{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);letter-spacing:2px}
+.side-close{margin-right:auto;width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;min-width:32px;min-height:32px;cursor:pointer;border:none}
+.side-menu{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
+.side-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);color:var(--text-dim);font-size:13px;cursor:pointer;transition:all var(--transition);margin-bottom:3px;min-height:44px}
+.side-item:hover,.side-item.active{background:rgba(201,168,76,.08);color:var(--gold)}
+.side-item.active{border-right:3px solid var(--gold)}
+.side-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.side-foot{padding:12px;border-top:1px solid var(--border)}
+.side-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--radius-sm);background:rgba(201,168,76,.04)}
+.side-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--bg);font-weight:700;font-size:12px}
+.side-name{font-size:11px;font-weight:600}
+.side-role{font-size:9px;color:var(--text-dim)}
+.side-logout{margin-right:auto;width:28px;height:28px;border-radius:6px;background:rgba(231,76,60,.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:12px;min-width:28px;min-height:28px;cursor:pointer;border:none}
 
-/* SLIDER - FIXED FOR MOBILE */
-.categories-section{padding:40px 0 80px;position:relative;z-index:2}
-.section-header{text-align:center;margin-bottom:28px;padding:0 16px}
-.section-label{display:inline-flex;align-items:center;gap:6px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
-.section-label::before,.section-label::after{content:'';width:24px;height:1px}
-.section-label::before{background:linear-gradient(270deg,var(--gold),transparent)}
-.section-label::after{background:linear-gradient(90deg,var(--gold),transparent)}
-.section-title{font-family:'Playfair Display',serif;font-size:clamp(22px,6vw,34px);margin-bottom:6px;line-height:1.3}
-.section-sub{color:var(--text-dim);font-size:12px}
+/* MAIN */
+.main{padding:16px;padding-top:calc(var(--nav-h) + 16px);padding-right:calc(var(--side-w) + 16px)}
+@media(max-width:900px){.main{padding-right:12px;padding-left:12px}}
 
-.slider-container{position:relative;width:100%;overflow:hidden}
-.slider-viewport{
-  overflow:hidden;
-  position:relative;
-  padding:10px 0 20px;
-}
-.slider-track{
-  display:flex;
-  transition:transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change:transform;
-  direction:ltr;
-  touch-action:pan-y;
-  -webkit-overflow-scrolling:touch;
-}
-.slider-track.dragging{
-  transition:none !important;
-}
+/* TOP BAR */
+.topbar{position:fixed;top:0;right:var(--side-w);left:0;height:var(--nav-h);background:rgba(8,6,6,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:999;transition:right var(--transition)}
+@media(max-width:900px){.topbar{right:0}}
+.topbar-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.topbar-actions{display:flex;align-items:center;gap:6px}
+.menu-btn{display:none;width:38px;height:38px;border-radius:10px;background:rgba(201,168,76,.06);color:var(--gold);align-items:center;justify-content:center;font-size:16px;min-width:38px;min-height:38px;cursor:pointer;border:none}
+@media(max-width:900px){.menu-btn{display:flex}}
+.store-btn{padding:8px 14px;border-radius:20px;background:rgba(201,168,76,.08);color:var(--gold);font-size:11px;font-weight:600;border:1px solid var(--border);min-height:38px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.store-btn:active{transform:scale(.96)}
 
-.slider-card{
-  flex:0 0 auto;
-  width:260px;
-  margin:0 8px;
-  position:relative;
-  border-radius:var(--radius);
-  overflow:hidden;
-  background:var(--card-bg);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(201,168,76,.06);
-  user-select:none;
-  -webkit-user-select:none;
-  touch-action:pan-y;
-}
-.slider-card:active{transform:scale(.98)}
+/* PAGES */
+.page{display:none}.page.active{display:block}
 
-.slider-card .card-bg{position:absolute;inset:0;z-index:0}
-.slider-card::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:10px}
+.stat-icon{width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.stat-val{font-size:20px;font-weight:700;color:var(--gold)}
+.stat-lbl{font-size:10px;color:var(--text-dim)}
 
-.card-visual{
-  position:relative;
-  height:160px;
-  z-index:4;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.card-lens-sphere{
-  position:relative;
-  z-index:5;
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  animation:lensFloat 4s ease-in-out infinite;
-}
-@keyframes lensFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}
-.card-lens-inner{width:80px;height:80px;border-radius:50%;box-shadow:inset 0 0 16px rgba(0,0,0,.4)}
-.card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
-.card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);position:relative;overflow:hidden;background-size:cover;background-position:center}
-.card-dot::after{content:'';position:absolute;inset:20%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent)}
+/* CARDS */
+.fcard{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.ftitle{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);margin-bottom:12px}
 
-.card-body{position:relative;z-index:4;padding:14px 16px}
-.card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);animation:pulseDot 2s infinite}
-@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
-.card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px;line-height:1.3}
-.card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}
-.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}
-.card-price{font-size:11px;color:var(--text-dim)}
-.card-price strong{font-size:16px;color:var(--gold);font-weight:700}
-.card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;letter-spacing:.5px;min-height:38px;display:flex;align-items:center;justify-content:center}
-.card-btn:active{transform:scale(.95)}
-.card-wishlist{position:absolute;top:10px;left:10px;z-index:5;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.3);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;font-size:15px;border:1px solid rgba(255,255,255,.08);min-width:32px;min-height:32px}
-.card-wishlist.active{color:#e74c3c}
+/* TABLE */
+.p-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.p-table{width:100%;border-collapse:collapse;min-width:600px}
+.p-table th{text-align:right;padding:10px 10px;font-size:10px;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
+.p-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px}
+.p-table tr:hover td{background:rgba(201,168,76,.03)}
+.p-thumb{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--bg);font-weight:700;overflow:hidden;flex-shrink:0;position:relative}
+.p-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.p-name{font-weight:600}
+.p-cat{font-size:9px;color:var(--text-dim)}
+.p-price{font-weight:600;color:var(--gold)}
+.badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;display:inline-block;white-space:nowrap}
+.badge.on{background:rgba(46,204,113,.15);color:var(--success)}
+.badge.off{background:rgba(231,76,60,.15);color:var(--error)}
+.badge.low{background:rgba(243,156,18,.15);color:var(--warning)}
 
-.slider-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;padding:0 16px}
-.slider-nav-btn{width:42px;height:42px;border-radius:50%;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.1);color:var(--gold);font-size:16px;display:flex;align-items:center;justify-content:center;min-width:42px;min-height:42px}
-.slider-nav-btn:active{background:var(--gold);color:var(--bg)}
-.slider-dots{display:flex;gap:6px;align-items:center}
-.slider-dot{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.15);transition:all var(--transition-fast);cursor:pointer;display:flex;align-items:center;justify-content:center;min-width:40px;min-height:40px}
-.slider-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.15);transition:all var(--transition-fast)}
-.slider-dot.active::after{background:var(--gold);width:12px;height:12px;box-shadow:0 0 8px rgba(201,168,76,.4)}
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-weight:600;font-size:12px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .2s;border:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg)}
+.btn-ghost{background:rgba(201,168,76,.08);color:var(--gold);border:1px solid var(--border)}
+.btn-red{background:rgba(231,76,60,.12);color:#e74c3c;border:1px solid rgba(231,76,60,.2)}
+.btn:active{transform:scale(.96)}
+.btn-sm{padding:4px 8px;font-size:10px;min-height:28px;border-radius:6px}
+.btn-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;padding:0}
+
+/* TOGGLE */
+.toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
+.toggle input{display:none}
+.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:11px;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;right:3px;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--gold)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(-18px)}
+
+/* FORM */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.fgroup{display:flex;flex-direction:column;gap:4px}
+.fgroup label{font-size:10px;color:var(--text-dim)}
+.fgroup input,.fgroup select,.fgroup textarea{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;color:var(--text);font-size:12px;min-height:38px;font-family:inherit}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+.fgroup textarea{min-height:60px;resize:vertical}
+
+/* IMAGE UPLOAD */
+.img-upload{width:80px;height:80px;border-radius:50%;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;background:rgba(201,168,76,.03)}
+.img-upload:hover{border-color:var(--gold)}
+.img-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.img-upload span{font-size:8px;color:var(--text-dim);text-align:center;margin-top:2px}
+.upload-icon{font-size:18px;color:var(--text-dim)}
+.img-upload.rect{border-radius:var(--radius-sm)}
 
 /* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:2000;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:all var(--transition-normal);padding:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.modal-bg.open{opacity:1;visibility:visible}
-.modal-box{background:var(--preview-dark);border-radius:20px 20px 0 0;width:100%;max-height:88vh;max-height:88dvh;overflow-y:auto;border:1px solid rgba(201,168,76,.06);border-bottom:none;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);-webkit-overflow-scrolling:touch}
-.modal-box.light-bg{background:var(--preview-light)}
-@media(min-width:768px){
-  .modal-bg{align-items:center;padding:20px}
-  .modal-box{border-radius:20px;max-width:900px;max-height:90vh;border:1px solid rgba(201,168,76,.06);transform:scale(.92) translateY(20px)}
-  .modal-bg.open .modal-box{transform:scale(1) translateY(0)}
-}
-.modal-bg.open .modal-box{transform:translateY(0)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:flex;align-items:center;justify-content:center;padding:12px;opacity:0;visibility:hidden;transition:all .25s}
+.overlay.show{opacity:1;visibility:visible}
+.modal{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.modal-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--card-bg);z-index:2}
+.modal-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.modal-close{width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;min-width:30px;min-height:30px;cursor:pointer;border:none}
+.modal-body{padding:18px}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 
-.modal-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.04);position:sticky;top:0;background:var(--preview-dark);z-index:2;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px 20px 0 0}
-.modal-box.light-bg .modal-header{background:var(--preview-light)}
-.modal-header h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold)}
-.modal-actions{display:flex;align-items:center;gap:6px}
-.bg-toggle,.modal-close{width:36px;height:36px;border-radius:10px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;min-width:36px;min-height:36px}
-.modal-close{border-radius:50%}
-.bg-toggle{position:relative;overflow:hidden;border:1px solid rgba(201,168,76,.08)}
-.bg-toggle .icon-sun,.bg-toggle .icon-moon{position:absolute;transition:all var(--transition-fast)}
-.bg-toggle .icon-sun{opacity:0;transform:rotate(180deg) scale(0)}
-.bg-toggle .icon-moon{opacity:1;transform:rotate(0deg) scale(1)}
-.modal-box.light-bg .bg-toggle .icon-sun{opacity:1;transform:rotate(0deg) scale(1)}
-.modal-box.light-bg .bg-toggle .icon-moon{opacity:0;transform:rotate(-180deg) scale(0)}
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-lbl{font-size:12px;font-weight:600}
+.setting-desc{font-size:10px;color:var(--text-dim);margin-top:1px}
 
-.slider-area{padding:16px}
-.lens-slider-container{position:relative;overflow:hidden;border-radius:var(--radius);padding:16px 12px;border:1px solid rgba(201,168,76,.04)}
-.lens-slider-container.dark-bg{background:rgba(201,168,76,.012)}
-.lens-slider-container.light-bg{background:rgba(0,0,0,.015)}
+/* CAT VIS */
+.cat-vis{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(201,168,76,.03);border-radius:var(--radius-sm);margin-bottom:4px}
+.cat-color{width:14px;height:14px;border-radius:4px;flex-shrink:0}
+.cat-name{font-size:12px;font-weight:600;flex:1;margin:0 8px}
+.cat-count{font-size:10px;color:var(--text-dim);margin-left:6px}
 
-.lens-slider-track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.lens-slide{min-width:100%;display:flex;flex-direction:column;gap:18px;align-items:center;padding:0 4px}
-@media(min-width:768px){.lens-slide{flex-direction:row;gap:30px;padding:0 10px}}
-
-.lens-visual{width:180px;height:180px;border-radius:50%;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.lens-visual.dark-bg{animation:lensGlow 4s ease-in-out infinite}
-@keyframes lensGlow{0%,100%{box-shadow:0 0 30px rgba(201,168,76,.06)}50%{box-shadow:0 0 60px rgba(201,168,76,.1)}}
-.lens-visual.light-bg{box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.lens-visual-ring{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(255,255,255,.04);animation:ringRotate 12s linear infinite}
-@keyframes ringRotate{to{transform:rotate(360deg)}}
-.lens-visual-ring::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold)}
-.lens-visual-inner{width:150px;height:150px;border-radius:50%;position:relative;overflow:hidden}
-.lens-visual-inner.dark-bg{box-shadow:inset 0 0 30px rgba(0,0,0,.3)}
-.lens-visual-inner.light-bg{box-shadow:inset 0 0 20px rgba(255,255,255,.12)}
-.lens-circle{width:100%;height:100%;border-radius:50%}
-.color-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-dim);white-space:nowrap;display:flex;align-items:center;gap:4px}
-.color-label .dot-real{width:7px;height:7px;border-radius:50%;border:1px solid rgba(255,255,255,.1)}
-
-.lens-details{flex:1;width:100%;text-align:center}
-@media(min-width:768px){.lens-details{text-align:right}}
-.lens-details h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:8px}
-.modal-box.light-bg .lens-details h3{color:#1a1614}
-.lens-desc{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:14px}
-.modal-box.light-bg .lens-desc{color:#6b6058}
-.lens-reviews{background:rgba(201,168,76,.03);padding:12px;border-radius:var(--radius-sm);margin-bottom:14px;border:1px solid rgba(201,168,76,.04)}
-.modal-box.light-bg .lens-reviews{background:rgba(0,0,0,.02)}
-.review-header{display:flex;align-items:center;gap:5px;margin-bottom:8px}
-.review-stars{color:var(--gold);font-size:12px}
-.review-count{font-size:10px;color:var(--text-dim)}
-.review-item{display:flex;gap:6px;font-size:11px}
-.review-avatar{width:22px;height:22px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--bg);font-weight:600}
-.lens-meta{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;justify-content:center}
-@media(min-width:768px){.lens-meta{justify-content:flex-start}}
-.meta-item{background:rgba(201,168,76,.03);padding:12px 16px;border-radius:var(--radius-sm);border:1px solid rgba(201,168,76,.04);text-align:center;min-width:100px}
-.meta-item .label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
-.meta-item .value{font-size:20px;font-weight:700;color:var(--gold);margin-top:3px}
-.modal-box.light-bg .meta-item{background:rgba(0,0,0,.02)}
-.modal-box.light-bg .meta-item .value{color:#b8943a}
-.meta-item .value.stock-low{color:#f39c12}
-.meta-item .value.stock-out{color:#e74c3c}
-
-.qty-selector{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
-@media(min-width:768px){.qty-selector{justify-content:flex-start}}
-.qty-selector label{font-size:12px;color:var(--text-dim)}
-.qty-ctrl{display:flex;align-items:center;background:rgba(201,168,76,.04);border-radius:var(--radius-sm);border:1px solid rgba(201,168,76,.06);overflow:hidden}
-.modal-box.light-bg .qty-ctrl{background:rgba(0,0,0,.02)}
-.qty-ctrl button{width:38px;height:38px;background:rgba(201,168,76,.04);color:var(--gold);font-size:18px;display:flex;align-items:center;justify-content:center}
-.qty-ctrl button:active{background:var(--gold);color:var(--bg)}
-.modal-box.light-bg .qty-ctrl button{background:rgba(0,0,0,.02);color:#8a7e73}
-.qty-ctrl .qty-display{width:42px;text-align:center;font-size:16px;font-weight:700;color:var(--text)}
-.modal-box.light-bg .qty-ctrl .qty-display{color:#1a1614}
-
-.coupon-section{margin-bottom:14px}
-.coupon-input{display:flex;gap:6px}
-.coupon-input input{flex:1;padding:10px 12px;border-radius:var(--radius-sm);background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.06);color:var(--text);font-size:12px;min-height:40px}
-.coupon-input input:focus{outline:2px solid var(--gold)}
-.modal-box.light-bg .coupon-input input{background:rgba(0,0,0,.02)}
-.coupon-apply{padding:10px 16px;border-radius:var(--radius-sm);background:var(--gold);color:var(--bg);font-weight:600;font-size:12px;min-height:40px;white-space:nowrap}
-.coupon-msg{font-size:10px;margin-top:5px}
-.coupon-msg.success{color:var(--success)}
-.coupon-msg.error{color:var(--error)}
-
-.add-lens-btn{padding:14px 24px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden;width:100%;min-height:48px}
-.add-lens-btn:active{transform:scale(.98)}
-.add-lens-btn:disabled{background:var(--text-dim)}
-.modal-box.light-bg .add-lens-btn:disabled{background:#aaa}
-
-.slider-nav-modal{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:18px}
-.slider-nav-modal button{width:42px;height:42px;border-radius:50%;background:rgba(201,168,76,.04);color:var(--gold);font-size:18px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,168,76,.04);min-width:42px;min-height:42px}
-.slider-nav-modal button:active{background:var(--gold);color:var(--bg)}
-.slider-nav-modal button:disabled{opacity:.12}
-.modal-box.light-bg .slider-nav-modal button{background:rgba(0,0,0,.02);color:#5a4a3a}
-.slider-dots-modal{display:flex;align-items:center;gap:6px}
-.slider-dot-modal{width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.1);transition:all var(--transition-fast);cursor:pointer;display:flex;align-items:center;justify-content:center;min-width:40px;min-height:40px}
-.slider-dot-modal::after{content:'';width:8px;height:8px;border-radius:50%;background:rgba(201,168,76,.1);transition:all var(--transition-fast)}
-.modal-box.light-bg .slider-dot-modal::after{background:rgba(0,0,0,.08)}
-.slider-dot-modal.active::after{background:var(--gold);width:12px;height:12px;box-shadow:0 0 10px rgba(201,168,76,.4)}
-
-/* CART & WISHLIST */
-.cart-overlay,.wishlist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;opacity:0;visibility:hidden;transition:all var(--transition-normal)}
-.cart-overlay.open,.wishlist-overlay.open{opacity:1;visibility:visible}
-.cart-panel,.wishlist-panel{position:fixed;top:0;right:0;width:100%;max-width:400px;height:100vh;height:100dvh;background:rgba(10,8,8,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:3001;transform:translateX(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column}
-.cart-panel.open,.wishlist-panel.open{transform:translateX(0)}
-.cart-top,.wishlist-top{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.04);min-height:var(--nav-height)}
-.cart-top h2,.wishlist-top h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold)}
-.cart-items-list,.wishlist-items{flex:1;overflow-y:auto;padding:12px 16px;-webkit-overflow-scrolling:touch}
-.cart-empty{text-align:center;padding:48px 16px;color:var(--text-dim)}
-.cart-empty .ce-icon{font-size:48px;margin-bottom:10px;opacity:.2}
-.ci,.wi{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid rgba(201,168,76,.03)}
-.ci-color,.wi-color{width:46px;height:46px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.04)}
-.ci-info,.wi-info{flex:1}
-.ci-name,.wi-name{font-size:13px;font-weight:600;margin-bottom:2px}
-.ci-cat{font-size:9px;color:var(--text-dim);margin-bottom:8px}
-.ci-bottom{display:flex;justify-content:space-between;align-items:center}
-.ci-price,.wi-price{font-size:15px;font-weight:700;color:var(--gold)}
-.ci-qty{display:flex;align-items:center;gap:4px}
-.ci-qty button{width:26px;height:26px;border-radius:5px;background:rgba(201,168,76,.04);color:var(--gold);font-size:13px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,168,76,.06)}
-.ci-qty button:active{background:var(--gold);color:var(--bg)}
-.ci-qty span{font-size:13px;font-weight:600;min-width:18px;text-align:center}
-.ci-remove{background:none;color:rgba(231,76,60,.5);font-size:13px;padding:4px}
-.ci-remove:active{color:#e74c3c}
-.cart-bottom{padding:16px;border-top:1px solid rgba(201,168,76,.04);padding-bottom:calc(16px + var(--safe-bottom))}
-.cb-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px;color:var(--text-dim)}
-.cb-row.total{font-size:18px;font-weight:700;color:var(--gold);padding-top:10px;border-top:1px solid rgba(201,168,76,.06);margin-top:8px}
-.checkout-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:13px;margin-top:12px;min-height:48px}
-.checkout-btn:active{transform:scale(.98)}
-.checkout-btn:disabled{background:var(--text-dim)}
-
-.wi-actions{display:flex;gap:4px;margin-top:8px}
-.wi-add{padding:7px 12px;border-radius:6px;background:var(--gold);color:var(--bg);font-size:10px;font-weight:600;min-height:36px}
-.wi-remove{padding:7px 10px;border-radius:6px;background:rgba(231,76,60,.1);color:#e74c3c;font-size:10px;min-height:36px}
+/* COLORS GRID */
+.colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.color-card{background:rgba(201,168,76,.04);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.color-swatch{width:100%;height:50px;position:relative;cursor:pointer;overflow:hidden}
+.color-swatch img{width:100%;height:100%;object-fit:cover}
+.color-swatch-placeholder{width:100%;height:100%;position:relative}
+.color-swatch-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);color:#fff;font-size:10px;opacity:0;transition:opacity .2s}
+.color-swatch:hover .color-swatch-overlay{opacity:1}
+.color-info{padding:8px;display:flex;align-items:center;justify-content:space-between}
+.color-name{font-size:10px;font-weight:600}
 
 /* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(14,12,12,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(201,168,76,.1);color:var(--text);padding:12px 20px;border-radius:var(--radius-sm);font-size:12px;z-index:9999;transition:transform .3s cubic-bezier(.22,1,.36,1);max-width:92vw;justify-content:center;text-align:center}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(14,12,12,.95);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:var(--radius-sm);font-size:11px;z-index:9999;transition:transform .3s;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--error)}
-.toast.warning{border-color:var(--warning)}
 
-/* AGE & COOKIE */
-.age-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px}
-.age-modal.hidden{display:none}
-.age-box{background:var(--preview-dark);border:1px solid rgba(201,168,76,.1);border-radius:var(--radius);padding:28px 20px;max-width:380px;width:100%;text-align:center}
-.age-box h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);margin-bottom:10px}
-.age-box p{color:var(--text-dim);font-size:12px;line-height:1.7;margin-bottom:20px}
-.age-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.age-btn{padding:10px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:12px;min-height:44px}
-.age-btn.confirm{background:var(--gold);color:var(--bg)}
-.age-btn.exit{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.2)}
+/* VISIBILITY LIST */
+.vis-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.vis-item:last-child{border-bottom:none}
 
-.cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(18,14,12,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(201,168,76,.1);padding:14px 16px;z-index:4000;transform:translateY(100%);transition:transform var(--transition-normal);display:flex;flex-direction:column;gap:10px;padding-bottom:calc(14px + var(--safe-bottom))}
-.cookie-banner.show{transform:translateY(0)}
-@media(min-width:768px){.cookie-banner{flex-direction:row;padding-bottom:14px}}
-.cookie-text{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.6}
-.cookie-text a{color:var(--gold)}
-.cookie-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.cookie-btn{padding:8px 16px;border-radius:6px;font-size:11px;font-weight:600;min-height:40px}
-.cookie-btn.accept{background:var(--gold);color:var(--bg)}
-.cookie-btn.settings{background:transparent;color:var(--text-dim);border:1px solid rgba(201,168,76,.15)}
+/* HIDDEN OVERVIEW */
+.hidden-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.05)}
 
-/* FOOTER */
-.footer{text-align:center;padding:32px 16px;border-top:1px solid rgba(201,168,76,.03);color:var(--text-dim);font-size:11px;position:relative;z-index:2;padding-bottom:calc(32px + var(--safe-bottom))}
-.footer-links{display:flex;justify-content:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.footer-links a{color:var(--text-dim);text-decoration:none}
-.footer-links a:active{color:var(--gold)}
-.footer-social{display:flex;justify-content:center;gap:10px;margin-bottom:12px}
-.footer-social a{width:36px;height:36px;border-radius:50%;background:rgba(201,168,76,.06);display:flex;align-items:center;justify-content:center;color:var(--gold);min-width:36px;min-height:36px}
-.footer-social a:active{background:var(--gold);color:var(--bg)}
-
-/* LARGE SCREENS */
-@media(min-width:768px){
-  .slider-card{width:300px;margin:0 12px}
-  .card-visual{height:180px}
-  .card-lens-sphere{width:110px;height:110px}
-  .card-lens-inner{width:90px;height:90px}
-  .hero-glass{padding:48px 60px}
-  .hero-title{font-size:52px}
-  .hero-sub{font-size:14px}
+/* RESPONSIVE */
+@media(max-width:600px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .fgrid{grid-template-columns:1fr}
+  .colors-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .topbar-title{font-size:14px}
 }
-@media(min-width:1024px){
-  .slider-card{width:320px;margin:0 14px}
-  .hero-glass{padding:56px 80px;max-width:760px}
-  .hero{padding:calc(var(--nav-height) + 40px) 5% 80px}
-}
-@media(min-width:1200px){
-  .slider-card{width:340px}
-}
-
-@media(max-width:360px){
-  .slider-card{width:240px;margin:0 6px}
-  .card-visual{height:140px}
-  .card-lens-sphere{width:86px;height:86px}
-  .card-lens-inner{width:68px;height:68px}
-  .card-body{padding:12px 14px}
-  .card-name{font-size:15px}
-  .card-btn{padding:6px 12px;font-size:9px}
-  .nav-logo{font-size:17px}
-  .nav-logo span{display:none}
-  .hero-glass{padding:24px 16px;border-radius:18px}
-  .hero-title{font-size:28px;letter-spacing:2px}
-  .hero-sub{font-size:12px}
-  .cta-primary,.cta-secondary{padding:11px 22px;font-size:12px}
-  .section-title{font-size:20px}
-  .modal-header h2{font-size:16px}
-  .lens-visual{width:160px;height:160px}
-  .lens-visual-inner{width:130px;height:130px}
-  .lens-details h3{font-size:18px}
-  .meta-item{padding:10px 14px;min-width:90px}
-  .meta-item .value{font-size:17px}
-}
-
-[dir="ltr"] .cart-panel{right:auto;left:0;transform:translateX(-100%)}
-[dir="ltr"] .cart-panel.open{transform:translateX(0)}
 </style>
 </head>
-<body>
+<body class="loading">
 
-<div class="age-modal" id="ageModal" role="dialog" aria-modal="true">
-  <div class="age-box">
-    <h3>🔞 تأكيد العمر</h3>
-    <p>يجب أن يكون عمرك 18 سنة أو أكثر للدخول.</p>
-    <div class="age-btns">
-      <button class="age-btn confirm" onclick="confirmAge()">أنا أبلغ 18+ ✓</button>
-      <button class="age-btn exit" onclick="exitSite()">خروج</button>
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">LENSORA</div>
+    <div class="login-sub">لوحة التحكم الكاملة</div>
+    <form class="login-form" onsubmit="doLogin(event)">
+      <input type="email" id="loginEmail" placeholder="admin@lensora.com" required>
+      <input type="password" id="loginPass" placeholder="كلمة المرور" required>
+      <button type="submit">تسجيل الدخول</button>
+    </form>
+    <div class="login-hint">admin@lensora.com / admin123</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <aside class="sidebar closed" id="sidebar">
+    <div class="side-head">
+      <div class="side-logo">LENSORA</div>
+      <button class="side-close" onclick="toggleSidebar()">✕</button>
+    </div>
+    <nav class="side-menu">
+      <div class="side-item active" data-page="overview"><span class="side-icon">📊</span>نظرة عامة</div>
+      <div class="side-item" data-page="allproducts"><span class="side-icon">👁️</span>جميع المنتجات</div>
+      <div class="side-item" data-page="addproduct"><span class="side-icon">➕</span>إضافة منتج</div>
+      <div class="side-item" data-page="categories"><span class="side-icon">🎨</span>الفئات</div>
+      <div class="side-item" data-page="lensimages"><span class="side-icon">📷</span>صور العدسات</div>
+      <div class="side-item" data-page="visibility"><span class="side-icon">👁️‍🗨️</span>إخفاء/إظهار</div>
+      <div class="side-item" data-page="display"><span class="side-icon">⚙️</span>إعدادات العرض</div>
+    </nav>
+    <div class="side-foot">
+      <div class="side-user">
+        <div class="side-avatar">م</div>
+        <div><div class="side-name">مدير المتجر</div><div class="side-role">مسؤول</div></div>
+        <button class="side-logout" onclick="doLogout()">🚪</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <h1 class="topbar-title" id="pageTitle">نظرة عامة</h1>
+      <div class="topbar-actions">
+        <button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button>
+      </div>
+    </header>
+
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="stats">
+        <div class="stat"><div class="stat-icon">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
+        <div class="stat"><div class="stat-icon">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
+        <div class="stat"><div class="stat-icon">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
+        <div class="stat"><div class="stat-icon">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
+      </div>
+      <div class="fcard">
+        <h3 class="ftitle">المنتجات المخفية</h3>
+        <div id="hiddenOverviewList" style="color:var(--text-dim);font-size:12px"></div>
+      </div>
+    </div>
+
+    <!-- ALL PRODUCTS -->
+    <div class="page" id="page-allproducts">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
+          <select id="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
+            <option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option>
+          </select>
+        </div>
+      </div>
+      <div class="fcard" style="padding:0;overflow:hidden">
+        <div class="p-table-wrap">
+          <table class="p-table">
+            <thead><tr><th>الصورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div class="page" id="page-addproduct">
+      <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
+      <div class="fcard">
+        <div class="fgrid">
+          <div class="fgroup"><label>اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي"></div>
+          <div class="fgroup"><label>اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
+          <div class="fgroup"><label>الفئة *</label><select id="pCategory"><option value="">اختر الفئة...</option></select></div>
+          <div class="fgroup"><label>السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85"></div>
+          <div class="fgroup"><label>الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30"></div>
+          <div class="fgroup"><label>اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+        </div>
+        <div class="fgroup" style="margin-top:12px"><label>وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
+        <div style="margin-top:14px"><label style="font-size:10px;color:var(--text-dim)">صورة العدسة (استبدل الدائرة)</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+            <div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div>
+            <input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
+            <span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span>
+          </div>
+        </div>
+        <div style="margin-top:14px"><label style="font-size:10px;color:var(--text-dim)">صورة بطاقة المنتج (اختياري)</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+            <div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()"><span class="upload-icon">🖼️</span><span>صورة البطاقة</span></div>
+            <input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')">
+            <span style="font-size:10px;color:var(--text-dim)">خلفية البطاقة في السلايدر</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" checked><span>معروض في المتجر</span></label>
+          <button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="page" id="page-categories">
+      <h2 class="ftitle mb-2">إدارة الفئات</h2>
+      <div class="fcard"><div id="categoriesList"></div>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="newCatNameAr" placeholder="اسم الفئة (عربي)" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
+          <input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
+          <input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer">
+          <button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LENS IMAGES -->
+    <div class="page" id="page-lensimages">
+      <h2 class="ftitle mb-2">صور العدسات لكل منتج</h2>
+      <div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">اضغط على أي عدسة لإضافة صورة حقيقية بدلاً من الدائرة الملونة</p>
+        <div id="colorsList" class="colors-grid"></div>
+      </div>
+    </div>
+
+    <!-- VISIBILITY -->
+    <div class="page" id="page-visibility">
+      <h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2>
+      <div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div>
+    </div>
+
+    <!-- DISPLAY SETTINGS -->
+    <div class="page" id="page-display">
+      <h2 class="ftitle mb-2">إعدادات العرض</h2>
+      <div class="fcard">
+        <div class="setting-row"><div><div class="setting-lbl">إظهار الأسعار</div><div class="setting-desc">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-lbl">إظهار الكمية</div><div class="setting-desc">عرض عدد القطع المتاحة</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-lbl">إظهار ألوان العدسات</div><div class="setting-desc">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row"><div><div class="setting-lbl">إظهار صور البطاقات</div><div class="setting-desc">خلفية البطاقات في السلايدر</div></div><label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+      </div>
+      <div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3>
+        <p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p>
+        <div id="hiddenColorsList" class="colors-grid"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="fgrid">
+        <div class="fgroup"><label>الاسم (عربي)</label><input type="text" id="editNameAr"></div>
+        <div class="fgroup"><label>الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div>
+        <div class="fgroup"><label>الفئة</label><select id="editCategory"></select></div>
+        <div class="fgroup"><label>السعر</label><input type="number" id="editPrice" min="0"></div>
+        <div class="fgroup"><label>المخزون</label><input type="number" id="editStock" min="0"></div>
+        <div class="fgroup"><label>اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+      </div>
+      <div class="fgroup" style="margin-top:10px"><label>الوصف</label><textarea id="editDesc"></textarea></div>
+      <div style="margin-top:10px"><label style="font-size:10px;color:var(--text-dim)">صورة العدسة</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+          <div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div>
+          <input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)">
+          <span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span>
+        </div>
+      </div>
+      <div style="margin-top:10px"><label style="font-size:10px;color:var(--text-dim)">صورة البطاقة</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+          <div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div>
+          <input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)">
+          <span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button>
+      <button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button>
     </div>
   </div>
 </div>
 
-<div class="cookie-banner" id="cookieBanner">
-  <p class="cookie-text">نستخدم ملفات تعريف الارتباط لتحسين تجربتك.</p>
-  <div class="cookie-actions">
-    <button class="cookie-btn accept" onclick="acceptCookies()">قبول</button>
-    <button class="cookie-btn settings" onclick="showCookieSettings()">الإعدادات</button>
-  </div>
-</div>
-
-<nav class="nav" id="mainNav">
-  <a href="#" class="nav-logo">
-    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1" opacity=".3"/><circle cx="20" cy="20" r="12" stroke="#c9a84c" stroke-width=".5" opacity=".2"/><circle cx="20" cy="20" r="8" fill="url(#lg1)" opacity=".7"/><defs><radialGradient id="lg1" cx="40%" cy="35%"><stop offset="0%" stop-color="#e8d5a3"/><stop offset="100%" stop-color="#8B7355"/></radialGradient></defs></svg>
-    <div>LENSORA<span>عدسات فاخرة</span></div>
-  </a>
-  <div class="nav-actions">
-    <div class="lang-currency">
-      <select id="langSelect" onchange="changeLanguage(this.value)"><option value="ar">العربية</option><option value="en">English</option></select>
-      <select id="currencySelect" onchange="changeCurrency(this.value)"><option value="SAR">ر.س</option><option value="USD">$</option><option value="AED">د.إ</option></select>
-    </div>
-    <button class="cart-btn" onclick="openCart()">🛒<span class="cart-badge" id="cartBadge" style="display:none"></span></button>
-  </div>
-</nav>
-
-<header class="hero">
-  <div class="hero-glass">
-    <div class="hero-logo-wrap">
-      <svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="55" stroke="#c9a84c" stroke-width=".8" opacity=".15"/><circle cx="60" cy="60" r="48" stroke="#c9a84c" stroke-width=".4" opacity=".08"/><circle cx="60" cy="60" r="40" fill="url(#hg1)"/><circle cx="60" cy="60" r="40" stroke="#c9a84c" stroke-width="1.2" opacity=".5"/><circle cx="60" cy="60" r="28" stroke="#c9a84c" stroke-width=".4" opacity=".2"/><circle cx="60" cy="60" r="20" fill="url(#hg2)" opacity=".8"/><circle cx="60" cy="60" r="6" fill="#c9a84c" opacity=".4"/><defs><radialGradient id="hg1" cx="35%" cy="30%"><stop offset="0%" stop-color="#d4a84c" stop-opacity=".25"/><stop offset="50%" stop-color="#8B5E3C" stop-opacity=".45"/><stop offset="100%" stop-color="#3a2510" stop-opacity=".65"/></radialGradient><radialGradient id="hg2" cx="30%" cy="25%"><stop offset="0%" stop-color="#e8d5a3" stop-opacity=".55"/><stop offset="60%" stop-color="#a8844c" stop-opacity=".35"/><stop offset="100%" stop-color="#5a3a1a" stop-opacity=".75"/></radialGradient></defs></svg>
-    </div>
-    <h1 class="hero-title">LENSORA</h1>
-    <div class="hero-line"></div>
-    <p class="hero-sub">اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي</p>
-    <div class="hero-ctas">
-      <button class="cta-primary" onclick="scrollToProducts()">تسوّقي الآن ✦</button>
-      <button class="cta-secondary" onclick="openWishlist()">المفضلة ♡</button>
-    </div>
-  </div>
-</header>
-
-<main id="mainContent">
-  <section class="categories-section" id="products">
-    <div class="section-header">
-      <div class="section-label">👁️ مجموعتنا</div>
-      <h2 class="section-title">اختاري لونك المفضل</h2>
-      <p class="section-sub">اسحبي يمين أو شمال ✨</p>
-    </div>
-    <div class="slider-container">
-      <div class="slider-viewport" id="sliderViewport">
-        <div class="slider-track" id="sliderTrack"></div>
-      </div>
-      <div class="slider-controls">
-        <button class="slider-nav-btn" id="prevBtn">→</button>
-        <div class="slider-dots" id="sliderDots"></div>
-        <button class="slider-nav-btn" id="nextBtn">←</button>
-      </div>
-    </div>
-  </section>
-</main>
-
-<div class="modal-bg" id="lensModal" role="dialog" aria-modal="true">
-  <div class="modal-box" id="modalBox">
-    <div class="modal-header">
-      <h2 id="modalTitle"></h2>
-      <div class="modal-actions">
-        <button class="bg-toggle" onclick="toggleModalBg()"><span class="icon-moon">🌙</span><span class="icon-sun">☀️</span></button>
-        <button class="modal-close" onclick="closeLensModal()">✕</button>
-      </div>
-    </div>
-    <div class="slider-area">
-      <div class="lens-slider-container dark-bg" id="lensContainer">
-        <div class="lens-slider-track" id="lensTrack"></div>
-      </div>
-      <div class="slider-nav-modal">
-        <button onclick="slideLensMove(-1)" id="lensPrevBtn">→</button>
-        <div class="slider-dots-modal" id="lensSliderDots"></div>
-        <button onclick="slideLensMove(1)" id="lensNextBtn">←</button>
+<!-- COLOR IMAGE MODAL -->
+<div class="overlay" id="colorImgModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><h3 class="modal-title">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div>
+    <div class="modal-body" style="text-align:center">
+      <p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p>
+      <div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div>
+      <input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)">
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button>
+        <button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button>
       </div>
     </div>
   </div>
-</div>
-
-<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-<div class="cart-panel" id="cartPanel" role="dialog" aria-modal="true">
-  <div class="cart-top"><h2>🛒 السلة</h2><button class="modal-close" onclick="closeCart()">✕</button></div>
-  <div class="cart-items-list" id="cartItemsList"></div>
-  <div class="cart-bottom" id="cartBottom"></div>
-</div>
-
-<div class="cart-overlay" id="wishlistOverlay" onclick="closeWishlist()"></div>
-<div class="wishlist-panel" id="wishlistPanel" role="dialog" aria-modal="true">
-  <div class="wishlist-top"><h2>♡ المفضلة</h2><button class="modal-close" onclick="closeWishlist()">✕</button></div>
-  <div class="wishlist-items" id="wishlistItems"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<footer class="footer">
-  <div class="footer-links">
-    <a href="#" onclick="showToast('📄 سياسة الخصوصية','info')">الخصوصية</a>
-    <a href="#" onclick="showToast('📋 الشروط والأحكام','info')">الشروط</a>
-    <a href="#" onclick="showToast('🚚 شحن مجاني فوق 200 ر.س','info')">الشحن</a>
-    <a href="#" onclick="showToast('🔄 إرجاع خلال 14 يوم','info')">الإرجاع</a>
-    <a href="#" onclick="showToast('💬 support@lensora.com','info')">تواصل</a>
-  </div>
-  <div class="footer-social">
-    <a href="#">📷</a><a href="#">🎵</a><a href="#">👻</a><a href="#">💬</a>
-  </div>
-  <p>© 2026 LENSORA — جميع الحقوق محفوظة ✨</p>
-</footer>
-
 <script>
-const COLORS_DATA = [
-  {id:'brown',arName:'بني دافئ',enName:'Warm Brown',cardBg:'linear-gradient(135deg,#5C3A1E 0%,#8B5E3C 40%,#D4A056 100%)',lenses:[
-    {id:'b1',name:'عسل ذهبي',enName:'Golden Honey',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',rating:4.8,reviews:124},
-    {id:'b2',name:'شوكولاتة',enName:'Chocolate',desc:'بني غامق عميق يعطي نظرة ساحرة',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',rating:4.9,reviews:89},
-    {id:'b3',name:'كراميل',enName:'Caramel',desc:'بني فاتح كريمي مثالي',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',rating:4.7,reviews:156},
-    {id:'b4',name:'بندق',enName:'Hazelnut',desc:'بني متوسط مع لمسات ذهبية',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',rating:4.6,reviews:67}
-  ]},
-  {id:'blue',arName:'أزرق ساحر',enName:'Enchanting Blue',cardBg:'linear-gradient(135deg,#1B3A5C 0%,#2E6CB5 50%,#5B9BD5 100%)',lenses:[
-    {id:'bl1',name:'محيط',enName:'Ocean',desc:'أزرق محيطي عميق مع لمعة طبيعية',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',rating:4.9,reviews:203},
-    {id:'bl2',name:'سماء',enName:'Sky',desc:'أزرق سماوي فاتح براقة',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',rating:4.7,reviews:145},
-    {id:'bl3',name:'ثلجي',enName:'Snowy',desc:'أزرق فاتح ثلجي مذهل',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',rating:5.0,reviews:78},
-    {id:'bl4',name:'زفير',enName:'Zephyr',desc:'أزرق بنفسجي غامض',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',rating:4.8,reviews:92}
-  ]},
-  {id:'green',arName:'أخضر زمردي',enName:'Emerald Green',cardBg:'linear-gradient(135deg,#1B4B28 0%,#2E8B57 50%,#3CB371 100%)',lenses:[
-    {id:'g1',name:'زيتون',enName:'Olive',desc:'أخضر زيتوني ناعم',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',rating:4.6,reviews:134},
-    {id:'g2',name:'زمردي',enName:'Emerald',desc:'أخضر زمردي فاخر لامع',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',rating:4.9,reviews:187},
-    {id:'g3',name:'فيروزي',enName:'Turquoise',desc:'أخضر فيروزي مائي منعش',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',rating:4.8,reviews:56},
-    {id:'g4',name:'غابة',enName:'Forest',desc:'أخضر غامق غامض',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',rating:4.7,reviews:98}
-  ]},
-  {id:'gray',arName:'رمادي أنيق',enName:'Elegant Gray',cardBg:'linear-gradient(135deg,#202020 0%,#6A6A6A 50%,#B8B8B8 100%)',lenses:[
-    {id:'gr1',name:'فضي',enName:'Silver',desc:'رمادي فضي لامع أنيق',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',rating:4.7,reviews:167},
-    {id:'gr2',name:'فحمي',enName:'Charcoal',desc:'رمادي فحمي قوي',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',rating:4.8,reviews:112},
-    {id:'gr3',name:'دخاني',enName:'Smoky',desc:'رمادي دخاني بلمسة بنفسجية',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',rating:4.9,reviews:84}
-  ]},
-  {id:'hazel',arName:'عسلي مميز',enName:'Special Hazel',cardBg:'linear-gradient(135deg,#8B7355 0%,#C4A265 50%,#D4B878 100%)',lenses:[
-    {id:'hz1',name:'لوز',enName:'Almond',desc:'عسلي لوزي فاتح طبيعي',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',rating:4.8,reviews:201},
-    {id:'hz2',name:'نحاسي',enName:'Copper',desc:'عسلي نحاسي دافئ ببريق',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',rating:4.7,reviews:143},
-    {id:'hz3',name:'ذهبي',enName:'Golden',desc:'عسلي ذهبي لامع',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',rating:5.0,reviews:45}
-  ]},
-  {id:'purple',arName:'بنفسجي ملكي',enName:'Royal Purple',cardBg:'linear-gradient(135deg,#4B2A70 0%,#7B5EA7 50%,#C5A8DC 100%)',lenses:[
-    {id:'p1',name:'لافندر',enName:'Lavender',desc:'بنفسجي لافندر رومانسي',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',rating:4.8,reviews:156},
-    {id:'p2',name:'أرجواني',enName:'Majestic',desc:'بنفسجي غامق ملكي',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',rating:4.9,reviews:89},
-    {id:'p3',name:'ليلكي',enName:'Lilac',desc:'بنفسجي فاتح ليلكي',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',rating:4.7,reviews:72}
-  ]}
-];
-
-let state = { products: [], cart: [], wishlist: [], currentLang: 'ar', currentCurrency: 'SAR', ageVerified: false };
-let currentLensIdx = 0;
-
-const SecureStorage = {
-  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
-  get: (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
-  remove: (k) => { localStorage.removeItem(k); }
+// ==================== STATE ====================
+let state = {
+  categories: [],
+  products: [],
+  settings: { showPrice:true, showStock:true, showColors:true, showCardImages:true },
+  hiddenColorIds: [],
+  currentLensImg: null,
+  currentCardImg: null,
+  editingProductId: null
 };
 
-function getProduct(id) {
-  return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', enName: '', gradient: '', categoryId: '', categoryName: '', categoryNameEn: '' };
+// ==================== DEFAULT DATA ====================
+function initDefaults() {
+  if (state.categories.length > 0) return;
+  state.categories = [
+    {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
+    {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'},
+    {id:'green',ar:'أخضر زمردي',en:'Emerald Green',color:'#2E8B57'},
+    {id:'gray',ar:'رمادي أنيق',en:'Elegant Gray',color:'#B8B8B8'},
+    {id:'hazel',ar:'عسلي مميز',en:'Special Hazel',color:'#C4A265'},
+    {id:'purple',ar:'بنفسجي ملكي',en:'Royal Purple',color:'#7B5EA7'}
+  ];
+  state.products = [
+    {id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',rating:4.8,reviews:124,visible:true,lensImage:null,cardImage:null},
+    {id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',desc:'بني غامق عميق يعطي نظرة ساحرة',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null},
+    {id:'b3',nameAr:'كراميل',nameEn:'Caramel',category:'brown',price:90,stock:18,color:'#C68642',gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',desc:'بني فاتح كريمي مثالي',rating:4.7,reviews:156,visible:true,lensImage:null,cardImage:null},
+    {id:'b4',nameAr:'بندق',nameEn:'Hazelnut',category:'brown',price:88,stock:0,color:'#8B7355',gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',desc:'بني متوسط مع لمسات ذهبية',rating:4.6,reviews:67,visible:true,lensImage:null,cardImage:null},
+    {id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',desc:'أزرق محيطي عميق مع لمعة طبيعية',rating:4.9,reviews:203,visible:true,lensImage:null,cardImage:null},
+    {id:'bl2',nameAr:'سماء',nameEn:'Sky',category:'blue',price:100,stock:15,color:'#87CEEB',gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',desc:'أزرق سماوي فاتح براقة',rating:4.7,reviews:145,visible:true,lensImage:null,cardImage:null},
+    {id:'bl3',nameAr:'ثلجي',nameEn:'Snowy',category:'blue',price:120,stock:8,color:'#B8D4E8',gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',desc:'أزرق فاتح ثلجي مذهل',rating:5.0,reviews:78,visible:true,lensImage:null,cardImage:null},
+    {id:'bl4',nameAr:'زفير',nameEn:'Zephyr',category:'blue',price:115,stock:12,color:'#5B6CBF',gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',desc:'أزرق بنفسجي غامض',rating:4.8,reviews:92,visible:true,lensImage:null,cardImage:null},
+    {id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',desc:'أخضر زيتوني ناعم',rating:4.6,reviews:134,visible:true,lensImage:null,cardImage:null},
+    {id:'g2',nameAr:'زمردي',nameEn:'Emerald',category:'green',price:130,stock:10,color:'#2E8B57',gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',desc:'أخضر زمردي فاخر لامع',rating:4.9,reviews:187,visible:true,lensImage:null,cardImage:null},
+    {id:'g3',nameAr:'فيروزي',nameEn:'Turquoise',category:'green',price:115,stock:5,color:'#40B5A5',gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',desc:'أخضر فيروزي مائي منعش',rating:4.8,reviews:56,visible:true,lensImage:null,cardImage:null},
+    {id:'g4',nameAr:'غابة',nameEn:'Forest',category:'green',price:108,stock:14,color:'#2E6B3B',gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',desc:'أخضر غامق غامض',rating:4.7,reviews:98,visible:true,lensImage:null,cardImage:null},
+    {id:'gr1',nameAr:'فضي',nameEn:'Silver',category:'gray',price:100,stock:28,color:'#B8B8B8',gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',desc:'رمادي فضي لامع أنيق',rating:4.7,reviews:167,visible:true,lensImage:null,cardImage:null},
+    {id:'gr2',nameAr:'فحمي',nameEn:'Charcoal',category:'gray',price:95,stock:16,color:'#4A4A4A',gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',desc:'رمادي فحمي قوي',rating:4.8,reviews:112,visible:true,lensImage:null,cardImage:null},
+    {id:'gr3',nameAr:'دخاني',nameEn:'Smoky',category:'gray',price:105,stock:7,color:'#6B6B7B',gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',desc:'رمادي دخاني بلمسة بنفسجية',rating:4.9,reviews:84,visible:true,lensImage:null,cardImage:null},
+    {id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',desc:'عسلي لوزي فاتح طبيعي',rating:4.8,reviews:201,visible:true,lensImage:null,cardImage:null},
+    {id:'hz2',nameAr:'نحاسي',nameEn:'Copper',category:'hazel',price:100,stock:20,color:'#B87333',gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',desc:'عسلي نحاسي دافئ ببريق',rating:4.7,reviews:143,visible:true,lensImage:null,cardImage:null},
+    {id:'hz3',nameAr:'ذهبي',nameEn:'Golden',category:'hazel',price:110,stock:3,color:'#D4A056',gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',desc:'عسلي ذهبي لامع',rating:5.0,reviews:45,visible:true,lensImage:null,cardImage:null},
+    {id:'p1',nameAr:'لافندر',nameEn:'Lavender',category:'purple',price:110,stock:18,color:'#A88BC5',gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',desc:'بنفسجي لافندر رومانسي',rating:4.8,reviews:156,visible:true,lensImage:null,cardImage:null},
+    {id:'p2',nameAr:'أرجواني',nameEn:'Majestic',category:'purple',price:120,stock:11,color:'#6B3FA0',gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',desc:'بنفسجي غامق ملكي',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null},
+    {id:'p3',nameAr:'ليلكي',nameEn:'Lilac',category:'purple',price:115,stock:6,color:'#9B7FBF',gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',desc:'بنفسجي فاتح ليلكي',rating:4.7,reviews:72,visible:true,lensImage:null,cardImage:null}
+  ];
 }
-function getPrice(p) {
-  const rates = { SAR: 1, USD: 0.27, AED: 0.99 };
-  return Math.round(p.price * (rates[state.currentCurrency] || 1));
-}
-function getCurrencySymbol() {
-  return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[state.currentCurrency] || state.currentCurrency;
-}
-function getText(ar, en) { return state.currentLang === 'ar' ? ar : en; }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  if (SecureStorage.get('age_verified')) { state.ageVerified = true; document.getElementById('ageModal').classList.add('hidden'); }
-  if (SecureStorage.get('cookies_accepted')) {} else { setTimeout(() => document.getElementById('cookieBanner').classList.add('show'), 1500); }
-  
-  COLORS_DATA.forEach(c => c.lenses.forEach(l => {
-    state.products.push({...l, categoryId: c.id, categoryName: c.arName, categoryNameEn: c.enName});
-  }));
-  state.cart = SecureStorage.get('lensora_cart') || [];
-  state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-  
-  initSlider();
-  updateCartBadge();
-  setupEvents();
+// ==================== PERSISTENCE ====================
+function saveState() {
+  try {
+    localStorage.setItem('lens_cats', JSON.stringify(state.categories));
+    localStorage.setItem('lens_prods', JSON.stringify(state.products));
+    localStorage.setItem('lens_sett', JSON.stringify(state.settings));
+    localStorage.setItem('lens_hid_colors', JSON.stringify(state.hiddenColorIds));
+  } catch(e) { console.warn('Save error', e); }
+}
+function loadState() {
+  try {
+    const c = localStorage.getItem('lens_cats');
+    const p = localStorage.getItem('lens_prods');
+    const s = localStorage.getItem('lens_sett');
+    const hc = localStorage.getItem('lens_hid_colors');
+    if (c) state.categories = JSON.parse(c);
+    if (p) state.products = JSON.parse(p);
+    if (s) state.settings = JSON.parse(s);
+    if (hc) state.hiddenColorIds = JSON.parse(hc);
+  } catch(e) { console.warn('Load error', e); }
+}
+
+// ==================== AUTH ====================
+function doLogin(e) {
+  e.preventDefault();
+  const em = document.getElementById('loginEmail').value;
+  const pw = document.getElementById('loginPass').value;
+  if (em === 'admin@lensora.com' && pw === 'admin123') {
+    localStorage.setItem('lens_auth', 'true');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('active');
+    initDefaults(); loadState(); initDashboard();
+    toast('✅ مرحباً بك', 'success');
+  } else { toast('❌ بيانات خاطئة', 'error'); }
+}
+function doLogout() { localStorage.removeItem('lens_auth'); location.reload(); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('lens_auth') === 'true') {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('active');
+    initDefaults(); loadState(); initDashboard();
+  }
   document.body.classList.remove('loading');
 });
 
-function confirmAge() { state.ageVerified = true; SecureStorage.set('age_verified', true); document.getElementById('ageModal').classList.add('hidden'); }
-function exitSite() { window.location.href = 'https://www.google.com'; }
-function acceptCookies() { SecureStorage.set('cookies_accepted', true); document.getElementById('cookieBanner').classList.remove('show'); }
-function showCookieSettings() { showToast('🔧 قيد التطوير', 'info'); }
-
-/* ===== SLIDER - FIXED FOR MOBILE ===== */
-function getCardWidth() {
-  const w = window.innerWidth;
-  if (w <= 360) return 240;
-  if (w <= 768) return 260;
-  if (w <= 1024) return 300;
-  return 340;
-}
-function getCardMargin() {
-  const w = window.innerWidth;
-  if (w <= 360) return 6;
-  if (w <= 768) return 8;
-  return 12;
+// ==================== INIT ====================
+function initDashboard() {
+  populateCatSelects();
+  updateStats();
+  renderProducts();
+  renderCategories();
+  renderLensImages();
+  renderVisibility();
+  renderDisplaySettings();
+  renderHiddenColors();
+  renderHiddenOverview();
 }
 
-function initSlider() {
-  const track = document.getElementById('sliderTrack');
-  const viewport = document.getElementById('sliderViewport');
-  
-  const CARD_W = getCardWidth();
-  const GAP = getCardMargin() * 2;
-  const ITEM_W = CARD_W + GAP;
-  const total = COLORS_DATA.length;
-  
-  // Build cards
-  let html = '';
-  COLORS_DATA.forEach((c, idx) => {
-    html += createCard(c, idx);
-  });
-  track.innerHTML = html;
-  
-  // Build dots
-  document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => 
-    `<div class="slider-dot" data-idx="${i}"></div>`
-  ).join('');
-  
-  // State
-  let currentIdx = 0;
-  let currentPos = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startPos = 0;
-  let dragDelta = 0;
-  let animFrame = null;
-  let autoplayTimer = null;
-  
-  function getCenterOffset() {
-    return (viewport.offsetWidth - CARD_W) / 2;
-  }
-  
-  function setCardStyles() {
-    const cards = track.querySelectorAll('.slider-card');
-    cards.forEach(card => {
-      card.style.width = CARD_W + 'px';
-      card.style.marginLeft = getCardMargin() + 'px';
-      card.style.marginRight = getCardMargin() + 'px';
-    });
-  }
-  setCardStyles();
-  
-  function goToIndex(idx, animate = true) {
-    currentIdx = idx;
-    const centerOffset = getCenterOffset();
-    const targetPos = idx * ITEM_W - centerOffset;
-    const clampedPos = Math.max(0, targetPos);
-    
-    if (animate) {
-      cancelAnimationFrame(animFrame);
-      track.classList.remove('dragging');
-      animateToPos(clampedPos);
-    } else {
-      track.classList.add('dragging');
-      currentPos = clampedPos;
-      track.style.transform = `translateX(-${currentPos}px)`;
-      requestAnimationFrame(() => track.classList.remove('dragging'));
-    }
-    
-    // Update dots
-    document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
-      d.classList.toggle('active', i === idx);
-    });
-  }
-  
-  function animateToPos(targetPos) {
-    const start = currentPos;
-    const diff = targetPos - start;
-    const duration = 350;
-    const startTime = performance.now();
-    
-    function step(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      currentPos = start + diff * ease;
-      track.style.transform = `translateX(-${currentPos}px)`;
-      if (progress < 1) animFrame = requestAnimationFrame(step);
-    }
-    animFrame = requestAnimationFrame(step);
-  }
-  
-  // Initial position
-  currentPos = -getCenterOffset();
-  track.style.transform = `translateX(-${currentPos}px)`;
-  
-  // Touch/mouse events - PREVENT PAGE SCROLL
-  const startDrag = (clientX) => {
-    isDragging = true;
-    startX = clientX;
-    startPos = currentPos;
-    dragDelta = 0;
-    cancelAnimationFrame(animFrame);
-    track.classList.add('dragging');
-    stopAutoplay();
-  };
-  
-  const moveDrag = (clientX) => {
-    if (!isDragging) return;
-    const delta = startX - clientX;
-    dragDelta = delta;
-    currentPos = startPos + delta;
-    // Clamp
-    currentPos = Math.max(0, currentPos);
-    track.style.transform = `translateX(-${currentPos}px)`;
-  };
-  
-  const endDrag = () => {
-    if (!isDragging) return;
-    isDragging = false;
-    track.classList.remove('dragging');
-    
-    // Determine direction
-    const threshold = ITEM_W * 0.2;
-    if (Math.abs(dragDelta) > threshold) {
-      if (dragDelta > 0) {
-        // Swiped left -> next
-        currentIdx = Math.min(total - 1, currentIdx + 1);
-      } else {
-        // Swiped right -> prev
-        currentIdx = Math.max(0, currentIdx - 1);
-      }
-    }
-    goToIndex(currentIdx);
-    startAutoplay();
-  };
-  
-  // Touch events
-  viewport.addEventListener('touchstart', (e) => {
-    startDrag(e.touches[0].clientX);
-  }, { passive: true });
-  
-  viewport.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    moveDrag(e.touches[0].clientX);
-  }, { passive: true });
-  
-  viewport.addEventListener('touchend', endDrag);
-  viewport.addEventListener('touchcancel', endDrag);
-  
-  // Mouse events
-  viewport.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    startDrag(e.clientX);
-  });
-  document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      e.preventDefault();
-      moveDrag(e.clientX);
-    }
-  });
-  document.addEventListener('mouseup', endDrag);
-  
-  // Prevent page scroll during drag
-  viewport.addEventListener('touchmove', (e) => {
-    if (isDragging) e.preventDefault();
-  }, { passive: false });
-  
-  // Buttons
-  document.getElementById('prevBtn').onclick = () => {
-    currentIdx = Math.max(0, currentIdx - 1);
-    goToIndex(currentIdx);
-    stopAutoplay(); startAutoplay();
-  };
-  document.getElementById('nextBtn').onclick = () => {
-    currentIdx = Math.min(total - 1, currentIdx + 1);
-    goToIndex(currentIdx);
-    stopAutoplay(); startAutoplay();
-  };
-  
-  // Dots
-  document.getElementById('sliderDots').onclick = (e) => {
-    const dot = e.target.closest('.slider-dot');
-    if (!dot) return;
-    currentIdx = parseInt(dot.dataset.idx);
-    goToIndex(currentIdx);
-    stopAutoplay(); startAutoplay();
-  };
-  
-  // Card click
-  track.onclick = (e) => {
-    if (Math.abs(dragDelta) > 5) return; // Ignore click if dragged
-    const card = e.target.closest('.slider-card');
-    if (!card) return;
-    const idx = parseInt(card.dataset.idx);
-    if (!isNaN(idx)) openLensModal(idx);
-  };
-  
-  // Autoplay
-  function startAutoplay() {
-    autoplayTimer = setInterval(() => {
-      currentIdx = (currentIdx + 1) % total;
-      goToIndex(currentIdx);
-    }, 4000);
-  }
-  function stopAutoplay() { clearInterval(autoplayTimer); }
-  startAutoplay();
-  
-  // Handle resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      const newW = getCardWidth();
-      const newGap = getCardMargin() * 2;
-      const newItemW = newW + newGap;
-      setCardStyles();
-      currentPos = currentIdx * newItemW - (viewport.offsetWidth - newW) / 2;
-      currentPos = Math.max(0, currentPos);
-      track.style.transform = `translateX(-${currentPos}px)`;
-    }, 150);
-  });
+// ==================== NAV ====================
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('open'); sb.classList.toggle('closed');
 }
+function goToPage(pageId) {
+  document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + pageId);
+  if (el) el.classList.add('active');
+  const titles = {overview:'نظرة عامة',allproducts:'جميع المنتجات',addproduct:'إضافة منتج',categories:'الفئات',lensimages:'صور العدسات',visibility:'إخفاء/إظهار',display:'إعدادات العرض'};
+  document.getElementById('pageTitle').textContent = titles[pageId] || '';
+  if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar').classList.add('closed'); }
+  if (pageId === 'allproducts') renderProducts();
+  if (pageId === 'visibility') renderVisibility();
+  if (pageId === 'categories') renderCategories();
+  if (pageId === 'lensimages') renderLensImages();
+  if (pageId === 'display') { renderDisplaySettings(); renderHiddenColors(); }
+  if (pageId === 'overview') { updateStats(); renderHiddenOverview(); }
+  populateCatSelects();
+}
+document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', e => { e.preventDefault(); goToPage(it.dataset.page); }); });
 
-function createCard(c, idx) {
-  const mainLens = c.lenses[0];
-  const totalStock = c.lenses.reduce((sum, l) => sum + (getProduct(l.id)?.stock || 0), 0);
-  const dots = c.lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
-  const inWishlist = state.wishlist.some(w => w.productId === mainLens.id);
-  const price = getPrice(mainLens);
-  const sym = getCurrencySymbol();
-  
-  return `
-    <div class="slider-card" data-idx="${idx}">
-      <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation(); toggleWishlist('${mainLens.id}')">${inWishlist?'❤️':'♡'}</button>
-      <div class="card-bg" style="background:${c.cardBg}"></div>
-      <div class="card-visual">
-        <div class="card-lens-sphere">
-          <div class="card-lens-inner" style="background:${mainLens.gradient}"></div>
-        </div>
-        <div class="card-dots">${dots}</div>
-      </div>
-      <div class="card-body">
-        <div class="card-badge"><span class="dot"></span>${getText(c.arName, c.enName)}</div>
-        <div class="card-name">${getText(mainLens.name, mainLens.enName)}</div>
-        <div class="card-count">${c.lenses.length} ${getText('تدرجات', 'variations')} · ${totalStock}</div>
-        <div class="card-footer">
-          <div class="card-price">${getText('من', 'from')} <strong>${price} ${sym}</strong></div>
-          <button class="card-btn" onclick="event.stopPropagation(); openLensModal(${idx})">${getText('اكتشفي ✦', 'Explore')}</button>
-        </div>
-      </div>
-    </div>`;
-}
-
-function toggleWishlist(productId) {
-  const product = getProduct(productId);
-  const index = state.wishlist.findIndex(w => w.productId === productId);
-  if (index === -1) {
-    state.wishlist.push({ productId, addedAt: Date.now() });
-    showToast(`✅ "${getText(product.name, product.enName)}" أضيفت للمفضلة`, 'success');
-  } else {
-    state.wishlist.splice(index, 1);
-    showToast('🗑️ أزيلت من المفضلة', 'info');
-  }
-  saveData();
-  // Update wishlist icons
-  document.querySelectorAll('.slider-card').forEach(card => {
-    const btn = card.querySelector('.card-wishlist');
-    if (btn) {
-      const cardDataIdx = parseInt(card.dataset.idx);
-      const mainId = COLORS_DATA[cardDataIdx]?.lenses[0]?.id;
-      if (mainId) {
-        const inWL = state.wishlist.some(w => w.productId === mainId);
-        btn.className = `card-wishlist ${inWL ? 'active' : ''}`;
-        btn.innerHTML = inWL ? '❤️' : '♡';
-      }
-    }
-  });
-}
-
-function openWishlist() {
-  renderWishlist();
-  document.getElementById('wishlistOverlay').classList.add('open');
-  document.getElementById('wishlistPanel').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeWishlist() {
-  document.getElementById('wishlistOverlay').classList.remove('open');
-  document.getElementById('wishlistPanel').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function renderWishlist() {
-  const container = document.getElementById('wishlistItems');
-  if (state.wishlist.length === 0) {
-    container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p><button class="cta-primary" onclick="closeWishlist();scrollToProducts()" style="margin-top:12px">تسوّقي الآن</button></div>';
-    return;
-  }
-  container.innerHTML = state.wishlist.map(w => {
-    const p = getProduct(w.productId); if (!p) return '';
-    return `<div class="wi"><div class="wi-color" style="background:${p.gradient}"></div><div class="wi-info"><div class="wi-name">${getText(p.name, p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')">${getText('أضف للسلة', 'Add')}</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')">${getText('إزالة', 'Remove')}</button></div></div></div>`;
-  }).join('');
-}
-function removeFromWishlist(id) { state.wishlist = state.wishlist.filter(w => w.productId !== id); saveData(); renderWishlist(); showToast('✅ تمت الإزالة', 'success'); }
-function addToCartFromWishlist(id) {
-  const p = getProduct(id); if (!p || p.stock <= 0) { showToast('⚠️ غير متاح', 'error'); return; }
-  const existing = state.cart.find(c => c.productId === id);
-  if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
-  else { state.cart.push({ productId: id, qty: 1 }); }
-  saveData(); updateCartBadge(); renderWishlist(); showToast('✅ أضيف للسلة', 'success');
-}
-
-function saveData() {
-  SecureStorage.set('lensora_cart', state.cart);
-  SecureStorage.set('lensora_wishlist', state.wishlist);
-}
-
-function toggleModalBg() {
-  const box = document.getElementById('modalBox');
-  const container = document.getElementById('lensContainer');
-  const isLight = box.classList.toggle('light-bg');
-  container.classList.toggle('dark-bg', !isLight);
-  container.classList.toggle('light-bg', isLight);
-}
-
-function openLensModal(ci) {
-  currentLensIdx = 0;
-  const cat = COLORS_DATA[((ci % COLORS_DATA.length) + COLORS_DATA.length) % COLORS_DATA.length];
-  document.getElementById('modalTitle').textContent = getText(cat.arName, cat.enName);
-  document.getElementById('modalBox').classList.remove('light-bg');
-  document.getElementById('lensContainer').classList.add('dark-bg');
-  document.getElementById('lensContainer').classList.remove('light-bg');
-  renderLensSlider(cat);
-  document.getElementById('lensModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeLensModal() { document.getElementById('lensModal').classList.remove('open'); document.body.style.overflow = ''; }
-
-function renderLensSlider(cat) {
-  document.getElementById('lensTrack').innerHTML = cat.lenses.map((l, li) => {
-    const p = getProduct(l.id);
-    const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
-    const st = p.stock === 0 ? getText('نفذ', 'Out') : p.stock <= 5 ? `${p.stock}` : `${p.stock} ${getText('قطعة', 'items')}`;
-    const stars = '★'.repeat(Math.floor(l.rating)) + '☆'.repeat(5 - Math.floor(l.rating));
-    return `<div class="lens-slide">
-      <div class="lens-visual dark-bg">
-        <div class="lens-visual-ring"></div>
-        <div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${l.gradient}"></div></div>
-        <div class="color-label"><span class="dot-real" style="background:${l.color}"></span>${getText('اللون الفعلي', 'Actual')}</div>
-      </div>
-      <div class="lens-details">
-        <h3>${getText(l.name, l.enName)}</h3>
-        <p class="lens-desc">${getText(l.desc, l.desc)}</p>
-        <div class="lens-reviews">
-          <div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${l.reviews})</span></div>
-          <div class="review-item"><div class="review-avatar">م</div><span class="review-text">"${getText('جودة ممتازة!', 'Excellent quality!')}"</span></div>
-        </div>
-        <div class="lens-meta">
-          <div class="meta-item"><div class="label">${getText('السعر', 'Price')}</div><div class="value">${getPrice(l)} ${getCurrencySymbol()}</div></div>
-          <div class="meta-item"><div class="label">${getText('المتاح', 'Stock')}</div><div class="value ${sc}">${st}</div></div>
-        </div>
-        <div class="coupon-section">
-          <div class="coupon-input">
-            <input type="text" placeholder="${getText('كود الخصم', 'Coupon')}" id="couponInput_${li}">
-            <button class="coupon-apply" onclick="applyCoupon(${li})">${getText('تطبيق', 'Apply')}</button>
-          </div>
-          <div class="coupon-msg" id="couponMsg_${li}"></div>
-        </div>
-        <div class="qty-selector">
-          <label>${getText('الكمية:', 'Qty:')}</label>
-          <div class="qty-ctrl">
-            <button onclick="changeModalQty(-1,${li})">−</button>
-            <div class="qty-display" id="mq_${li}">1</div>
-            <button onclick="changeModalQty(1,${li})">+</button>
-          </div>
-        </div>
-        <button class="add-lens-btn" onclick="addFromSlider('${l.id}',${li})" ${p.stock===0?'disabled':''}>
-          <span>${p.stock===0?getText('غير متوفر','Out of stock'):getText('🛒 أضف للسلة','🛒 Add to Cart')}</span>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-  document.getElementById('lensSliderDots').innerHTML = cat.lenses.map((_, li) => 
-    `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`
-  ).join('');
-  updateLensSlider();
-}
-
-function updateLensSlider() {
-  document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
-  document.querySelectorAll('.slider-dot-modal').forEach((d, i) => d.classList.toggle('active', i === currentLensIdx));
-  document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  document.getElementById('lensNextBtn').disabled = currentLensIdx >= cat.lenses.length - 1;
-}
-function slideLensMove(dir) {
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  currentLensIdx = Math.max(0, Math.min(cat.lenses.length - 1, currentLensIdx + dir));
-  updateLensSlider();
-}
-function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
-function changeModalQty(delta, li) {
-  const el = document.getElementById(`mq_${li}`); if (!el) return;
-  let v = parseInt(el.textContent) + delta;
-  const catName = document.getElementById('modalTitle').textContent;
-  const cat = COLORS_DATA.find(c => getText(c.arName, c.enName) === catName) || COLORS_DATA[0];
-  const p = getProduct(cat.lenses[li]?.id);
-  v = Math.max(1, Math.min(v, Math.max(1, p?.stock || 1)));
-  el.textContent = v;
-}
-function applyCoupon(li) {
-  const input = document.getElementById(`couponInput_${li}`);
-  const msg = document.getElementById(`couponMsg_${li}`);
-  const code = input.value.trim().toUpperCase();
-  const valid = { 'WELCOME10': '✅ خصم 10%!', 'FIRST20': '✅ خصم 20%!', 'FREESHIP': '✅ شحن مجاني!' };
-  if (valid[code]) { msg.textContent = valid[code]; msg.className = 'coupon-msg success'; }
-  else { msg.textContent = '❌ كود غير صالح'; msg.className = 'coupon-msg error'; }
-}
-function addFromSlider(lensId, li) {
-  const p = getProduct(lensId); if (!p || p.stock <= 0) { showToast('⚠️ غير متاح', 'error'); return; }
-  const el = document.getElementById(`mq_${li}`); const qty = el ? parseInt(el.textContent) : 1;
-  const existing = state.cart.find(c => c.productId === lensId);
-  if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; }
-  else { if (qty > p.stock) { showToast('⚠️ غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); }
-  saveData(); updateCartBadge(); showToast(`✅ "${getText(p.name, p.enName)}" (${qty})`, 'success');
-  if (el) el.textContent = '1';
-}
-
-function updateCartBadge() {
-  const total = state.cart.reduce((s, c) => s + c.qty, 0);
-  const badge = document.getElementById('cartBadge');
-  badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none';
-}
-function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); document.body.style.overflow = ''; }
-function renderCart() {
-  const list = document.getElementById('cartItemsList'); const bottom = document.getElementById('cartBottom');
-  if (state.cart.length === 0) {
-    list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:12px">تسوّقي الآن</button></div>';
-    bottom.innerHTML = ''; return;
-  }
-  list.innerHTML = state.cart.map(c => {
-    const p = getProduct(c.productId); if (!p) return '';
-    return `<div class="ci"><div class="ci-color" style="background:${p.gradient}"></div><div class="ci-info"><div class="ci-name">${getText(p.name, p.enName)}</div><div class="ci-cat">${getText(p.categoryName, p.categoryNameEn)}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)">−</button><span>${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button></div>`;
-  }).join('');
-  const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-  const shipping = sub >= 200 ? 0 : 15;
-  bottom.innerHTML = `<div class="cb-row"><span>${getText('المجموع', 'Subtotal')}</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>${getText('الشحن', 'Shipping')}</span><span>${shipping===0?getText('مجاني','Free'):shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>${getText('الإجمالي', 'Total')}</span><span>${sub + shipping} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()">🧾 ${getText('إتمام الشراء', 'Checkout')}</button>`;
-}
-function changeCartQty(pid, delta) {
-  const item = state.cart.find(c => c.productId === pid); const p = getProduct(pid); if (!item || !p) return;
-  item.qty += delta; if (item.qty <= 0) { removeFromCart(pid); return; }
-  if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى', 'warning'); }
-  saveData(); updateCartBadge(); renderCart();
-}
-function removeFromCart(pid) { state.cart = state.cart.filter(c => c.productId !== pid); saveData(); updateCartBadge(); renderCart(); showToast('✅ تمت الإزالة', 'success'); }
-async function checkout() {
-  if (state.cart.length === 0) return;
-  const btn = document.querySelector('.checkout-btn');
-  btn.disabled = true; btn.innerHTML = '⏳ جاري...';
-  await new Promise(r => setTimeout(r, 1500));
-  showToast('✅ تم تأكيد طلبك! 🎉', 'success');
-  state.cart = []; saveData(); updateCartBadge(); closeCart();
-  btn.disabled = false; btn.innerHTML = `🧾 ${getText('إتمام الشراء', 'Checkout')}`;
-}
-
-function showToast(msg, type = 'info') {
-  const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${type} show`;
+// ==================== TOAST ====================
+function toast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function setupEvents() {
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
-    if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
-    if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
+// ==================== STATS ====================
+function updateStats() {
+  const all = state.products;
+  document.getElementById('statProducts').textContent = all.length;
+  document.getElementById('statVisible').textContent = all.filter(p => p.visible).length;
+  document.getElementById('statLowStock').textContent = all.filter(p => p.stock > 0 && p.stock <= 5).length;
+  document.getElementById('statOutOfStock').textContent = all.filter(p => p.stock === 0).length;
+}
+function renderHiddenOverview() {
+  const hidden = state.products.filter(p => !p.visible);
+  const el = document.getElementById('hiddenOverviewList');
+  if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; }
+  el.innerHTML = hidden.map(p => {
+    const cat = state.categories.find(c => c.id === p.category);
+    return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`;
+  }).join('');
+}
+
+// ==================== CATEGORIES ====================
+function populateCatSelects() {
+  ['pCategory','editCategory'].forEach(sid => {
+    const sel = document.getElementById(sid);
+    if (!sel) return;
+    const val = sel.value;
+    sel.innerHTML = sid === 'editCategory' ? '' : '<option value="">اختر الفئة...</option>';
+    state.categories.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.ar}</option>`; });
+    if (val) sel.value = val;
   });
-  window.addEventListener('scroll', () => { document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50); }, { passive: true });
 }
-function changeLanguage(lang) {
-  state.currentLang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  initSlider();
-  if (document.getElementById('lensModal').classList.contains('open')) {
-    const catName = document.getElementById('modalTitle').textContent;
-    const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName);
-    if (cat) renderLensSlider(cat);
-  }
-  renderCart();
+function renderCategories() {
+  const el = document.getElementById('categoriesList');
+  el.innerHTML = state.categories.map(c => {
+    const cnt = state.products.filter(p => p.category === c.id).length;
+    return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')">✕</button></div>`;
+  }).join('');
 }
-function changeCurrency(currency) {
-  state.currentCurrency = currency;
-  initSlider();
-  if (document.getElementById('lensModal').classList.contains('open')) {
-    const catName = document.getElementById('modalTitle').textContent;
-    const cat = COLORS_DATA.find(c => c.arName === catName || c.enName === catName);
-    if (cat) renderLensSlider(cat);
-  }
-  renderCart();
+function addCategory() {
+  const ar = document.getElementById('newCatNameAr').value.trim();
+  const en = document.getElementById('newCatNameEn').value.trim();
+  const color = document.getElementById('newCatColor').value;
+  if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; }
+  const id = ar.replace(/\s+/g,'_') + '_' + Date.now();
+  state.categories.push({id, ar, en:en||ar, color});
+  saveState(); populateCatSelects(); renderCategories();
+  document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = '';
+  toast('✅ تمت إضافة الفئة', 'success');
 }
-function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); }
+function deleteCat(id) {
+  if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return;
+  state.categories = state.categories.filter(c => c.id !== id);
+  state.products = state.products.filter(p => p.category !== id);
+  saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats();
+  toast('✅ تم الحذف', 'success');
+}
+
+// ==================== PRODUCTS TABLE ====================
+function renderProducts() {
+  const filter = document.getElementById('filterCat')?.value || '';
+  let prods = [...state.products];
+  if (filter === 'hidden') prods = prods.filter(p => !p.visible);
+  else if (filter === 'visible') prods = prods.filter(p => p.visible);
+  const tbody = document.getElementById('productsBody');
+  if (!tbody) return;
+  tbody.innerHTML = prods.map(p => {
+    const cat = state.categories.find(c => c.id === p.category);
+    const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on';
+    const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
+    const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
+    return `<tr>
+      <td><div class="p-thumb" style="background:${p.color}">${thumb}</div></td>
+      <td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td>
+      <td>${cat?cat.ar:'-'}</td>
+      <td class="p-price">${p.price} ر.س</td>
+      <td><span class="badge ${sc}">${st} (${p.stock})</span></td>
+      <td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td>
+      <td style="white-space:nowrap"><div style="display:flex;gap:3px">
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button>
+        <button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ==================== ADD PRODUCT ====================
+function previewImg(input, uploadId, stateKey) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state[stateKey] = e.target.result;
+    const upload = document.getElementById(uploadId);
+    upload.innerHTML = `<img src="${e.target.result}">`;
+  };
+  reader.readAsDataURL(file);
+}
+function saveProduct() {
+  const nameAr = document.getElementById('pNameAr').value.trim();
+  const nameEn = document.getElementById('pNameEn').value.trim();
+  const category = document.getElementById('pCategory').value;
+  const price = parseInt(document.getElementById('pPrice').value);
+  const stock = parseInt(document.getElementById('pStock').value);
+  const color = document.getElementById('pColor').value;
+  const desc = document.getElementById('pDesc').value.trim();
+  const visible = document.getElementById('pVisible').checked;
+  if (!nameAr || !category || isNaN(price) || isNaN(stock)) { toast('❌ أكمل الحقول المطلوبة', 'error'); return; }
+  const id = 'p_' + Date.now();
+  state.products.push({ id, nameAr, nameEn, category, price, stock, color, gradient:`radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating:4.5+Math.random()*0.5, reviews:Math.floor(Math.random()*200)+10, visible, lensImage:state.currentLensImg, cardImage:state.currentCardImg });
+  saveState(); updateStats(); renderProducts();
+  toast('✅ تمت إضافة المنتج', 'success');
+  document.getElementById('pNameAr').value=''; document.getElementById('pNameEn').value=''; document.getElementById('pPrice').value=''; document.getElementById('pStock').value=''; document.getElementById('pDesc').value='';
+  state.currentLensImg=null; state.currentCardImg=null;
+  document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
+  document.getElementById('cardImgUpload').innerHTML='<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>';
+}
+
+// ==================== EDIT PRODUCT ====================
+function editProduct(id) {
+  const p = state.products.find(x => x.id === id); if (!p) return;
+  populateCatSelects();
+  document.getElementById('editId').value = p.id;
+  document.getElementById('editNameAr').value = p.nameAr;
+  document.getElementById('editNameEn').value = p.nameEn || '';
+  document.getElementById('editCategory').value = p.category;
+  document.getElementById('editPrice').value = p.price;
+  document.getElementById('editStock').value = p.stock;
+  document.getElementById('editColor').value = p.color;
+  document.getElementById('editColorHex').value = p.color;
+  document.getElementById('editDesc').value = p.desc || '';
+  const lensUp = document.getElementById('editLensUpload');
+  lensUp.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>تغيير</span>';
+  const cardUp = document.getElementById('editCardUpload');
+  cardUp.innerHTML = p.cardImage ? `<img src="${p.cardImage}">` : '<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>';
+  document.getElementById('editModal').classList.add('show');
+}
+function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
+function previewEditImg(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => { document.getElementById('editLensUpload').innerHTML = `<img src="${e.target.result}">`; };
+  reader.readAsDataURL(file);
+}
+function previewEditCard(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => { document.getElementById('editCardUpload').innerHTML = `<img src="${e.target.result}">`; };
+  reader.readAsDataURL(file);
+}
+function updateProduct() {
+  const id = document.getElementById('editId').value;
+  const p = state.products.find(x => x.id === id); if (!p) return;
+  p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr;
+  p.nameEn = document.getElementById('editNameEn').value.trim();
+  p.category = document.getElementById('editCategory').value || p.category;
+  p.price = parseInt(document.getElementById('editPrice').value) ?? p.price;
+  p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock;
+  p.color = document.getElementById('editColor').value;
+  p.desc = document.getElementById('editDesc').value.trim();
+  p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`;
+  const lensImg = document.getElementById('editLensUpload').querySelector('img');
+  if (lensImg) p.lensImage = lensImg.src;
+  const cardImg = document.getElementById('editCardUpload').querySelector('img');
+  if (cardImg) p.cardImage = cardImg.src;
+  saveState(); renderProducts(); renderLensImages(); updateStats(); closeEditModal();
+  toast('✅ تم تحديث المنتج', 'success');
+}
+function deleteProduct(id) {
+  const p = state.products.find(x => x.id === id); if (!p) return;
+  if (!confirm(`حذف "${p.nameAr}"؟`)) return;
+  state.products = state.products.filter(x => x.id !== id);
+  saveState(); renderProducts(); renderLensImages(); updateStats();
+  toast('✅ تم حذف المنتج', 'success');
+}
+function toggleVis(id) {
+  const p = state.products.find(x => x.id === id); if (!p) return;
+  p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats();
+  toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️‍🗨️ تم إخفاء "${p.nameAr}"`, 'success');
+}
+
+// ==================== VISIBILITY LIST ====================
+function renderVisibility() {
+  const el = document.getElementById('visibilityList'); if (!el) return;
+  el.innerHTML = state.products.map(p => {
+    const cat = state.categories.find(c => c.id === p.category);
+    const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
+    return `<div class="vis-item"><div class="p-thumb" style="background:${p.color};width:36px;height:36px">${thumb}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 6px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`;
+  }).join('');
+}
+
+// ==================== LENS IMAGES GRID ====================
+function renderLensImages() {
+  const el = document.getElementById('colorsList'); if (!el) return;
+  el.innerHTML = state.products.map(p => {
+    const hasImg = !!p.lensImage;
+    return `<div class="color-card"><div class="color-swatch" onclick="openColorImgModal('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">📷 تغيير</div>` : `<div class="color-swatch-placeholder" style="background:${p.gradient}"></div><div class="color-swatch-overlay">📷 إضافة صورة</div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:22px;height:22px;font-size:9px">🗑️</button>` : ''}</div></div>`;
+  }).join('');
+}
+function openColorImgModal(productId) {
+  state.editingProductId = productId;
+  const p = state.products.find(x => x.id === productId); if (!p) return;
+  const area = document.getElementById('colorImgArea');
+  area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>';
+  document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none';
+  document.getElementById('colorImgModal').classList.add('show');
+}
+function closeColorImgModal() { document.getElementById('colorImgModal').classList.remove('show'); state.editingProductId = null; }
+function saveColorImg(input) {
+  const file = input.files[0]; if (!file || !state.editingProductId) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const p = state.products.find(x => x.id === state.editingProductId);
+    if (p) { p.lensImage = e.target.result; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إضافة الصورة', 'success'); }
+  };
+  reader.readAsDataURL(file);
+}
+function removeColorImg() {
+  if (!state.editingProductId) return;
+  const p = state.products.find(x => x.id === state.editingProductId);
+  if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إزالة الصورة', 'success'); }
+}
+function removeProdImg(id) {
+  const p = state.products.find(x => x.id === id);
+  if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); toast('✅ تم إزالة الصورة', 'success'); }
+}
+
+// ==================== DISPLAY SETTINGS ====================
+function renderDisplaySettings() {
+  const s = state.settings;
+  const el1 = document.getElementById('settingShowPrice'); if(el1) el1.checked = s.showPrice;
+  const el2 = document.getElementById('settingShowStock'); if(el2) el2.checked = s.showStock;
+  const el3 = document.getElementById('settingShowColors'); if(el3) el3.checked = s.showColors;
+  const el4 = document.getElementById('settingShowCardImages'); if(el4) el4.checked = s.showCardImages;
+}
+function updateSettings() {
+  state.settings.showPrice = document.getElementById('settingShowPrice').checked;
+  state.settings.showStock = document.getElementById('settingShowStock').checked;
+  state.settings.showColors = document.getElementById('settingShowColors').checked;
+  state.settings.showCardImages = document.getElementById('settingShowCardImages').checked;
+  saveState(); toast('✅ تم حفظ الإعدادات', 'success');
+}
+function renderHiddenColors() {
+  const el = document.getElementById('hiddenColorsList'); if (!el) return;
+  el.innerHTML = state.products.map(p => {
+    const isHidden = state.hiddenColorIds.includes(p.id);
+    return `<div class="color-card"><div class="color-swatch"><div class="color-swatch-placeholder" style="background:${p.gradient}"></div></div><div class="color-info"><span class="color-name">${p.nameAr}</span><label class="toggle"><input type="checkbox" ${!isHidden?'checked':''} onchange="toggleColorHide('${p.id}')"><span class="toggle-slider"></span></label></div></div>`;
+  }).join('');
+}
+function toggleColorHide(id) {
+  const idx = state.hiddenColorIds.indexOf(id);
+  if (idx === -1) state.hiddenColorIds.push(id); else state.hiddenColorIds.splice(idx, 1);
+  saveState(); toast('✅ تم التحديث', 'success');
+}
+
+// ==================== HELPERS ====================
+function adjColor(hex, amount) {
+  hex = hex.replace('#','');
+  const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount));
+  const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount));
+  const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount));
+  return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join('');
+}
+
+// Color picker sync
+document.getElementById('pColor')?.addEventListener('input', e => { document.getElementById('pColorHex').value = e.target.value; });
+document.getElementById('pColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('pColor').value = e.target.value; });
+document.getElementById('editColor')?.addEventListener('input', e => { document.getElementById('editColorHex').value = e.target.value; });
+document.getElementById('editColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('editColor').value = e.target.value; });
+
+// Close modals on overlay click
+document.getElementById('editModal')?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) closeEditModal(); });
+document.getElementById('colorImgModal')?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) closeColorImgModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape'){closeEditModal();closeColorImgModal();} });
+
+// ==================== OPEN STORE PREVIEW ====================
+function openStore() {
+  const storeData = {
+    categories: state.categories,
+    products: state.products.filter(p => {
+      if (!p.visible) return false;
+      if (state.hiddenColorIds.includes(p.id)) return false;
+      return true;
+    }),
+    settings: state.settings
+  };
+  const html = buildStoreHTML(storeData);
+  const blob = new Blob([html], {type:'text/html'});
+  window.open(URL.createObjectURL(blob), '_blank');
+}
+
+function buildStoreHTML(data) {
+  const {categories, products, settings} = data;
+  const grouped = {};
+  categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; });
+  
+  let cardsHTML = '';
+  categories.forEach(c => {
+    if (!grouped[c.id] || grouped[c.id].lenses.length === 0) return;
+    const lenses = grouped[c.id].lenses;
+    const main = lenses[0];
+    const totalStock = lenses.reduce((s,l) => s+l.stock, 0);
+    const dots = lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
+    
+    cardsHTML += `<div class="slider-card">
+      ${settings.showCardImages && main.cardImage ? `<div class="card-img-bg" style="background-image:url(${main.cardImage})"></div>` : ''}
+      <div class="card-bg" style="${main.cardImage?'background:'+main.color+';opacity:.3':'background:'+main.color}"></div>
+      <div class="card-visual"><div class="card-lens-sphere">${main.lensImage ? `<img src="${main.lensImage}" class="lens-real-img">` : `<div class="card-lens-inner" style="background:${main.gradient}"></div>`}</div>${settings.showColors?`<div class="card-dots">${dots}</div>`:''}</div>
+      <div class="card-body"><div class="card-badge"><span class="dot"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:'<div class="card-price"></div>'}<button class="card-btn">اكتشفي ✦</button></div></div>
+    </div>`;
+  });
+  
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>
+  :root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}
+  *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+  .hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}
+  .hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}
+  .hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}
+  .slider-container{padding:20px 0 60px;overflow:hidden}
+  .slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .slider-card{flex:0 0 260px;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);border:1px solid rgba(201,168,76,.06);position:relative}
+  .card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}
+  .card-bg{position:absolute;inset:0;z-index:0}
+  .slider-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none;z-index:1}
+  .card-visual{position:relative;height:160px;z-index:4;display:flex;align-items:center;justify-content:center}
+  .card-lens-sphere{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:5}
+  .card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}
+  .card-lens-inner{width:80px;height:80px;border-radius:50%;box-shadow:inset 0 0 16px rgba(0,0,0,.4)}
+  .lens-real-img{width:80%;height:80%;object-fit:contain;border-radius:50%;position:relative;z-index:2}
+  .card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
+  .card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);overflow:hidden}
+  .card-body{position:relative;z-index:4;padding:14px 16px}
+  .card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);margin-bottom:8px}
+  .card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}
+  .card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}
+  .card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}
+  .card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}
+  .card-price{font-size:11px;color:var(--text-dim)}
+  .card-price strong{font-size:16px;color:var(--gold);font-weight:700}
+  .card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;border:none}
+  .footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}
+  .empty{text-align:center;padding:60px 20px;color:var(--text-dim)}
+  @media(max-width:600px){.slider-card{flex:0 0 240px}.hero{min-height:40vh}}</style></head><body>
+  <div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div>
+  <div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div>
+  <div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`;
+}
 </script>
 </body>
 </html>
