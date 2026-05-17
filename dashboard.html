@@ -9,14 +9,14 @@
 <style>
 :root {
   --bg: #050303;
-  --card-bg: rgba(30, 26, 24, 0.9);
+  --card: rgba(30,26,24,0.95);
   --gold: #c9a84c;
   --text: #faf7f2;
   --text-dim: #9a8e81;
-  --border: rgba(201, 168, 76, 0.2);
-  --radius: 16px;
-  --side-w: 260px;
-  --nav-h: 64px;
+  --border: rgba(201,168,76,0.2);
+  --radius: 14px;
+  --side-w: 240px;
+  --nav-h: 60px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -34,14 +34,14 @@ body {
 }
 .login-screen.hidden { display: none; }
 .login-card {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 40px;
-  max-width: 400px; width: 90%; text-align: center;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 36px 32px;
+  max-width: 380px; width: 90%; text-align: center;
 }
 .login-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 36px; color: var(--gold); letter-spacing: 4px;
-  margin-bottom: 20px;
+  font-size: 32px; color: var(--gold); letter-spacing: 4px;
+  margin-bottom: 16px;
 }
 .login-form { display: flex; flex-direction: column; gap: 12px; }
 .login-form input {
@@ -50,16 +50,16 @@ body {
   min-height: 44px;
 }
 .login-form button {
-  padding: 14px; border-radius: 10px;
+  padding: 12px; border-radius: 10px;
   background: linear-gradient(135deg, var(--gold), #8b7332);
   color: #0a0808; font-weight: 700; border: none; cursor: pointer;
 }
-.login-hint { font-size: 11px; color: var(--text-dim); margin-top: 16px; }
+.login-hint { font-size: 11px; color: var(--text-dim); margin-top: 14px; }
 
-/* ===== DASHBOARD - SIMPLE FLEX LAYOUT ===== */
+/* ===== DASHBOARD - SIMPLE FLEX ===== */
 .dashboard { display: none; }
 .dashboard.active {
-  display: flex; /* ✅ Simple flex - no grid, no fixed positioning conflicts */
+  display: flex; /* ✅ Flex layout - no conflicts */
   min-height: 100vh;
 }
 
@@ -69,57 +69,56 @@ body {
   background: rgba(18,14,12,0.98);
   border-left: 1px solid var(--border);
   display: flex; flex-direction: column;
-  position: sticky; top: 0; height: 100vh;
   flex-shrink: 0; /* ✅ Don't shrink */
 }
 .side-head {
-  padding: 18px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
+  padding: 16px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
 }
 .side-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 20px; color: var(--gold); letter-spacing: 2px;
+  font-size: 18px; color: var(--gold); letter-spacing: 2px;
 }
-.side-menu { flex: 1; overflow-y: auto; padding: 10px; }
+.side-menu { flex: 1; overflow-y: auto; padding: 8px; }
 .side-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px 16px; border-radius: 10px;
-  color: var(--text-dim); font-size: 14px; cursor: pointer;
+  padding: 10px 14px; border-radius: 10px;
+  color: var(--text-dim); font-size: 13px; cursor: pointer;
   margin-bottom: 4px;
 }
 .side-item:hover, .side-item.active {
   background: rgba(201,168,76,0.15); color: var(--gold);
 }
 .side-item.active { border-right: 3px solid var(--gold); }
-.side-icon { font-size: 18px; width: 22px; text-align: center; }
-.side-foot { padding: 16px 20px; border-top: 1px solid var(--border); }
+.side-icon { font-size: 16px; width: 20px; text-align: center; }
+.side-foot { padding: 14px 18px; border-top: 1px solid var(--border); }
 .side-user {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px; border-radius: 10px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px; border-radius: 10px;
   background: rgba(201,168,76,0.1);
 }
 .side-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 32px; height: 32px; border-radius: 50%;
   background: var(--gold); display: flex;
   align-items: center; justify-content: center;
-  color: #0a0808; font-weight: 700;
+  color: #0a0808; font-weight: 700; font-size: 12px;
 }
-.side-name { font-size: 13px; font-weight: 600; }
-.side-role { font-size: 10px; color: var(--text-dim); }
+.side-name { font-size: 12px; font-weight: 600; }
+.side-role { font-size: 9px; color: var(--text-dim); }
 .side-logout {
-  margin-right: auto; width: 32px; height: 32px;
-  border-radius: 8px; background: rgba(231,76,60,0.2);
+  margin-right: auto; width: 28px; height: 28px;
+  border-radius: 6px; background: rgba(231,76,60,0.2);
   color: #e74c3c; display: flex; align-items: center;
   justify-content: center; cursor: pointer; border: none;
 }
 
-/* ===== MAIN CONTENT - TAKES FULL WIDTH ===== */
+/* ===== MAIN - TAKES ALL REMAINING SPACE ===== */
 .main {
-  flex: 1; /* ✅ Takes all remaining space */
-  padding: 20px;
-  padding-top: calc(var(--nav-h) + 20px);
-  width: 100%; /* ✅ Full width */
-  max-width: 100%; /* ✅ No clipping */
+  flex: 1; /* ✅ Takes all remaining width */
+  padding: 16px;
+  padding-top: calc(var(--nav-h) + 16px);
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
 }
 
@@ -128,58 +127,58 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: var(--side-w); /* ✅ Accounts for sidebar width */
+  right: 0; /* ✅ Full width */
   height: var(--nav-h);
   background: rgba(10,8,8,0.95);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px; z-index: 100;
+  padding: 0 16px; z-index: 100;
 }
 .topbar-title {
   font-family: 'Playfair Display', serif;
-  font-size: 18px; color: var(--gold);
+  font-size: 16px; color: var(--gold);
 }
 .store-btn {
-  padding: 8px 16px; border-radius: 20px;
+  padding: 6px 12px; border-radius: 16px;
   background: rgba(201,168,76,0.15); color: var(--gold);
-  font-size: 12px; border: 1px solid var(--border);
+  font-size: 11px; border: 1px solid var(--border);
   cursor: pointer;
 }
 
 /* ===== STATS ===== */
 .stats {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px; margin-bottom: 20px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 16px;
 }
 .stat {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
   display: flex; align-items: center; gap: 10px;
 }
 .stat-icon {
-  width: 40px; height: 40px; border-radius: 10px;
+  width: 36px; height: 36px; border-radius: 8px;
   background: rgba(201,168,76,0.15);
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
 }
-.stat-val { font-size: 22px; font-weight: 700; color: var(--gold); }
-.stat-lbl { font-size: 11px; color: var(--text-dim); }
+.stat-val { font-size: 18px; font-weight: 700; color: var(--gold); }
+.stat-lbl { font-size: 10px; color: var(--text-dim); }
 
 /* ===== CARDS ===== */
 .fcard {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
 }
 .ftitle {
   font-family: 'Playfair Display', serif;
-  font-size: 17px; color: var(--gold); margin-bottom: 14px;
+  font-size: 15px; color: var(--gold); margin-bottom: 12px;
 }
 
 /* ===== BUTTONS ===== */
 .btn {
-  padding: 8px 16px; border-radius: 10px;
-  font-weight: 600; font-size: 13px; cursor: pointer; border: none;
-  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border-radius: 10px;
+  font-weight: 600; font-size: 12px; cursor: pointer; border: none;
+  display: inline-flex; align-items: center; gap: 4px;
 }
 .btn-gold {
   background: linear-gradient(135deg, var(--gold), #8b7332);
@@ -193,124 +192,124 @@ body {
   background: rgba(231,76,60,0.15); color: #e74c3c;
   border: 1px solid rgba(231,76,60,0.3);
 }
-.btn-sm { padding: 5px 10px; font-size: 11px; }
-.btn-icon { width: 28px; height: 28px; padding: 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.btn-sm { padding: 4px 8px; font-size: 10px; }
+.btn-icon { width: 26px; height: 26px; padding: 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
 
 /* ===== TABLE ===== */
 .p-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
-.p-table { width: 100%; border-collapse: collapse; min-width: 650px; }
+.p-table { width: 100%; border-collapse: collapse; min-width: 600px; }
 .p-table th {
-  text-align: right; padding: 10px 12px; font-size: 11px;
+  text-align: right; padding: 8px 10px; font-size: 10px;
   color: var(--text-dim); border-bottom: 1px solid var(--border);
   background: rgba(201,168,76,0.05);
 }
-.p-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.p-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 12px; }
 .p-thumb {
-  width: 40px; height: 40px; border-radius: 8px;
+  width: 36px; height: 36px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: #0a0808; font-weight: 700;
+  font-size: 11px; color: #0a0808; font-weight: 700;
   overflow: hidden; position: relative; border: 2px solid var(--border);
 }
 .p-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .badge {
-  padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 8px; font-size: 9px; font-weight: 600;
 }
 .badge.on { background: rgba(46,204,113,0.2); color: #2ecc71; }
 .badge.off { background: rgba(231,76,60,0.2); color: #e74c3c; }
 .badge.low { background: rgba(243,156,18,0.2); color: #f39c12; }
 
 /* ===== FORM ===== */
-.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
-.fgroup { display: flex; flex-direction: column; gap: 5px; }
-.fgroup label { font-size: 11px; color: var(--text-dim); }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.fgroup { display: flex; flex-direction: column; gap: 4px; }
+.fgroup label { font-size: 10px; color: var(--text-dim); }
 .fgroup input, .fgroup select, .fgroup textarea {
   background: rgba(201,168,76,0.1); border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px; color: var(--text);
-  font-size: 13px; min-height: 40px;
+  border-radius: 10px; padding: 8px 10px; color: var(--text);
+  font-size: 12px; min-height: 38px;
 }
-.fgroup textarea { min-height: 60px; resize: vertical; }
+.fgroup textarea { min-height: 50px; resize: vertical; }
 
 /* ===== IMAGE UPLOAD ===== */
 .img-upload {
-  width: 80px; height: 80px; border-radius: 50%;
+  width: 70px; height: 70px; border-radius: 50%;
   border: 2px dashed var(--border); display: flex;
   flex-direction: column; align-items: center; justify-content: center;
   cursor: pointer; position: relative; overflow: hidden;
   background: rgba(201,168,76,0.05);
 }
 .img-upload img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.img-upload span { font-size: 9px; color: var(--text-dim); text-align: center; margin-top: 4px; }
-.upload-icon { font-size: 18px; color: var(--gold); margin-bottom: 2px; }
+.img-upload span { font-size: 8px; color: var(--text-dim); text-align: center; margin-top: 4px; }
+.upload-icon { font-size: 16px; color: var(--gold); margin-bottom: 2px; }
 .img-upload.rect { border-radius: 10px; }
 
 /* ===== MODAL ===== */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.85);
   z-index: 2000; display: flex; align-items: center; justify-content: center;
-  padding: 20px; opacity: 0; visibility: hidden; transition: all 0.3s;
+  padding: 16px; opacity: 0; visibility: hidden; transition: all 0.3s;
 }
 .overlay.show { opacity: 1; visibility: visible; }
 .modal {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--radius); width: 100%; max-width: 580px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 100%; max-width: 520px;
   max-height: 90vh; overflow-y: auto;
 }
 .modal-head {
-  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center;
 }
-.modal-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--gold); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--gold); }
 .modal-close {
-  width: 30px; height: 30px; border-radius: 8px;
+  width: 28px; height: 28px; border-radius: 8px;
   background: rgba(201,168,76,0.15); color: var(--gold);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; border: none;
 }
-.modal-body { padding: 18px; }
+.modal-body { padding: 16px; }
 .modal-foot {
-  padding: 12px 18px; border-top: 1px solid var(--border);
-  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 10px 16px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 6px;
 }
 
 /* ===== TOGGLE ===== */
-.toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
+.toggle { position: relative; width: 38px; height: 20px; cursor: pointer; }
 .toggle input { display: none; }
 .toggle-slider {
   position: absolute; inset: 0; background: rgba(255,255,255,0.1);
-  border-radius: 12px; transition: 0.3s; border: 1px solid var(--border);
+  border-radius: 10px; transition: 0.3s; border: 1px solid var(--border);
 }
 .toggle-slider::before {
-  content: ''; position: absolute; width: 18px; height: 18px;
+  content: ''; position: absolute; width: 14px; height: 14px;
   border-radius: 50%; background: #fff; top: 2px; right: 2px;
   transition: 0.3s;
 }
 .toggle input:checked + .toggle-slider { background: var(--gold); border-color: var(--gold); }
-.toggle input:checked + .toggle-slider::before { transform: translateX(-20px); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(-18px); }
 
 /* ===== COLORS GRID ===== */
 .colors-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
 }
 .color-card {
   background: rgba(201,168,76,0.08); border: 1px solid var(--border);
   border-radius: 10px; overflow: hidden;
 }
 .color-swatch {
-  width: 100%; height: 50px; position: relative; cursor: pointer;
+  width: 100%; height: 46px; position: relative; cursor: pointer;
 }
 .color-swatch img { width: 100%; height: 100%; object-fit: cover; }
 .color-swatch-placeholder { width: 100%; height: 100%; }
-.color-info { padding: 10px; display: flex; align-items: center; justify-content: space-between; }
-.color-name { font-size: 11px; font-weight: 600; }
+.color-info { padding: 8px; display: flex; align-items: center; justify-content: space-between; }
+.color-name { font-size: 10px; font-weight: 600; }
 
 /* ===== TOAST ===== */
 .toast {
-  position: fixed; bottom: 20px; left: 50%;
+  position: fixed; bottom: 16px; left: 50%;
   transform: translateX(-50%) translateY(100px);
   background: rgba(20,18,16,0.95); border: 1px solid var(--border);
-  color: var(--text); padding: 12px 24px;
-  border-radius: 10px; font-size: 12px;
+  color: var(--text); padding: 10px 20px;
+  border-radius: 10px; font-size: 11px;
   z-index: 9999; transition: transform 0.3s;
   text-align: center;
 }
@@ -320,40 +319,33 @@ body {
 
 /* ===== EMPTY STATE ===== */
 .empty-state {
-  text-align: center; padding: 40px 20px; color: var(--text-dim);
+  text-align: center; padding: 32px 16px; color: var(--text-dim);
 }
-.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.6; }
-.empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.empty-desc { font-size: 12px; }
+.empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.6; }
+.empty-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.empty-desc { font-size: 11px; }
 
 /* ===== RESPONSIVE - MOBILE ===== */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .dashboard.active { flex-direction: column; }
   .sidebar {
-    width: 100%; height: auto; position: static;
-    border-left: none; border-bottom: 1px solid var(--border);
+    width: 100%; height: auto; border-left: none;
+    border-bottom: 1px solid var(--border);
   }
-  .side-menu { display: none; }
-  .side-menu.open { display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px; padding: 10px; }
-  .side-item { padding: 8px 12px; font-size: 12px; min-height: auto; }
+  .side-menu { 
+    display: none; 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    gap: 4px; 
+    padding: 8px;
+  }
+  .side-menu.open { display: flex; }
+  .side-item { padding: 6px 10px; font-size: 11px; min-height: auto; }
   .side-item.active { border-right: none; border-bottom: 2px solid var(--gold); }
-  .topbar { right: 0; }
-  .main { padding-top: calc(var(--nav-h) + 16px); padding-right: 16px; padding-left: 16px; }
+  .main { padding-top: calc(var(--nav-h) + 12px); padding-right: 12px; padding-left: 12px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .fgrid { grid-template-columns: 1fr; }
 }
-
-/* ===== DATA CONTROLS ===== */
-.data-controls {
-  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
-}
-.data-btn {
-  padding: 6px 12px; border-radius: 8px; font-size: 11px;
-  cursor: pointer; border: 1px solid var(--border);
-  background: rgba(201,168,76,0.1); color: var(--text-dim);
-}
-.data-btn:hover { border-color: var(--gold); color: var(--gold); }
-.data-btn.danger { background: rgba(231,76,60,0.15); color: #e74c3c; }
 </style>
 </head>
 <body class="loading">
@@ -383,7 +375,7 @@ body {
       <div class="side-item" data-page="addproduct">➕ إضافة جديد</div>
       <div class="side-item" data-page="categories">🎨 الفئات</div>
       <div class="side-item" data-page="lensimages">📷 صور العدسات</div>
-      <div class="side-item" data-page="visibility">👁️‍🗨️ التحكم في الظهور</div>
+      <div class="side-item" data-page="visibility">👁️‍🗨️ التحكم</div>
       <div class="side-item" data-page="display">⚙️ الإعدادات</div>
     </nav>
     <div class="side-foot">
@@ -398,18 +390,12 @@ body {
   <main class="main">
     <header class="topbar">
       <h1 class="topbar-title" id="pageTitle">📊 نظرة عامة</h1>
-      <button class="store-btn" onclick="openStorePreview()">🌐 معاينة المتجر</button>
+      <button class="store-btn" onclick="openStorePreview()">🌐 معاينة</button>
     </header>
 
     <!-- PAGE: OVERVIEW -->
     <div class="page active" id="page-overview">
-      <button class="btn btn-gold" onclick="goToPage('addproduct')" style="margin-bottom:16px">➕ إضافة منتج جديد</button>
-      <div class="data-controls">
-        <button class="data-btn" onclick="exportData()">📥 تصدير</button>
-        <button class="data-btn" onclick="document.getElementById('importFile').click()">📤 استيراد</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
-        <button class="data-btn danger" onclick="resetData()">🗑️ إعادة ضبط</button>
-      </div>
+      <button class="btn btn-gold" onclick="goToPage('addproduct')" style="margin-bottom:14px">➕ إضافة منتج</button>
       <div class="stats">
         <div class="stat"><div class="stat-icon">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
         <div class="stat"><div class="stat-icon">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
@@ -424,12 +410,12 @@ body {
 
     <!-- PAGE: ALL PRODUCTS -->
     <div class="page" id="page-allproducts">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px">
         <h2 class="ftitle" style="margin-bottom:0">📦 إدارة المنتجات</h2>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
-          <input type="text" id="searchProducts" placeholder="🔍 بحث..." oninput="renderProducts()" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;min-height:38px">
-          <select id="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;min-height:38px">
+          <input type="text" id="searchProducts" placeholder="🔍 بحث..." oninput="renderProducts()" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
+          <select id="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
             <option value="">كل الفئات</option>
             <option value="hidden">المخفية فقط</option>
             <option value="visible">المرئية فقط</option>
@@ -456,30 +442,30 @@ body {
           <div class="fgroup"><label>الفئة *</label><select id="pCategory"><option value="">اختر الفئة...</option></select></div>
           <div class="fgroup"><label>السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85"></div>
           <div class="fgroup"><label>الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30"></div>
-          <div class="fgroup"><label>اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:40px;border:none;border-radius:8px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;min-height:40px"></div></div>
+          <div class="fgroup"><label>اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:40px;height:38px;border:none;border-radius:8px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
         </div>
-        <div class="fgroup" style="margin-top:12px"><label>وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
-        <div style="margin-top:16px">
-          <label style="font-size:11px;color:var(--text-dim)">📷 صورة العدسة</label>
-          <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <div class="fgroup" style="margin-top:10px"><label>وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
+        <div style="margin-top:14px">
+          <label style="font-size:10px;color:var(--text-dim)">📷 صورة العدسة</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
             <div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()">
               <span class="upload-icon">📷</span><span>اضغط للرفع</span>
             </div>
             <input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
-            <span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400px</span>
+            <span style="font-size:9px;color:var(--text-dim)">JPG, PNG | 400×400px</span>
           </div>
         </div>
-        <div style="margin-top:12px">
-          <label style="font-size:11px;color:var(--text-dim)">🖼️ صورة البطاقة (اختياري)</label>
-          <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <div style="margin-top:10px">
+          <label style="font-size:10px;color:var(--text-dim)">🖼️ صورة البطاقة (اختياري)</label>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
             <div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()">
               <span class="upload-icon">🖼️</span><span>صورة البطاقة</span>
             </div>
             <input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')">
           </div>
         </div>
-        <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="pVisible" checked><span>✅ عرض في المتجر</span></label>
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" id="pVisible" checked><span>✅ عرض في المتجر</span></label>
           <button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
         </div>
       </div>
@@ -490,10 +476,10 @@ body {
       <h2 class="ftitle mb-2">🎨 إدارة الفئات</h2>
       <div class="fcard">
         <div id="categoriesList"></div>
-        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
-          <input type="text" id="newCatNameAr" placeholder="اسم الفئة (عربي)" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;min-height:38px">
-          <input type="text" id="newCatNameEn" placeholder="Category (EN)" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;min-height:38px">
-          <input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:38px;border:none;border-radius:8px;cursor:pointer">
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+          <input type="text" id="newCatNameAr" placeholder="اسم الفئة (عربي)" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
+          <input type="text" id="newCatNameEn" placeholder="Category (EN)" style="background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
+          <input type="color" id="newCatColor" value="#c9a84c" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer">
           <button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button>
         </div>
       </div>
@@ -503,7 +489,7 @@ body {
     <div class="page" id="page-lensimages">
       <h2 class="ftitle mb-2">📷 صور العدسات</h2>
       <div class="fcard">
-        <p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">اضغط على أي عدسة لرفع صورة حقيقية</p>
+        <p style="font-size:10px;color:var(--text-dim);margin-bottom:10px">اضغط على أي عدسة لرفع صورة حقيقية</p>
         <div id="colorsList" class="colors-grid"></div>
       </div>
     </div>
@@ -518,9 +504,9 @@ body {
     <div class="page" id="page-display">
       <h2 class="ftitle mb-2">⚙️ إعدادات العرض</h2>
       <div class="fcard">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:600">إظهار الأسعار</div><div style="font-size:11px;color:var(--text-dim)">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:600">إظهار المخزون</div><div style="font-size:11px;color:var(--text-dim)">عرض عدد القطع</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0"><div><div style="font-size:13px;font-weight:600">إظهار ألوان العدسات</div><div style="font-size:11px;color:var(--text-dim)">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600">إظهار الأسعار</div><div style="font-size:10px;color:var(--text-dim)">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600">إظهار المخزون</div><div style="font-size:10px;color:var(--text-dim)">عرض عدد القطع</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0"><div><div style="font-size:12px;font-weight:600">إظهار ألوان العدسات</div><div style="font-size:10px;color:var(--text-dim)">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
       </div>
       <div class="fcard">
         <h3 class="ftitle">🔒 إخفاء ألوان محددة</h3>
@@ -543,11 +529,11 @@ body {
         <div class="fgroup"><label>الفئة</label><select id="editCategory"></select></div>
         <div class="fgroup"><label>السعر</label><input type="number" id="editPrice" min="0"></div>
         <div class="fgroup"><label>المخزون</label><input type="number" id="editStock" min="0"></div>
-        <div class="fgroup"><label>اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:40px;border:none;border-radius:8px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:12px;min-height:40px"></div></div>
+        <div class="fgroup"><label>اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:40px;height:38px;border:none;border-radius:8px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
       </div>
-      <div class="fgroup" style="margin-top:10px"><label>الوصف</label><textarea id="editDesc"></textarea></div>
-      <div style="margin-top:12px"><label style="font-size:11px;color:var(--text-dim)">صورة العدسة</label>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+      <div class="fgroup" style="margin-top:8px"><label>الوصف</label><textarea id="editDesc"></textarea></div>
+      <div style="margin-top:10px"><label style="font-size:10px;color:var(--text-dim)">صورة العدسة</label>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
           <div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div>
           <input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)">
         </div>
@@ -562,13 +548,13 @@ body {
 
 <!-- COLOR IMAGE MODAL -->
 <div class="overlay" id="colorImgModal">
-  <div class="modal" style="max-width:360px">
+  <div class="modal" style="max-width:340px">
     <div class="modal-head"><h3 class="modal-title">📷 صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div>
     <div class="modal-body" style="text-align:center">
-      <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p>
-      <div class="img-upload" style="width:110px;height:110px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">ارفع صورة العدسة لهذا المنتج</p>
+      <div class="img-upload" style="width:100px;height:100px;margin:0 auto 12px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div>
       <input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)">
-      <div style="display:flex;gap:8px;justify-content:center">
+      <div style="display:flex;gap:6px;justify-content:center">
         <button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button>
         <button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button>
       </div>
@@ -701,7 +687,7 @@ function renderHiddenOverview() {
   if(!hidden.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">كل المنتجات ظاهرة</div></div>'; return; }
   el.innerHTML = hidden.map(p => {
     const cat = state.categories.find(c => c.id === p.category);
-    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><div class="p-thumb" style="background:${p.color};width:28px;height:28px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1;font-size:12px">${p.nameAr}</span><span style="font-size:10px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`;
+    return `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)"><div class="p-thumb" style="background:${p.color};width:24px;height:24px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1;font-size:11px">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`;
   }).join('');
 }
 
@@ -720,7 +706,7 @@ function renderCategories() {
   if(!state.categories.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎨</div><div class="empty-title">لا توجد فئات</div></div>'; return; }
   el.innerHTML = state.categories.map(c => {
     const cnt = state.products.filter(p => p.category === c.id).length;
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(201,168,76,.06);border-radius:8px;margin-bottom:4px"><div style="width:16px;height:16px;border-radius:4px;background:${c.color}"></div><span style="font-size:12px;font-weight:600;flex:1;margin:0 8px">${c.ar}</span><span style="font-size:10px;color:var(--text-dim)">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="delCat('${c.id}')">✕</button></div>`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(201,168,76,.06);border-radius:8px;margin-bottom:4px"><div style="width:14px;height:14px;border-radius:4px;background:${c.color}"></div><span style="font-size:11px;font-weight:600;flex:1;margin:0 6px">${c.ar}</span><span style="font-size:9px;color:var(--text-dim)">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="delCat('${c.id}')">✕</button></div>`;
   }).join('');
 }
 function addCategory() {
@@ -762,12 +748,12 @@ function renderProducts() {
     const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
     return `<tr>
       <td><div class="p-thumb" style="background:${p.color}">${thumb}</div></td>
-      <td><div style="font-weight:600">${p.nameAr}</div><div style="font-size:10px;color:var(--text-dim)">${p.nameEn||''}</div></td>
+      <td><div style="font-weight:600">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${p.nameEn||''}</div></td>
       <td>${cat?cat.ar:'-'}</td>
       <td style="font-weight:600;color:var(--gold)">${p.price} ر.س</td>
       <td><span class="badge ${sc}">${st} (${p.stock})</span></td>
       <td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td>
-      <td style="white-space:nowrap"><div style="display:flex;gap:4px">
+      <td style="white-space:nowrap"><div style="display:flex;gap:3px">
         <button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button>
         <button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button>
         <button class="btn btn-red btn-icon btn-sm" onclick="delProduct('${p.id}')" title="حذف">🗑️</button>
@@ -880,7 +866,7 @@ function renderVis() {
   el.innerHTML = state.products.map(p => {
     const cat = state.categories.find(c => c.id === p.category);
     const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><div class="p-thumb" style="background:${p.color};width:38px;height:38px">${thumb}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${p.nameAr}</div><div style="font-size:10px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 8px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:44px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div class="p-thumb" style="background:${p.color};width:34px;height:34px">${thumb}</div><div style="flex:1"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 6px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:40px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`;
   }).join('');
 }
 
@@ -890,7 +876,7 @@ function renderLens() {
   if(!state.products.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📷</div><div class="empty-title">لا توجد منتجات</div><button class="btn btn-gold btn-sm" onclick="goToPage(\'addproduct\')">➕ إضافة منتج</button></div>'; return; }
   el.innerHTML = state.products.map(p => {
     const hasImg = !!p.lensImage;
-    return `<div class="color-card"><div class="color-swatch" onclick="openColorModal('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);color:#fff;font-size:11px">📷 تغيير</div>` : `<div class="color-swatch-placeholder" style="background:${p.gradient}"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);color:#fff;font-size:11px">📷 إضافة صورة</div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:24px;height:24px;font-size:10px">🗑️</button>` : ''}</div></div>`;
+    return `<div class="color-card"><div class="color-swatch" onclick="openColorModal('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);color:#fff;font-size:10px">📷 تغيير</div>` : `<div class="color-swatch-placeholder" style="background:${p.gradient}"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);color:#fff;font-size:10px">📷 إضافة صورة</div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:22px;height:22px;font-size:9px">🗑️</button>` : ''}</div></div>`;
   }).join('');
 }
 function openColorModal(productId) {
@@ -1006,22 +992,22 @@ function buildStoreHTML(data) {
     if(!grouped[c.id] || !grouped[c.id].lenses.length) return;
     const lenses = grouped[c.id].lenses, main = lenses[0];
     const totalStock = lenses.reduce((s,l) => s+l.stock, 0);
-    const dots = lenses.map(l => `<div style="width:16px;height:16px;border-radius:50%;background:${l.gradient};border:2px solid rgba(255,255,255,.1)"></div>`).join('');
-    cardsHTML += `<div style="flex:0 0 250px;border-radius:16px;overflow:hidden;background:rgba(30,26,24,.9);border:1px solid rgba(201,168,76,.2);position:relative">
+    const dots = lenses.map(l => `<div style="width:14px;height:14px;border-radius:50%;background:${l.gradient};border:2px solid rgba(255,255,255,.1)"></div>`).join('');
+    cardsHTML += `<div style="flex:0 0 230px;border-radius:14px;overflow:hidden;background:rgba(30,26,24,.9);border:1px solid rgba(201,168,76,.2);position:relative">
       <div style="position:absolute;inset:0;background:${main.cardImage?'url('+main.cardImage+')':main.color};background-size:cover;opacity:${main.cardImage?'.25':'.3'}}"></div>
-      <div style="position:relative;height:150px;display:flex;align-items:center;justify-content:center">
-        <div style="width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative">
-          ${main.lensImage ? `<img src="${main.lensImage}" style="width:80%;height:80%;object-fit:contain;border-radius:50%">` : `<div style="width:75px;height:75px;border-radius:50%;background:${main.gradient}"></div>`}
+      <div style="position:relative;height:140px;display:flex;align-items:center;justify-content:center">
+        <div style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative">
+          ${main.lensImage ? `<img src="${main.lensImage}" style="width:80%;height:80%;object-fit:contain;border-radius:50%">` : `<div style="width:65px;height:65px;border-radius:50%;background:${main.gradient}"></div>`}
         </div>
-        ${settings.showColors ? `<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px">${dots}</div>` : ''}
+        ${settings.showColors ? `<div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:3px">${dots}</div>` : ''}
       </div>
-      <div style="position:relative;padding:14px">
-        <div style="display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:12px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.2);font-size:8px;color:var(--gold);margin-bottom:6px"><span style="width:4px;height:4px;border-radius:50%;background:var(--gold)"></span>${c.ar}</div>
-        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:4px">${main.nameAr}</div>
-        ${settings.showStock ? `<div style="font-size:10px;color:var(--text-dim);margin-bottom:10px">${lenses.length} تدرجات · ${totalStock} قطعة</div>` : `<div style="font-size:10px;color:var(--text-dim);margin-bottom:10px">${lenses.length} تدرجات</div>`}
-        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.15)">
-          ${settings.showPrice ? `<div style="font-size:11px;color:var(--text-dim)">من <strong style="font-size:15px;color:var(--gold)">${main.price} ر.س</strong></div>` : '<div></div>'}
-          <button style="padding:6px 14px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#8b7332);color:#0a0808;font-weight:700;font-size:10px;border:none;cursor:pointer">اكتشفي ✦</button>
+      <div style="position:relative;padding:12px">
+        <div style="display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:10px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.2);font-size:7px;color:var(--gold);margin-bottom:4px"><span style="width:3px;height:3px;border-radius:50%;background:var(--gold)"></span>${c.ar}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;margin-bottom:3px">${main.nameAr}</div>
+        ${settings.showStock ? `<div style="font-size:9px;color:var(--text-dim);margin-bottom:8px">${lenses.length} تدرجات · ${totalStock} قطعة</div>` : `<div style="font-size:9px;color:var(--text-dim);margin-bottom:8px">${lenses.length} تدرجات</div>`}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid rgba(201,168,76,.15)">
+          ${settings.showPrice ? `<div style="font-size:10px;color:var(--text-dim)">من <strong style="font-size:13px;color:var(--gold)">${main.price} ر.س</strong></div>` : '<div></div>'}
+          <button style="padding:5px 12px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#8b7332);color:#0a0808;font-weight:700;font-size:9px;border:none;cursor:pointer">اكتشفي ✦</button>
         </div>
       </div>
     </div>`;
@@ -1032,16 +1018,16 @@ function buildStoreHTML(data) {
   <style>
   :root{--bg:#050303;--gold:#c9a84c;--text:#faf7f2;--text-dim:#9a8e81}
   *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
-  .hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
-  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,48px);color:var(--gold);letter-spacing:4px}
-  .hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}
-  .hero-sub{font-size:13px;color:var(--text-dim)}
-  .slider{padding:20px 0 50px;overflow:hidden}
-  .track{display:flex;gap:12px;padding:16px;direction:ltr;overflow-x:auto}
-  .footer{text-align:center;padding:30px;font-size:12px;color:var(--text-dim)}
+  .hero{min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 16px}
+  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(28px,7vw,42px);color:var(--gold);letter-spacing:3px}
+  .hero-line{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:10px auto}
+  .hero-sub{font-size:12px;color:var(--text-dim)}
+  .slider{padding:16px 0 40px;overflow:hidden}
+  .track{display:flex;gap:10px;padding:12px;direction:ltr;overflow-x:auto}
+  .footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim)}
   </style></head><body>
   <div class="hero"><div class="hero-title">✦ LENSORA</div><div class="hero-line"></div><div class="hero-sub">معاينة حية</div></div>
-  <div class="slider"><div class="track">${cardsHTML || '<p style="text-align:center;padding:50px;color:var(--text-dim)">لا توجد منتجات</p>'}</div></div>
+  <div class="slider"><div class="track">${cardsHTML || '<p style="text-align:center;padding:40px;color:var(--text-dim)">لا توجد منتجات</p>'}</div></div>
   <div class="footer">© 2026 LENSORA</div></body></html>`;
 }
 </script>
