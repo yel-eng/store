@@ -113,10 +113,10 @@ body.loading{overflow:hidden}
 .toggle input:checked+.toggle-slider{background:var(--gold)}
 .toggle input:checked+.toggle-slider::before{transform:translateX(-18px)}
 
-/* FORM */
+/* FORM - FIXED LABELS */
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .fgroup{display:flex;flex-direction:column;gap:4px}
-.fgroup label{font-size:10px;color:var(--text-dim)}
+.fgroup label{font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px}
 .fgroup input,.fgroup select,.fgroup textarea{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;color:var(--text);font-size:12px;min-height:38px;font-family:inherit}
 .fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{outline:2px solid var(--gold);border-color:transparent}
 .fgroup textarea{min-height:60px;resize:vertical}
@@ -142,7 +142,7 @@ body.loading{overflow:hidden}
 /* SETTINGS */
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border-bottom:none}
-.setting-lbl{font-size:12px;font-weight:600}
+.setting-lbl{font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
 .setting-desc{font-size:10px;color:var(--text-dim);margin-top:1px}
 
 /* CAT VIS */
@@ -186,14 +186,20 @@ body.loading{overflow:hidden}
 </head>
 <body class="loading">
 
-<!-- LOGIN -->
+<!-- LOGIN - FIXED LABELS -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">LENSORA</div>
     <div class="login-sub">لوحة التحكم الكاملة</div>
     <form class="login-form" onsubmit="doLogin(event)">
-      <input type="email" id="loginEmail" placeholder="admin@lensora.com" required>
-      <input type="password" id="loginPass" placeholder="كلمة المرور" required>
+      <div class="fgroup">
+        <label for="loginEmail">البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="admin@lensora.com" required autocomplete="username">
+      </div>
+      <div class="fgroup">
+        <label for="loginPass">كلمة المرور</label>
+        <input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
+      </div>
       <button type="submit">تسجيل الدخول</button>
     </form>
     <div class="login-hint">admin@lensora.com / admin123</div>
@@ -267,27 +273,53 @@ body.loading{overflow:hidden}
       </div>
     </div>
 
-    <!-- ADD PRODUCT -->
+    <!-- ADD PRODUCT - FIXED LABELS -->
     <div class="page" id="page-addproduct">
       <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
       <div class="fcard">
         <div class="fgrid">
-          <div class="fgroup"><label>اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي"></div>
-          <div class="fgroup"><label>اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
-          <div class="fgroup"><label>الفئة *</label><select id="pCategory"><option value="">اختر الفئة...</option></select></div>
-          <div class="fgroup"><label>السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85"></div>
-          <div class="fgroup"><label>الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30"></div>
-          <div class="fgroup"><label>اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+          <div class="fgroup">
+            <label for="pNameAr">اسم المنتج (عربي) *</label>
+            <input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي">
+          </div>
+          <div class="fgroup">
+            <label for="pNameEn">اسم المنتج (إنجليزي)</label>
+            <input type="text" id="pNameEn" placeholder="Golden Honey">
+          </div>
+          <div class="fgroup">
+            <label for="pCategory">الفئة *</label>
+            <select id="pCategory"><option value="">اختر الفئة...</option></select>
+          </div>
+          <div class="fgroup">
+            <label for="pPrice">السعر (ر.س) *</label>
+            <input type="number" id="pPrice" min="0" step="1" placeholder="85">
+          </div>
+          <div class="fgroup">
+            <label for="pStock">الكمية المتاحة *</label>
+            <input type="number" id="pStock" min="0" placeholder="30">
+          </div>
+          <div class="fgroup">
+            <label for="pColor">اللون (HEX)</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+              <input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+            </div>
+          </div>
         </div>
-        <div class="fgroup" style="margin-top:12px"><label>وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
-        <div style="margin-top:14px"><label style="font-size:10px;color:var(--text-dim)">صورة العدسة (استبدل الدائرة)</label>
+        <div class="fgroup" style="margin-top:12px">
+          <label for="pDesc">وصف المنتج</label>
+          <textarea id="pDesc" placeholder="وصف المنتج..."></textarea>
+        </div>
+        <div style="margin-top:14px">
+          <label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة (استبدل الدائرة)</label>
           <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
             <div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div>
             <input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
             <span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span>
           </div>
         </div>
-        <div style="margin-top:14px"><label style="font-size:10px;color:var(--text-dim)">صورة بطاقة المنتج (اختياري)</label>
+        <div style="margin-top:14px">
+          <label for="cardImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة بطاقة المنتج (اختياري)</label>
           <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
             <div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()"><span class="upload-icon">🖼️</span><span>صورة البطاقة</span></div>
             <input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')">
@@ -295,21 +327,34 @@ body.loading{overflow:hidden}
           </div>
         </div>
         <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
-          <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" checked><span>معروض في المتجر</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
+            <input type="checkbox" id="pVisible" checked>
+            <span for="pVisible">معروض في المتجر</span>
+          </label>
           <button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
         </div>
       </div>
     </div>
 
-    <!-- CATEGORIES -->
+    <!-- CATEGORIES - FIXED LABELS -->
     <div class="page" id="page-categories">
       <h2 class="ftitle mb-2">إدارة الفئات</h2>
-      <div class="fcard"><div id="categoriesList"></div>
+      <div class="fcard">
+        <div id="categoriesList"></div>
         <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <input type="text" id="newCatNameAr" placeholder="اسم الفئة (عربي)" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
-          <input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
-          <input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer">
-          <button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button>
+          <div class="fgroup" style="flex:1;min-width:120px">
+            <label for="newCatNameAr">اسم الفئة (عربي)</label>
+            <input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
+          </div>
+          <div class="fgroup" style="flex:1;min-width:120px">
+            <label for="newCatNameEn">Category (EN)</label>
+            <input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px">
+          </div>
+          <div class="fgroup">
+            <label for="newCatColor">اللون</label>
+            <input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer">
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button>
         </div>
       </div>
     </div>
@@ -328,14 +373,38 @@ body.loading{overflow:hidden}
       <div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div>
     </div>
 
-    <!-- DISPLAY SETTINGS -->
+    <!-- DISPLAY SETTINGS - FIXED LABELS -->
     <div class="page" id="page-display">
       <h2 class="ftitle mb-2">إعدادات العرض</h2>
       <div class="fcard">
-        <div class="setting-row"><div><div class="setting-lbl">إظهار الأسعار</div><div class="setting-desc">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-        <div class="setting-row"><div><div class="setting-lbl">إظهار الكمية</div><div class="setting-desc">عرض عدد القطع المتاحة</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-        <div class="setting-row"><div><div class="setting-lbl">إظهار ألوان العدسات</div><div class="setting-desc">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-        <div class="setting-row"><div><div class="setting-lbl">إظهار صور البطاقات</div><div class="setting-desc">خلفية البطاقات في السلايدر</div></div><label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
+        <div class="setting-row">
+          <div>
+            <label for="settingShowPrice" class="setting-lbl">إظهار الأسعار</label>
+            <div class="setting-desc">عرض السعر في البطاقات</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <label for="settingShowStock" class="setting-lbl">إظهار الكمية</label>
+            <div class="setting-desc">عرض عدد القطع المتاحة</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <label for="settingShowColors" class="setting-lbl">إظهار ألوان العدسات</label>
+            <div class="setting-desc">عرض الدوائر الملونة</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div>
+            <label for="settingShowCardImages" class="setting-lbl">إظهار صور البطاقات</label>
+            <div class="setting-desc">خلفية البطاقات في السلايدر</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label>
+        </div>
       </div>
       <div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3>
         <p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p>
@@ -346,29 +415,55 @@ body.loading{overflow:hidden}
   </main>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- EDIT MODAL - FIXED LABELS -->
 <div class="overlay" id="editModal">
   <div class="modal">
     <div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="editId">
       <div class="fgrid">
-        <div class="fgroup"><label>الاسم (عربي)</label><input type="text" id="editNameAr"></div>
-        <div class="fgroup"><label>الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div>
-        <div class="fgroup"><label>الفئة</label><select id="editCategory"></select></div>
-        <div class="fgroup"><label>السعر</label><input type="number" id="editPrice" min="0"></div>
-        <div class="fgroup"><label>المخزون</label><input type="number" id="editStock" min="0"></div>
-        <div class="fgroup"><label>اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+        <div class="fgroup">
+          <label for="editNameAr">الاسم (عربي)</label>
+          <input type="text" id="editNameAr">
+        </div>
+        <div class="fgroup">
+          <label for="editNameEn">الاسم (إنجليزي)</label>
+          <input type="text" id="editNameEn">
+        </div>
+        <div class="fgroup">
+          <label for="editCategory">الفئة</label>
+          <select id="editCategory"></select>
+        </div>
+        <div class="fgroup">
+          <label for="editPrice">السعر</label>
+          <input type="number" id="editPrice" min="0">
+        </div>
+        <div class="fgroup">
+          <label for="editStock">المخزون</label>
+          <input type="number" id="editStock" min="0">
+        </div>
+        <div class="fgroup">
+          <label for="editColor">اللون</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+            <input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+          </div>
+        </div>
       </div>
-      <div class="fgroup" style="margin-top:10px"><label>الوصف</label><textarea id="editDesc"></textarea></div>
-      <div style="margin-top:10px"><label style="font-size:10px;color:var(--text-dim)">صورة العدسة</label>
+      <div class="fgroup" style="margin-top:10px">
+        <label for="editDesc">الوصف</label>
+        <textarea id="editDesc"></textarea>
+      </div>
+      <div style="margin-top:10px">
+        <label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label>
         <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
           <div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div>
           <input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)">
           <span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span>
         </div>
       </div>
-      <div style="margin-top:10px"><label style="font-size:10px;color:var(--text-dim)">صورة البطاقة</label>
+      <div style="margin-top:10px">
+        <label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label>
         <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
           <div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div>
           <input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)">
@@ -508,21 +603,14 @@ function initDashboard() {
   renderHiddenOverview();
 }
 
-// ==================== NAV - FIXED ====================
+// ==================== NAV ====================
 function goToPage(pageId) {
-  // Update active nav item
   document.querySelectorAll('.side-item').forEach(it => {
     it.classList.toggle('active', it.dataset.page === pageId);
   });
-  
-  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  
-  // Show target page
   const el = document.getElementById('page-' + pageId);
   if (el) el.classList.add('active');
-  
-  // Update title
   const titles = {
     overview:'نظرة عامة',
     allproducts:'جميع المنتجات',
@@ -533,19 +621,14 @@ function goToPage(pageId) {
     display:'إعدادات العرض'
   };
   document.getElementById('pageTitle').textContent = titles[pageId] || '';
-  
-  // Refresh content based on page
   if (pageId === 'allproducts') renderProducts();
   if (pageId === 'visibility') renderVisibility();
   if (pageId === 'categories') renderCategories();
   if (pageId === 'lensimages') renderLensImages();
   if (pageId === 'display') { renderDisplaySettings(); renderHiddenColors(); }
   if (pageId === 'overview') { updateStats(); renderHiddenOverview(); }
-  
   populateCatSelects();
 }
-
-// Add click listeners to nav items
 document.querySelectorAll('.side-item').forEach(it => {
   it.addEventListener('click', function(e) {
     e.preventDefault();
