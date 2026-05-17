@@ -416,11 +416,12 @@ state.products = [
 {id:'p3',nameAr:'ليلكي',nameEn:'Lilac',category:'purple',price:115,stock:6,color:'#9B7FBF',gradient:generateLensGradient('#9B7FBF'),desc:'بنفسجي فاتح ليلكي',rating:4.7,reviews:72,visible:true}
 ];
 }
-// ==================== PERSISTENCE ====================
+// ==================== PERSISTENCE - FIXED KEYS TO MATCH INDEX.HTML ====================
 function saveState() {
 try {
-localStorage.setItem('lensora_categories', JSON.stringify(state.categories));
+// توحيد مفاتيح التخزين مع index.html
 localStorage.setItem('lensora_products', JSON.stringify(state.products));
+localStorage.setItem('lensora_categories', JSON.stringify(state.categories));
 localStorage.setItem('lensora_settings', JSON.stringify(state.settings));
 localStorage.setItem('lensora_hidden_colors', JSON.stringify(state.hiddenColorIds));
 } catch(e) { console.warn('Save error', e); }
@@ -592,7 +593,7 @@ if (!nameAr || !category || isNaN(price) || isNaN(stock)) { toast('❌ أكمل 
 const id = 'p_' + Date.now();
 state.products.push({
 id, nameAr, nameEn, category, price, stock, color,
-gradient: generateLensGradient(color),
+gradient: generateLensGradient(color), // توليد التدرج تلقائياً من اللون
 desc, rating:4.5+Math.random()*0.5, reviews:Math.floor(Math.random()*200)+10, visible
 });
 saveState(); updateStats(); renderProducts(); renderLensColors();
@@ -630,7 +631,7 @@ p.price = parseInt(document.getElementById('editPrice').value) ?? p.price;
 p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock;
 p.color = document.getElementById('editColor').value;
 p.desc = document.getElementById('editDesc').value.trim();
-p.gradient = generateLensGradient(p.color);
+p.gradient = generateLensGradient(p.color); // تحديث التدرج عند تغيير اللون
 saveState(); renderProducts(); renderLensColors(); updateStats(); closeEditModal();
 toast('✅ تم تحديث المنتج', 'success');
 }
