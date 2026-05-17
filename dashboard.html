@@ -28,7 +28,6 @@
   --shadow-gold: 0 4px 20px rgba(201,168,76,0.15);
   --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
 }
-
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
@@ -55,7 +54,6 @@ body.loading { overflow: hidden; }
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .login-screen.hidden { display: none; }
-
 .login-card {
   background: var(--card-bg); border: 1px solid var(--card-border);
   border-radius: var(--radius); padding: 48px 40px;
@@ -65,14 +63,12 @@ body.loading { overflow: hidden; }
   animation: slideUp 0.5s ease;
 }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
 .login-logo {
   font-family: 'Playfair Display', serif;
   font-size: 42px; color: var(--gold); letter-spacing: 6px;
   margin-bottom: 12px; text-shadow: 0 2px 10px rgba(201,168,76,0.3);
 }
 .login-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 32px; }
-
 .login-form { display: flex; flex-direction: column; gap: 16px; }
 .login-form input {
   background: rgba(201,168,76,0.08); border: 1px solid var(--card-border);
@@ -94,7 +90,6 @@ body.loading { overflow: hidden; }
 }
 .login-form button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.3); }
 .login-form button:active { transform: scale(0.98); }
-
 .login-hint {
   font-size: 12px; color: var(--text-dim); margin-top: 20px;
   padding: 10px 16px; background: rgba(201,168,76,0.06);
@@ -107,7 +102,10 @@ body.loading { overflow: hidden; }
   display: grid; grid-template-columns: var(--side-w) 1fr;
   min-height: 100vh; animation: fadeIn 0.4s;
 }
-@media (max-width: 900px) { .dashboard.active { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { 
+  .dashboard.active { grid-template-columns: 1fr; 
+  }
+}
 
 /* ===== SIDEBAR ===== */
 .sidebar {
@@ -119,10 +117,16 @@ body.loading { overflow: hidden; }
   transition: transform var(--transition);
   box-shadow: var(--shadow);
 }
+/* FIX: Sidebar visible by default on desktop */
 .sidebar.closed { transform: translateX(100%); }
+.sidebar.open { transform: translateX(0); }
+
 @media (max-width: 900px) {
   .sidebar { transform: translateX(100%); }
   .sidebar.open { transform: translateX(0); }
+}
+@media (min-width: 901px) {
+  .sidebar { transform: translateX(0); }
 }
 
 .side-head {
@@ -141,6 +145,7 @@ body.loading { overflow: hidden; }
   transition: all 0.2s;
 }
 .side-close:hover { background: rgba(201,168,76,0.2); transform: rotate(90deg); }
+@media (min-width: 901px) { .side-close { display: none; } }
 
 .side-menu { flex: 1; overflow-y: auto; padding: 14px 10px; }
 .side-item {
@@ -190,8 +195,15 @@ body.loading { overflow: hidden; }
 .main {
   padding: 24px; padding-top: calc(var(--nav-h) + 24px);
   padding-right: calc(var(--side-w) + 24px);
+  transition: padding-right 0.3s;
 }
-@media (max-width: 900px) { .main { padding-right: 20px; padding-left: 20px; } }
+@media (max-width: 900px) { 
+  .main { padding-right: 20px; padding-left: 20px; 
+  }
+}
+@media (max-width: 900px) and .sidebar.open {
+  .main { padding-right: 20px; }
+}
 
 /* ===== TOP BAR ===== */
 .topbar {
@@ -204,7 +216,6 @@ body.loading { overflow: hidden; }
   box-shadow: var(--shadow);
 }
 @media (max-width: 900px) { .topbar { right: 0; } }
-
 .topbar-title {
   font-family: 'Playfair Display', serif;
   font-size: 20px; color: var(--gold); display: flex; align-items: center; gap: 8px;
@@ -213,9 +224,7 @@ body.loading { overflow: hidden; }
   content: ''; width: 24px; height: 1px;
   background: linear-gradient(90deg, var(--gold), transparent);
 }
-
 .topbar-actions { display: flex; align-items: center; gap: 10px; }
-
 .menu-btn {
   display: none; width: 44px; height: 44px; border-radius: 14px;
   background: rgba(201,168,76,0.1); color: var(--gold);
@@ -279,6 +288,17 @@ body.loading { overflow: hidden; }
   background: linear-gradient(90deg, var(--card-border), transparent);
 }
 
+/* ===== QUICK ADD BUTTON ===== */
+.quick-add-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #0a0808; font-weight: 700; font-size: 14px;
+  cursor: pointer; border: none; box-shadow: var(--shadow-gold);
+  transition: all 0.25s; margin-bottom: 20px;
+}
+.quick-add-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(201,168,76,0.4); }
+
 /* ===== TABLE ===== */
 .p-table-wrap {
   overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -297,7 +317,6 @@ body.loading { overflow: hidden; }
 }
 .p-table tr:hover td { background: rgba(201,168,76,0.06); }
 .p-table tr:last-child td { border-bottom: none; }
-
 .p-thumb {
   width: 46px; height: 46px; border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
@@ -313,7 +332,6 @@ body.loading { overflow: hidden; }
 .p-name { font-weight: 600; color: var(--text); }
 .p-cat { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 .p-price { font-weight: 700; color: var(--gold); font-size: 15px; }
-
 .badge {
   padding: 4px 12px; border-radius: 14px; font-size: 11px;
   font-weight: 600; display: inline-block; white-space: nowrap;
@@ -345,7 +363,6 @@ body.loading { overflow: hidden; }
 }
 .btn-red:hover { background: rgba(231,76,60,0.2); }
 .btn:active { transform: scale(0.98); }
-
 .btn-sm { padding: 6px 12px; font-size: 11px; min-height: 34px; border-radius: 10px; }
 .btn-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; padding: 0; }
 
@@ -381,7 +398,7 @@ body.loading { overflow: hidden; }
 }
 .fgroup textarea { min-height: 80px; resize: vertical; }
 
-/* ===== IMAGE UPLOAD - DRAG & DROP ===== */
+/* ===== IMAGE UPLOAD ===== */
 .img-upload {
   width: 100px; height: 100px; border-radius: 50%;
   border: 2px dashed var(--card-border); display: flex;
@@ -422,7 +439,6 @@ body.loading { overflow: hidden; }
   animation: modalIn 0.3s ease;
 }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
 .modal-head {
   padding: 18px 24px; border-bottom: 1px solid var(--card-border);
   display: flex; justify-content: space-between; align-items: center;
@@ -439,7 +455,6 @@ body.loading { overflow: hidden; }
   font-size: 18px; cursor: pointer; border: none; transition: all 0.2s;
 }
 .modal-close:hover { background: rgba(231,76,60,0.2); color: var(--error); transform: rotate(90deg); }
-
 .modal-body { padding: 24px; }
 .modal-foot {
   padding: 16px 24px; border-top: 1px solid var(--card-border);
@@ -580,7 +595,7 @@ body.loading { overflow: hidden; }
 
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
-  <aside class="sidebar closed" id="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="side-head">
       <div class="side-logo">✦ LENSORA</div>
       <button class="side-close" onclick="toggleSidebar()" title="إغلاق القائمة">✕</button>
@@ -614,6 +629,11 @@ body.loading { overflow: hidden; }
 
     <!-- PAGE: OVERVIEW -->
     <div class="page active" id="page-overview">
+      <!-- QUICK ADD BUTTON - FIX: Added prominent add button -->
+      <button class="quick-add-btn" onclick="goToPage('addproduct')">
+        <span>➕</span> إضافة منتج جديد الآن
+      </button>
+      
       <!-- Data Controls -->
       <div class="data-controls">
         <button class="data-btn" onclick="exportData()">📥 تصدير البيانات</button>
@@ -822,7 +842,7 @@ body.loading { overflow: hidden; }
   <div class="tour-card">
     <div class="tour-step">👋</div>
     <div class="tour-title">مرحباً بك في LENSORA!</div>
-    <div class="tour-text">هذه لوحة تحكمك الكاملة. كل ما تضيفه يُحفظ تلقائياً ولن يضيع.<br><br>🎯 <strong>للبدء:</strong> اذهب إلى "إضافة منتج" لرفع منتجاتك الأولى.</div>
+    <div class="tour-text">هذه لوحة تحكمك الكاملة. كل ما تضيفه يُحفظ تلقائياً ولن يضيع.<br><br>🎯 <strong>للبدء:</strong> اضغطي على زر "إضافة منتج جديد الآن" أو اختاري "إضافة جديد" من القائمة.</div>
     <div class="tour-btns">
       <button class="btn btn-gold" onclick="closeTour()">فهمت! ابدأ الآن ✨</button>
     </div>
@@ -852,87 +872,61 @@ let state = {
   editingProductId: null
 };
 
-// ===== SAVE/LOAD with error handling =====
+// ===== SAVE/LOAD =====
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEYS.cats, JSON.stringify(state.categories));
     localStorage.setItem(STORAGE_KEYS.prods, JSON.stringify(state.products));
     localStorage.setItem(STORAGE_KEYS.sett, JSON.stringify(state.settings));
     localStorage.setItem(STORAGE_KEYS.hidColors, JSON.stringify(state.hiddenColorIds));
-    console.log('💾 Data saved successfully');
-  } catch(e) {
-    console.error('❌ Save error:', e);
-    toast('⚠️ تعذر الحفظ - تحقق من مساحة التخزين', 'error');
-  }
+  } catch(e) { toast('⚠️ تعذر الحفظ', 'error'); }
 }
-
 function loadState() {
   try {
     const c = localStorage.getItem(STORAGE_KEYS.cats);
     const p = localStorage.getItem(STORAGE_KEYS.prods);
     const s = localStorage.getItem(STORAGE_KEYS.sett);
     const hc = localStorage.getItem(STORAGE_KEYS.hidColors);
-    
     if (c) state.categories = JSON.parse(c);
     if (p) state.products = JSON.parse(p);
     if (s) state.settings = JSON.parse(s);
     if (hc) state.hiddenColorIds = JSON.parse(hc);
-    
-    console.log('📦 Data loaded:', { cats: state.categories.length, prods: state.products.length });
-  } catch(e) {
-    console.error('❌ Load error:', e);
-    initDefaults(); // Fallback to defaults
-  }
+  } catch(e) { initDefaults(); }
 }
 
 // ===== EXPORT/IMPORT =====
 function exportData() {
-  const data = {
-    version: '2.0',
-    exported: new Date().toISOString(),
-    categories: state.categories,
-    products: state.products,
-    settings: state.settings,
-    hiddenColorIds: state.hiddenColorIds
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `lensora_backup_${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); URL.revokeObjectURL(url);
+  const data = { version:'2.0', exported:new Date().toISOString(), categories:state.categories, products:state.products, settings:state.settings, hiddenColorIds:state.hiddenColorIds };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `lensora_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
   toast('✅ تم تصدير البيانات', 'success');
 }
-
 function importData(input) {
-  const file = input.files[0]; if (!file) return;
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if (data.categories) state.categories = data.categories;
-      if (data.products) state.products = data.products;
-      if (data.settings) state.settings = data.settings;
-      if (data.hiddenColorIds) state.hiddenColorIds = data.hiddenColorIds;
-      saveState(); initDashboard();
-      toast('✅ تم استيراد البيانات بنجاح', 'success');
-    } catch(err) {
-      toast('❌ ملف غير صالح', 'error');
-      console.error('Import error:', err);
-    }
+      if(data.categories) state.categories = data.categories;
+      if(data.products) state.products = data.products;
+      if(data.settings) state.settings = data.settings;
+      if(data.hiddenColorIds) state.hiddenColorIds = data.hiddenColorIds;
+      saveState(); initDashboard(); toast('✅ تم استيراد البيانات', 'success');
+    } catch(err) { toast('❌ ملف غير صالح', 'error'); }
     input.value = '';
   };
   reader.readAsText(file);
 }
-
 function resetData() {
-  if (!confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع المنتجات والإعدادات!')) return;
-  Object.values(STORAGE_KEYS).forEach(key => { if (key !== STORAGE_KEYS.auth && key !== STORAGE_KEYS.tour) localStorage.removeItem(key); });
+  if(!confirm('⚠️ حذف كل البيانات؟')) return;
+  Object.values(STORAGE_KEYS).forEach(k => { if(k!==STORAGE_KEYS.auth && k!==STORAGE_KEYS.tour) localStorage.removeItem(k); });
   location.reload();
 }
 
 // ===== DEFAULT DATA =====
 function initDefaults() {
-  if (state.categories.length > 0) return;
+  if(state.categories.length > 0) return;
   state.categories = [
     {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
     {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'},
@@ -942,14 +936,13 @@ function initDefaults() {
     {id:'purple',ar:'بنفسجي ملكي',en:'Royal Purple',color:'#7B5EA7'}
   ];
   state.products = [
-    {id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',gradient:genGrad('#D4A056'),desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',rating:4.8,reviews:124,visible:true,lensImage:null,cardImage:null},
-    {id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',gradient:genGrad('#5C3A1E'),desc:'بني غامق عميق يعطي نظرة ساحرة',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null},
-    {id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',gradient:genGrad('#2E6CB5'),desc:'أزرق محيطي عميق مع لمعة طبيعية',rating:4.9,reviews:203,visible:true,lensImage:null,cardImage:null},
-    {id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',gradient:genGrad('#6B8E4E'),desc:'أخضر زيتوني ناعم',rating:4.6,reviews:134,visible:true,lensImage:null,cardImage:null},
-    {id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',gradient:genGrad('#C4A265'),desc:'عسلي لوزي فاتح طبيعي',rating:4.8,reviews:201,visible:true,lensImage:null,cardImage:null}
+    {id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',gradient:genGrad('#D4A056'),desc:'تدرج عسلي دافئ',rating:4.8,reviews:124,visible:true,lensImage:null,cardImage:null},
+    {id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',gradient:genGrad('#5C3A1E'),desc:'بني غامق عميق',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null},
+    {id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',gradient:genGrad('#2E6CB5'),desc:'أزرق محيطي',rating:4.9,reviews:203,visible:true,lensImage:null,cardImage:null},
+    {id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',gradient:genGrad('#6B8E4E'),desc:'أخضر زيتوني',rating:4.6,reviews:134,visible:true,lensImage:null,cardImage:null},
+    {id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',gradient:genGrad('#C4A265'),desc:'عسلي لوزي',rating:4.8,reviews:201,visible:true,lensImage:null,cardImage:null}
   ];
 }
-
 function genGrad(c) { return `radial-gradient(circle at 40% 35%,${c},${adjColor(c,-40)},${adjColor(c,-80)})`; }
 function adjColor(hex, amount) {
   hex = hex.replace('#','');
@@ -959,38 +952,34 @@ function adjColor(hex, amount) {
   return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join('');
 }
 
-// ==================== AUTH ====================
+// ===== AUTH =====
 function doLogin(e) {
   e.preventDefault();
-  const em = document.getElementById('loginEmail').value;
-  const pw = document.getElementById('loginPass').value;
-  if (em === 'admin@lensora.com' && pw === 'admin123') {
+  if(document.getElementById('loginEmail').value === 'admin@lensora.com' && document.getElementById('loginPass').value === 'admin123') {
     localStorage.setItem(STORAGE_KEYS.auth, 'true');
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.add('active');
     initDefaults(); loadState(); initDashboard();
-    // Show welcome tour if first time
-    if (!localStorage.getItem(STORAGE_KEYS.tour)) {
-      setTimeout(() => document.getElementById('welcomeTour').classList.add('show'), 500);
-    }
-    toast('✅ أهلاً بك في لوحة التحكم', 'success');
-  } else { toast('❌ بيانات الدخول غير صحيحة', 'error'); }
+    if(!localStorage.getItem(STORAGE_KEYS.tour)) setTimeout(() => document.getElementById('welcomeTour').classList.add('show'), 500);
+    toast('✅ أهلاً بك', 'success');
+  } else { toast('❌ بيانات خاطئة', 'error'); }
 }
 function doLogout() { localStorage.removeItem(STORAGE_KEYS.auth); location.reload(); }
+function closeTour() { document.getElementById('welcomeTour').classList.remove('show'); localStorage.setItem(STORAGE_KEYS.tour, 'true'); }
 
-function closeTour() {
-  document.getElementById('welcomeTour').classList.remove('show');
-  localStorage.setItem(STORAGE_KEYS.tour, 'true');
-}
-
-// ==================== INIT ====================
+// ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem(STORAGE_KEYS.auth) === 'true') {
+  if(localStorage.getItem(STORAGE_KEYS.auth) === 'true') {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('dashboard').classList.add('active');
     initDefaults(); loadState(); initDashboard();
   }
   document.body.classList.remove('loading');
+  // FIX: Ensure sidebar is visible on desktop after load
+  if(window.innerWidth > 900) {
+    document.getElementById('sidebar').classList.remove('closed');
+    document.getElementById('sidebar').classList.add('open');
+  }
 });
 
 function initDashboard() {
@@ -999,7 +988,7 @@ function initDashboard() {
   renderHiddenColors(); renderHiddenOverview();
 }
 
-// ==================== NAVIGATION ====================
+// ===== NAVIGATION =====
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
   sb.classList.toggle('open'); sb.classList.toggle('closed');
@@ -1007,30 +996,28 @@ function toggleSidebar() {
 function goToPage(pageId) {
   document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById('page-' + pageId); if (el) el.classList.add('active');
-  const titles = {overview:'📊 نظرة عامة',allproducts:'📦 المنتجات',addproduct:'✨ إضافة جديد',categories:'🎨 الفئات',lensimages:'📷 صور العدسات',visibility:'👁️‍🗨️ التحكم في الظهور',display:'⚙️ الإعدادات'};
+  const el = document.getElementById('page-' + pageId); if(el) el.classList.add('active');
+  const titles = {overview:'📊 نظرة عامة',allproducts:'📦 المنتجات',addproduct:'✨ إضافة جديد',categories:'🎨 الفئات',lensimages:'📷 صور العدسات',visibility:'👁️‍🗨️ التحكم',display:'⚙️ الإعدادات'};
   document.getElementById('pageTitle').textContent = titles[pageId] || '';
-  if (window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar').classList.add('closed'); }
-  
-  // Refresh content based on page
-  if (pageId === 'allproducts') renderProducts();
-  if (pageId === 'visibility') renderVisibility();
-  if (pageId === 'categories') renderCategories();
-  if (pageId === 'lensimages') renderLensImages();
-  if (pageId === 'display') { renderDisplaySettings(); renderHiddenColors(); }
-  if (pageId === 'overview') { updateStats(); renderHiddenOverview(); }
+  if(window.innerWidth <= 900) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar').classList.add('closed'); }
+  if(pageId==='allproducts') renderProducts();
+  if(pageId==='visibility') renderVisibility();
+  if(pageId==='categories') renderCategories();
+  if(pageId==='lensimages') renderLensImages();
+  if(pageId==='display') { renderDisplaySettings(); renderHiddenColors(); }
+  if(pageId==='overview') { updateStats(); renderHiddenOverview(); }
   populateCatSelects();
 }
 document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', e => { e.preventDefault(); goToPage(it.dataset.page); }); });
 
-// ==================== TOAST ====================
+// ===== TOAST =====
 function toast(msg, type='info') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + type + ' show';
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ==================== STATS ====================
+// ===== STATS =====
 function updateStats() {
   const all = state.products;
   document.getElementById('statProducts').textContent = all.length;
@@ -1041,68 +1028,67 @@ function updateStats() {
 function renderHiddenOverview() {
   const hidden = state.products.filter(p => !p.visible);
   const el = document.getElementById('hiddenOverviewList');
-  if (hidden.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">كل المنتجات ظاهرة</div><div class="empty-desc">لا توجد منتجات مخفية حالياً</div></div>'; return; }
+  if(hidden.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">كل المنتجات ظاهرة</div><div class="empty-desc">لا توجد منتجات مخفية</div></div>'; return; }
   el.innerHTML = hidden.map(p => {
     const cat = state.categories.find(c => c.id === p.category);
-    return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:32px;height:32px;border-radius:8px;font-size:11px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1;font-size:13px">${p.nameAr}</span><span style="font-size:11px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`;
+    return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:32px;height:32px;border-radius:8px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1;font-size:13px">${p.nameAr}</span><span style="font-size:11px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`;
   }).join('');
 }
 
-// ==================== CATEGORIES ====================
+// ===== CATEGORIES =====
 function populateCatSelects() {
   ['pCategory','editCategory'].forEach(sid => {
-    const sel = document.getElementById(sid); if (!sel) return;
+    const sel = document.getElementById(sid); if(!sel) return;
     const val = sel.value;
-    sel.innerHTML = sid === 'editCategory' ? '' : '<option value="">اختر الفئة...</option>';
+    sel.innerHTML = sid==='editCategory' ? '' : '<option value="">اختر الفئة...</option>';
     state.categories.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.ar}</option>`; });
-    if (val) sel.value = val;
+    if(val) sel.value = val;
   });
 }
 function renderCategories() {
   const el = document.getElementById('categoriesList');
-  if (state.categories.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎨</div><div class="empty-title">لا توجد فئات</div><div class="empty-desc">أضف فئة جديدة للبدء</div></div>'; return; }
+  if(state.categories.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎨</div><div class="empty-title">لا توجد فئات</div><div class="empty-desc">أضف فئة جديدة</div></div>'; return; }
   el.innerHTML = state.categories.map(c => {
     const cnt = state.products.filter(p => p.category === c.id).length;
-    return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')" title="حذف">✕</button></div>`;
+    return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')">✕</button></div>`;
   }).join('');
 }
 function addCategory() {
   const ar = document.getElementById('newCatNameAr').value.trim();
   const en = document.getElementById('newCatNameEn').value.trim();
   const color = document.getElementById('newCatColor').value;
-  if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; }
-  const id = ar.replace(/\s+/g,'_') + '_' + Date.now();
-  state.categories.push({id, ar, en:en||ar, color});
+  if(!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; }
+  state.categories.push({id: ar.replace(/\s+/g,'_')+'_'+Date.now(), ar, en:en||ar, color});
   saveState(); populateCatSelects(); renderCategories();
   document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = '';
-  toast('✅ تمت إضافة الفئة', 'success');
+  toast('✅ تمت الإضافة', 'success');
 }
 function deleteCat(id) {
-  if (!confirm('⚠️ حذف هذه الفئة وجميع منتجاتها؟')) return;
+  if(!confirm('⚠️ حذف الفئة ومنتجاتها؟')) return;
   state.categories = state.categories.filter(c => c.id !== id);
   state.products = state.products.filter(p => p.category !== id);
   saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats();
   toast('✅ تم الحذف', 'success');
 }
 
-// ==================== PRODUCTS TABLE ====================
+// ===== PRODUCTS =====
 function renderProducts() {
   const filter = document.getElementById('filterCat')?.value || '';
   const search = document.getElementById('searchProducts')?.value.toLowerCase() || '';
   let prods = [...state.products];
-  if (filter === 'hidden') prods = prods.filter(p => !p.visible);
-  else if (filter === 'visible') prods = prods.filter(p => p.visible);
-  if (search) prods = prods.filter(p => p.nameAr.toLowerCase().includes(search) || p.nameEn?.toLowerCase().includes(search));
+  if(filter==='hidden') prods = prods.filter(p => !p.visible);
+  else if(filter==='visible') prods = prods.filter(p => p.visible);
+  if(search) prods = prods.filter(p => p.nameAr.toLowerCase().includes(search) || p.nameEn?.toLowerCase().includes(search));
   
-  const tbody = document.getElementById('productsBody'); if (!tbody) return;
-  if (prods.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">لا توجد منتجات</div><div class="empty-desc">اضغط "إضافة منتج" للبدء</div><button class="btn btn-gold btn-sm" onclick="goToPage(\'addproduct\')">➕ إضافة منتج</button></div></td></tr>';
+  const tbody = document.getElementById('productsBody'); if(!tbody) return;
+  if(prods.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">لا توجد منتجات</div><button class="btn btn-gold btn-sm" onclick="goToPage(\'addproduct\')">➕ إضافة منتج</button></div></td></tr>';
     return;
   }
   tbody.innerHTML = prods.map(p => {
     const cat = state.categories.find(c => c.id === p.category);
-    const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on';
-    const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
+    const sc = p.stock===0?'off':p.stock<=5?'low':'on';
+    const st = p.stock===0?'نفذ':p.stock<=5?'منخفض':'متوفر';
     const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
     return `<tr>
       <td><div class="p-thumb" style="background:${p.color}">${thumb}</div></td>
@@ -1120,14 +1106,13 @@ function renderProducts() {
   }).join('');
 }
 
-// ==================== ADD PRODUCT ====================
+// ===== ADD PRODUCT =====
 function previewImg(input, uploadId, stateKey) {
-  const file = input.files[0]; if (!file) return;
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     state[stateKey] = e.target.result;
-    const upload = document.getElementById(uploadId);
-    upload.innerHTML = `<img src="${e.target.result}">`;
+    document.getElementById(uploadId).innerHTML = `<img src="${e.target.result}">`;
   };
   reader.readAsDataURL(file);
 }
@@ -1141,15 +1126,18 @@ function saveProduct() {
   const desc = document.getElementById('pDesc').value.trim();
   const visible = document.getElementById('pVisible').checked;
   
-  if (!nameAr || !category || isNaN(price) || isNaN(stock)) { toast('❌ أكمل الحقول المطلوبة (*)', 'error'); return; }
+  if(!nameAr || !category || isNaN(price) || isNaN(stock)) { toast('❌ أكمل الحقول المطلوبة', 'error'); return; }
   
-  const id = 'p_' + Date.now();
-  state.products.push({ id, nameAr, nameEn, category, price, stock, color, gradient:genGrad(color), desc, rating:4.5+Math.random()*0.5, reviews:Math.floor(Math.random()*200)+10, visible, lensImage:state.currentLensImg, cardImage:state.currentCardImg });
-  
+  state.products.push({
+    id: 'p_'+Date.now(), nameAr, nameEn, category, price, stock, color,
+    gradient: genGrad(color), desc,
+    rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10,
+    visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg
+  });
   saveState(); updateStats(); renderProducts();
   toast('✅ تمت إضافة المنتج', 'success');
   
-  // Reset form
+  // Reset
   document.getElementById('pNameAr').value=''; document.getElementById('pNameEn').value='';
   document.getElementById('pPrice').value=''; document.getElementById('pStock').value='';
   document.getElementById('pDesc').value='';
@@ -1158,9 +1146,9 @@ function saveProduct() {
   document.getElementById('cardImgUpload').innerHTML='<div class="upload-content"><span class="upload-icon">🖼️</span><span>صورة البطاقة</span></div>';
 }
 
-// ==================== EDIT PRODUCT ====================
+// ===== EDIT PRODUCT =====
 function editProduct(id) {
-  const p = state.products.find(x => x.id === id); if (!p) return;
+  const p = state.products.find(x => x.id === id); if(!p) return;
   populateCatSelects();
   document.getElementById('editId').value = p.id;
   document.getElementById('editNameAr').value = p.nameAr;
@@ -1181,20 +1169,20 @@ function editProduct(id) {
 }
 function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
 function previewEditImg(input) {
-  const file = input.files[0]; if (!file) return;
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = (e) => { document.getElementById('editLensUpload').innerHTML = `<img src="${e.target.result}">`; };
   reader.readAsDataURL(file);
 }
 function previewEditCard(input) {
-  const file = input.files[0]; if (!file) return;
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = (e) => { document.getElementById('editCardUpload').innerHTML = `<img src="${e.target.result}">`; };
   reader.readAsDataURL(file);
 }
 function updateProduct() {
   const id = document.getElementById('editId').value;
-  const p = state.products.find(x => x.id === id); if (!p) return;
+  const p = state.products.find(x => x.id === id); if(!p) return;
   
   p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr;
   p.nameEn = document.getElementById('editNameEn').value.trim();
@@ -1206,41 +1194,41 @@ function updateProduct() {
   p.gradient = genGrad(p.color);
   
   const lensImg = document.getElementById('editLensUpload').querySelector('img');
-  if (lensImg) p.lensImage = lensImg.src;
+  if(lensImg) p.lensImage = lensImg.src;
   const cardImg = document.getElementById('editCardUpload').querySelector('img');
-  if (cardImg) p.cardImage = cardImg.src;
+  if(cardImg) p.cardImage = cardImg.src;
   
   saveState(); renderProducts(); renderLensImages(); updateStats(); closeEditModal();
-  toast('✅ تم تحديث المنتج', 'success');
+  toast('✅ تم التحديث', 'success');
 }
 function deleteProduct(id) {
-  const p = state.products.find(x => x.id === id); if (!p) return;
-  if (!confirm(`⚠️ حذف "${p.nameAr}"؟`)) return;
+  const p = state.products.find(x => x.id === id); if(!p) return;
+  if(!confirm(`⚠️ حذف "${p.nameAr}"؟`)) return;
   state.products = state.products.filter(x => x.id !== id);
   saveState(); renderProducts(); renderLensImages(); updateStats();
-  toast('✅ تم حذف المنتج', 'success');
+  toast('✅ تم الحذف', 'success');
 }
 function toggleVis(id) {
-  const p = state.products.find(x => x.id === id); if (!p) return;
+  const p = state.products.find(x => x.id === id); if(!p) return;
   p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats();
   toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️‍🗨️ تم إخفاء "${p.nameAr}"`, 'success');
 }
 
-// ==================== VISIBILITY LIST ====================
+// ===== VISIBILITY =====
 function renderVisibility() {
-  const el = document.getElementById('visibilityList'); if (!el) return;
-  if (state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👁️</div><div class="empty-title">لا توجد منتجات</div><div class="empty-desc">أضف منتجات أولاً للتحكم في ظهورها</div></div>'; return; }
+  const el = document.getElementById('visibilityList'); if(!el) return;
+  if(state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👁️</div><div class="empty-title">لا توجد منتجات</div></div>'; return; }
   el.innerHTML = state.products.map(p => {
     const cat = state.categories.find(c => c.id === p.category);
     const thumb = p.lensImage ? `<img src="${p.lensImage}">` : p.nameAr.charAt(0);
-    return `<div class="vis-item"><div class="p-thumb" style="background:${p.color};width:44px;height:44px">${thumb}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${p.nameAr}</div><div style="font-size:11px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 10px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:50px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`;
+    return `<div class="vis-item"><div class="p-thumb" style="background:${p.color};width:44px;height:44px">${thumb}</div><div style="flex:1"><div style="font-weight:600;font-size:14px">${p.nameAr}</div><div style="font-size:11px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 10px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:50px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`;
   }).join('');
 }
 
-// ==================== LENS IMAGES GRID ====================
+// ===== LENS IMAGES =====
 function renderLensImages() {
-  const el = document.getElementById('colorsList'); if (!el) return;
-  if (state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📷</div><div class="empty-title">لا توجد منتجات</div><div class="empty-desc">أضف منتجات أولاً ثم عد هنا لرفع صور العدسات</div><button class="btn btn-gold btn-sm" onclick="goToPage(\'addproduct\')">➕ إضافة منتج</button></div>'; return; }
+  const el = document.getElementById('colorsList'); if(!el) return;
+  if(state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📷</div><div class="empty-title">لا توجد منتجات</div><button class="btn btn-gold btn-sm" onclick="goToPage(\'addproduct\')">➕ إضافة منتج</button></div>'; return; }
   el.innerHTML = state.products.map(p => {
     const hasImg = !!p.lensImage;
     return `<div class="color-card"><div class="color-swatch" onclick="openColorImgModal('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">📷 تغيير</div>` : `<div class="color-swatch-placeholder" style="background:${p.gradient}"></div><div class="color-swatch-overlay">📷 إضافة صورة</div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:26px;height:26px;font-size:11px">🗑️</button>` : ''}</div></div>`;
@@ -1248,7 +1236,7 @@ function renderLensImages() {
 }
 function openColorImgModal(productId) {
   state.editingProductId = productId;
-  const p = state.products.find(x => x.id === productId); if (!p) return;
+  const p = state.products.find(x => x.id === productId); if(!p) return;
   const area = document.getElementById('colorImgArea');
   area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<div class="upload-content"><span class="upload-icon">📷</span><span>اضغط أو اسحب للرفع</span></div>';
   document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none';
@@ -1256,25 +1244,25 @@ function openColorImgModal(productId) {
 }
 function closeColorImgModal() { document.getElementById('colorImgModal').classList.remove('show'); state.editingProductId = null; }
 function saveColorImg(input) {
-  const file = input.files[0]; if (!file || !state.editingProductId) return;
+  const file = input.files[0]; if(!file || !state.editingProductId) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     const p = state.products.find(x => x.id === state.editingProductId);
-    if (p) { p.lensImage = e.target.result; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم حفظ الصورة', 'success'); }
+    if(p) { p.lensImage = e.target.result; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم الحفظ', 'success'); }
   };
   reader.readAsDataURL(file);
 }
 function removeColorImg() {
-  if (!state.editingProductId) return;
+  if(!state.editingProductId) return;
   const p = state.products.find(x => x.id === state.editingProductId);
-  if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إزالة الصورة', 'success'); }
+  if(p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم الإزالة', 'success'); }
 }
 function removeProdImg(id) {
   const p = state.products.find(x => x.id === id);
-  if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); toast('✅ تم إزالة الصورة', 'success'); }
+  if(p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); toast('✅ تم الإزالة', 'success'); }
 }
 
-// ==================== DISPLAY SETTINGS ====================
+// ===== SETTINGS =====
 function renderDisplaySettings() {
   const s = state.settings;
   ['settingShowPrice','settingShowStock','settingShowColors','settingShowCardImages','settingShowReviews'].forEach(id => {
@@ -1287,11 +1275,11 @@ function updateSettings() {
   state.settings.showColors = document.getElementById('settingShowColors').checked;
   state.settings.showCardImages = document.getElementById('settingShowCardImages').checked;
   state.settings.showReviews = document.getElementById('settingShowReviews').checked;
-  saveState(); toast('✅ تم حفظ الإعدادات', 'success');
+  saveState(); toast('✅ تم الحفظ', 'success');
 }
 function renderHiddenColors() {
-  const el = document.getElementById('hiddenColorsList'); if (!el) return;
-  if (state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><div class="empty-title">لا توجد ألوان</div><div class="empty-desc">أضف منتجات أولاً</div></div>'; return; }
+  const el = document.getElementById('hiddenColorsList'); if(!el) return;
+  if(state.products.length === 0) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><div class="empty-title">لا توجد ألوان</div></div>'; return; }
   el.innerHTML = state.products.map(p => {
     const isHidden = state.hiddenColorIds.includes(p.id);
     return `<div class="color-card"><div class="color-swatch"><div class="color-swatch-placeholder" style="background:${p.gradient}"></div></div><div class="color-info"><span class="color-name">${p.nameAr}</span><label class="toggle"><input type="checkbox" ${!isHidden?'checked':''} onchange="toggleColorHide('${p.id}')"><span class="toggle-slider"></span></label></div></div>`;
@@ -1299,11 +1287,11 @@ function renderHiddenColors() {
 }
 function toggleColorHide(id) {
   const idx = state.hiddenColorIds.indexOf(id);
-  if (idx === -1) state.hiddenColorIds.push(id); else state.hiddenColorIds.splice(idx, 1);
+  if(idx === -1) state.hiddenColorIds.push(id); else state.hiddenColorIds.splice(idx, 1);
   saveState(); toast('✅ تم التحديث', 'success');
 }
 
-// ==================== COLOR PICKER SYNC ====================
+// ===== UTILS =====
 ['pColor','editColor'].forEach(pid => {
   const color = document.getElementById(pid), hex = document.getElementById(pid.replace('Color','ColorHex'));
   if(color && hex) {
@@ -1311,48 +1299,37 @@ function toggleColorHide(id) {
     hex.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) color.value = e.target.value; });
   }
 });
-
-// ==================== MODAL CLOSE ====================
 ['editModal','colorImgModal'].forEach(mid => {
   document.getElementById(mid)?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) document.getElementById(mid).classList.remove('show'); });
 });
 document.addEventListener('keydown', e => { if(e.key==='Escape'){document.getElementById('editModal')?.classList.remove('show');document.getElementById('colorImgModal')?.classList.remove('show');} });
 
-// ==================== DRAG & DROP FOR IMAGES ====================
 ['lensImgUpload','cardImgUpload','colorImgArea','editLensUpload','editCardUpload'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
+  const el = document.getElementById(id); if(!el) return;
   ['dragenter','dragover'].forEach(evt => el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.add('dragover'); }));
   ['dragleave','drop'].forEach(evt => el.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); el.classList.remove('dragover'); }));
   el.addEventListener('drop', e => {
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if(file && file.type.startsWith('image/')) {
       const input = el.closest('.fgroup')?.querySelector('input[type="file"]') || document.getElementById('colorImgInput');
-      if (input) { input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+      if(input) { input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
     }
   });
 });
 
-// ==================== STORE PREVIEW ====================
+// ===== STORE PREVIEW =====
 function openStorePreview() {
-  const storeData = {
-    categories: state.categories,
-    products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)),
-    settings: state.settings
-  };
+  const storeData = { categories: state.categories, products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)), settings: state.settings };
   const html = buildStoreHTML(storeData);
-  const blob = new Blob([html], {type:'text/html'});
-  window.open(URL.createObjectURL(blob), '_blank');
+  window.open(URL.createObjectURL(new Blob([html], {type:'text/html'})), '_blank');
 }
-
 function buildStoreHTML(data) {
   const {categories, products, settings} = data;
   const grouped = {};
   categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; });
-  
   let cardsHTML = '';
   categories.forEach(c => {
-    if (!grouped[c.id] || grouped[c.id].lenses.length === 0) return;
+    if(!grouped[c.id] || grouped[c.id].lenses.length === 0) return;
     const lenses = grouped[c.id].lenses, main = lenses[0];
     const totalStock = lenses.reduce((s,l) => s+l.stock, 0);
     const dots = lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join('');
@@ -1363,7 +1340,6 @@ function buildStoreHTML(data) {
       <div class="card-body"><div class="card-badge"><span class="dot"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:''}<button class="card-btn">اكتشفي ✦</button></div></div>
     </div>`;
   });
-  
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>✦ LENSORA Store</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
