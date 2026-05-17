@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>لوحة تحكم Lensora | إدارة المتجر</title>
+<meta name="description" content="لوحة تحكم إدارة متجر Lensora للعدسات الملونة">
+
+<!-- Fonts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+
+<style>
+:root {
+  --bg: #0a0808; --sidebar-bg: rgba(18,14,12,.95); --card-bg: rgba(26,22,20,.8);
+  --gold: #c9a84c; --gold-light: #e8d5a3; --gold-hover: #b8943a;
+  --text: #f5ede0; --text-dim: #8a7e73; --text-muted: #6b6058;
+  --border: rgba(201,168,76,.12); --success: #2ecc71; --warning: #f39c12; --error: #e74c3c;
+  --radius: 16px; --radius-sm: 10px;
+  --nav-height: 64px; --sidebar-width: 240px;
+  --transition: .25s ease;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-tap-highlight-color:transparent}
+body.loading{overflow:hidden}
+
+/* ===== LAYOUT ===== */
+.dashboard{display:grid;grid-template-columns:var(--sidebar-width) 1fr;min-height:100vh}
+@media(max-width:1024px){.dashboard{grid-template-columns:1fr}}
+
+/* ===== SIDEBAR ===== */
+.sidebar{position:fixed;top:0;right:0;width:var(--sidebar-width);height:100vh;background:var(--sidebar-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transition:transform var(--transition)}
+.sidebar.collapsed{transform:translateX(100%)}
+@media(max-width:1024px){.sidebar{transform:translateX(100%)} .sidebar.open{transform:translateX(0)}}
+
+.sidebar-header{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.sidebar-logo svg{width:28px;height:28px}
+.sidebar-toggle{margin-right:auto;width:36px;height:36px;border-radius:8px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px}
+.sidebar-toggle:active{background:var(--gold);color:var(--bg)}
+
+.sidebar-menu{flex:1;overflow-y:auto;padding:12px 8px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--radius-sm);color:var(--text-dim);text-decoration:none;font-size:13px;transition:all var(--transition);margin-bottom:4px}
+.menu-item:hover,.menu-item.active{background:rgba(201,168,76,.08);color:var(--gold)}
+.menu-item.active{border-right:3px solid var(--gold)}
+.menu-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:16px}
+
+.sidebar-footer{padding:16px;border-top:1px solid var(--border)}
+.user-profile{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--radius-sm);background:rgba(201,168,76,.04)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;color:var(--bg);font-weight:700;font-size:14px}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--text-dim)}
+.logout-btn{width:32px;height:32px;border-radius:8px;background:rgba(231,76,60,.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+/* ===== MAIN CONTENT ===== */
+.main-content{padding:20px;padding-top:calc(var(--nav-height) + 20px);padding-right:calc(var(--sidebar-width) + 20px)}
+@media(max-width:1024px){.main-content{padding-right:20px;padding-left:20px}}
+
+/* ===== TOP BAR ===== */
+.top-bar{position:fixed;top:0;right:var(--sidebar-width);left:0;height:var(--nav-height);background:rgba(8,6,6,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:999;transition:right var(--transition)}
+@media(max-width:1024px){.top-bar{right:0}}
+.top-bar-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold)}
+.top-bar-actions{display:flex;align-items:center;gap:8px}
+.search-box{position:relative}
+.search-box input{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:20px;padding:8px 16px 8px 36px;color:var(--text);font-size:12px;width:200px;transition:width var(--transition)}
+.search-box input:focus{width:240px;outline:2px solid var(--gold);border-color:transparent}
+.search-box svg{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-dim)}
+.icon-btn{width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;position:relative}
+.icon-btn:active{background:var(--gold);color:var(--bg)}
+.notification-badge{position:absolute;top:6px;left:6px;width:16px;height:16px;border-radius:50%;background:var(--error);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* ===== CARDS & STATS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;align-items:center;gap:14px}
+.stat-icon{width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold)}
+.stat-info{flex:1}
+.stat-value{font-size:24px;font-weight:700;color:var(--gold)}
+.stat-label{font-size:12px;color:var(--text-dim)}
+.stat-change{font-size:11px;color:var(--success);display:flex;align-items:center;gap:4px}
+.stat-change.negative{color:var(--error)}
+
+/* ===== TABLES ===== */
+.data-table{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.table-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.table-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 80px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:center;font-size:13px;transition:background var(--transition)}
+.table-row:hover{background:rgba(201,168,76,.04)}
+.table-row:last-child{border-bottom:none}
+.product-cell{display:flex;align-items:center;gap:10px}
+.product-thumb{width:40px;height:40px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--bg);font-weight:600}
+.product-name{font-weight:600}
+.product-cat{font-size:11px;color:var(--text-dim)}
+.stock-badge{padding:4px 10px;border-radius:12px;font-size:10px;font-weight:600}
+.stock-badge.in-stock{background:rgba(46,204,113,.15);color:var(--success)}
+.stock-badge.low-stock{background:rgba(243,156,18,.15);color:var(--warning)}
+.stock-badge.out-stock{background:rgba(231,76,60,.15);color:var(--error)}
+.price-cell{font-weight:600;color:var(--gold)}
+.action-btns{display:flex;gap:4px}
+.action-btn{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all var(--transition)}
+.action-btn.edit{background:rgba(52,152,219,.15);color:#3498db}
+.action-btn.delete{background:rgba(231,76,60,.15);color:#e74c3c}
+.action-btn:active{transform:scale(.9)}
+
+/* ===== FORMS ===== */
+.form-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.form-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;color:var(--text-dim)}
+.form-group input,.form-group select,.form-group textarea{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:13px;min-height:40px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+.form-group textarea{min-height:80px;resize:vertical}
+.color-preview{width:40px;height:24px;border-radius:4px;border:1px solid var(--border)}
+.btn{padding:10px 20px;border-radius:var(--radius-sm);font-weight:600;font-size:13px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all var(--transition);cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-hover));color:var(--bg)}
+.btn-primary:active{transform:scale(.98)}
+.btn-secondary{background:rgba(201,168,76,.08);color:var(--gold);border:1px solid var(--border)}
+.btn-danger{background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all var(--transition)}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold)}
+.modal-close{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal-body{padding:20px}
+.modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* ===== CHARTS ===== */
+.chart-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.chart-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.chart-placeholder{height:200px;background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(201,168,76,.02));border-radius:var(--radius-sm);display:flex;align-items:flex-end;gap:8px;padding:16px}
+.chart-bar{flex:1;background:var(--gold);border-radius:4px 4px 0 0;position:relative;min-height:20px;transition:height var(--transition)}
+.chart-bar::after{content:attr(data-value);position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text-dim)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(14,12,12,.95);backdrop-filter:blur(12px);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:var(--radius-sm);font-size:12px;z-index:9999;transition:transform .3s ease;max-width:92vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:var(--error)}
+.toast.warning{border-color:var(--warning)}
+
+/* ===== MOBILE MENU TOGGLE ===== */
+.menu-toggle{display:none;width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,.06);color:var(--gold);align-items:center;justify-content:center;font-size:20px}
+@media(max-width:1024px){.menu-toggle{display:flex}}
+
+/* ===== LOGIN SCREEN ===== */
+.login-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:32px;max-width:400px;width:100%}
+.login-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);text-align:center;margin-bottom:24px;letter-spacing:3px}
+.login-form{display:flex;flex-direction:column;gap:16px}
+
+/* ===== UTILS ===== */
+.hidden{display:none !important}
+.text-center{text-align:center}
+.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}
+.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}
+.flex{display:flex}.flex-center{display:flex;align-items:center;justify-content:center}
+.gap-1{gap:8px}.gap-2{gap:16px}
+</style>
+</head>
+<body class="loading">
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">LENSORA</div>
+    <form class="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="loginEmail" placeholder="admin@lensora.com" required>
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="loginPass" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">تسجيل الدخول</button>
+    </form>
+    <p class="text-center" style="font-size:11px;color:var(--text-dim);margin-top:16px">
+      تجريبي: admin@lensora.com / admin123
+    </p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard hidden" id="dashboard">
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1" opacity=".3"/><circle cx="20" cy="20" r="12" stroke="#c9a84c" stroke-width=".5" opacity=".2"/><circle cx="20" cy="20" r="8" fill="url(#lg1)" opacity=".7"/><defs><radialGradient id="lg1" cx="40%" cy="35%"><stop offset="0%" stop-color="#e8d5a3"/><stop offset="100%" stop-color="#8B7355"/></radialGradient></defs></svg>
+        <span>LENSORA</span>
+      </div>
+      <button class="sidebar-toggle" onclick="toggleSidebar()">✕</button>
+    </div>
+    
+    <nav class="sidebar-menu">
+      <a href="#" class="menu-item active" data-page="dashboard">
+        <span class="menu-icon">📊</span> لوحة التحكم
+      </a>
+      <a href="#" class="menu-item" data-page="products">
+        <span class="menu-icon">👁️</span> المنتجات
+      </a>
+      <a href="#" class="menu-item" data-page="orders">
+        <span class="menu-icon">📦</span> الطلبات
+      </a>
+      <a href="#" class="menu-item" data-page="inventory">
+        <span class="menu-icon">📦</span> المخزون
+      </a>
+      <a href="#" class="menu-item" data-page="analytics">
+        <span class="menu-icon">📈</span> التحليلات
+      </a>
+      <a href="#" class="menu-item" data-page="settings">
+        <span class="menu-icon">⚙️</span> الإعدادات
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">م</div>
+        <div class="user-info">
+          <div class="user-name">مدير المتجر</div>
+          <div class="user-role">مسؤول</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()" title="تسجيل الخروج">🚪</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <h1 class="top-bar-title" id="pageTitle">لوحة التحكم</h1>
+      <div class="top-bar-actions">
+        <div class="search-box">
+          <input type="search" placeholder="بحث...">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <button class="icon-btn" title="الإشعارات">
+          🔔
+          <span class="notification-badge">3</span>
+        </button>
+        <button class="icon-btn" title="الموقع">🌐</button>
+      </div>
+    </header>
+
+    <!-- Dashboard Page -->
+    <div id="page-dashboard" class="page">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-info">
+            <div class="stat-value">24</div>
+            <div class="stat-label">المنتجات</div>
+          </div>
+          <div class="stat-change">↑ 12%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <div class="stat-value">156</div>
+            <div class="stat-label">الطلبات</div>
+          </div>
+          <div class="stat-change">↑ 8%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <div class="stat-value">12,450</div>
+            <div class="stat-label">الإيرادات (ر.س)</div>
+          </div>
+          <div class="stat-change negative">↓ 3%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-value">89</div>
+            <div class="stat-label">العملاء الجدد</div>
+          </div>
+          <div class="stat-change">↑ 24%</div>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="form-card">
+        <div class="chart-header">
+          <h3 class="chart-title">آخر الطلبات</h3>
+          <button class="btn btn-secondary" onclick="showPage('orders')">عرض الكل</button>
+        </div>
+        <div class="data-table">
+          <div class="table-header">
+            <div>الطلب</div><div>التاريخ</div><div>الحالة</div><div>المبلغ</div><div></div>
+          </div>
+          <div class="table-row">
+            <div class="product-cell"><div class="product-name">#ORD-2024-001</div></div>
+            <div>15 مايو</div>
+            <div><span class="stock-badge in-stock">مكتمل</span></div>
+            <div class="price-cell">245 ر.س</div>
+            <div class="action-btns"><button class="action-btn edit">👁️</button></div>
+          </div>
+          <div class="table-row">
+            <div class="product-cell"><div class="product-name">#ORD-2024-002</div></div>
+            <div>14 مايو</div>
+            <div><span class="stock-badge low-stock">قيد التنفيذ</span></div>
+            <div class="price-cell">180 ر.س</div>
+            <div class="action-btns"><button class="action-btn edit">👁️</button></div>
+          </div>
+          <div class="table-row">
+            <div class="product-cell"><div class="product-name">#ORD-2024-003</div></div>
+            <div>14 مايو</div>
+            <div><span class="stock-badge out-stock">ملغي</span></div>
+            <div class="price-cell">95 ر.س</div>
+            <div class="action-btns"><button class="action-btn edit">👁️</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">المبيعات الأسبوعية</h3>
+          <select style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-size:12px">
+            <option>هذا الأسبوع</option><option>الأسبوع الماضي</option><option>هذا الشهر</option>
+          </select>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-bar" style="height:60%" data-value="60"></div>
+          <div class="chart-bar" style="height:85%" data-value="85"></div>
+          <div class="chart-bar" style="height:45%" data-value="45"></div>
+          <div class="chart-bar" style="height:95%" data-value="95"></div>
+          <div class="chart-bar" style="height:70%" data-value="70"></div>
+          <div class="chart-bar" style="height:55%" data-value="55"></div>
+          <div class="chart-bar" style="height:80%" data-value="80"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Page -->
+    <div id="page-products" class="page hidden">
+      <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 class="form-title">إدارة المنتجات</h2>
+        <button class="btn btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
+      </div>
+      
+      <div class="data-table">
+        <div class="table-header">
+          <div>المنتج</div><div>الفئة</div><div>السعر</div><div>المخزون</div><div></div>
+        </div>
+        <div class="table-row" id="productsTableBody">
+          <!-- Products will be rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Page -->
+    <div id="page-orders" class="page hidden">
+      <h2 class="form-title mb-2">الطلبات</h2>
+      <div class="form-card">
+        <div class="form-grid" style="margin-bottom:16px">
+          <div class="form-group">
+            <label>تصفية حسب الحالة</label>
+            <select>
+              <option>الكل</option><option>جديد</option><option>قيد التنفيذ</option><option>مكتمل</option><option>ملغي</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>نطاق التاريخ</label>
+            <select>
+              <option>آخر 7 أيام</option><option>آخر 30 يوم</option><option>هذا الشهر</option><option>مخصص</option>
+            </select>
+          </div>
+        </div>
+        <div class="data-table">
+          <div class="table-header">
+            <div>رقم الطلب</div><div>العميل</div><div>التاريخ</div><div>الحالة</div><div>المبلغ</div><div></div>
+          </div>
+          <div class="table-row">
+            <div class="product-name">#ORD-2024-001</div>
+            <div>سارة محمد</div>
+            <div>15/05/2024</div>
+            <div><span class="stock-badge in-stock">مكتمل ✓</span></div>
+            <div class="price-cell">245 ر.س</div>
+            <div class="action-btns">
+              <button class="action-btn edit">✏️</button>
+              <button class="action-btn delete">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Page -->
+    <div id="page-inventory" class="page hidden">
+      <h2 class="form-title mb-2">إدارة المخزون</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <div class="stat-value">342</div>
+            <div class="stat-label">إجمالي القطع</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <div class="stat-value">8</div>
+            <div class="stat-label">منتجات منخفضة</div>
+          </div>
+          <div class="stat-change negative">تحديث مطلوب</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❌</div>
+          <div class="stat-info">
+            <div class="stat-value">3</div>
+            <div class="stat-label">منتجات نفدت</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="data-table">
+        <div class="table-header">
+          <div>المنتج</div><div>اللون</div><div>المتاح</div><div>الحد الأدنى</div><div>الحالة</div><div></div>
+        </div>
+        <div class="table-row">
+          <div class="product-cell"><div class="product-name">عسل ذهبي</div><div class="product-cat">بني دافئ</div></div>
+          <div><div style="width:20px;height:20px;border-radius:50%;background:#D4A056"></div></div>
+          <div>30</div><div>10</div>
+          <div><span class="stock-badge in-stock">متوفر</span></div>
+          <div class="action-btns"><button class="action-btn edit">✏️</button></div>
+        </div>
+        <div class="table-row">
+          <div class="product-cell"><div class="product-name">ذهبي</div><div class="product-cat">عسلي مميز</div></div>
+          <div><div style="width:20px;height:20px;border-radius:50%;background:#D4A056"></div></div>
+          <div>3</div><div>10</div>
+          <div><span class="stock-badge low-stock">منخفض ⚠️</span></div>
+          <div class="action-btns"><button class="action-btn edit">✏️</button></div>
+        </div>
+        <div class="table-row">
+          <div class="product-cell"><div class="product-name">بندق</div><div class="product-cat">بني دافئ</div></div>
+          <div><div style="width:20px;height:20px;border-radius:50%;background:#8B7355"></div></div>
+          <div>0</div><div>10</div>
+          <div><span class="stock-badge out-stock">نفذ ❌</span></div>
+          <div class="action-btns"><button class="action-btn edit">✏️</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Page -->
+    <div id="page-analytics" class="page hidden">
+      <h2 class="form-title mb-2">التحليلات والتقارير</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👁️</div>
+          <div class="stat-info">
+            <div class="stat-value">2,847</div>
+            <div class="stat-label">زيارات الموقع</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🛒</div>
+          <div class="stat-info">
+            <div class="stat-value">4.2%</div>
+            <div class="stat-label">معدل التحويل</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📱</div>
+          <div class="stat-info">
+            <div class="stat-value">68%</div>
+            <div class="stat-label">زيارات الموبايل</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 class="chart-title">الزيارات حسب المصدر</h3>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-bar" style="height:45%;background:#3498db" data-value="45%"></div>
+          <div class="chart-bar" style="height:30%;background:#2ecc71" data-value="30%"></div>
+          <div class="chart-bar" style="height:15%;background:#e74c3c" data-value="15%"></div>
+          <div class="chart-bar" style="height:10%;background:#f39c12" data-value="10%"></div>
+        </div>
+        <div style="display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:11px;color:var(--text-dim)">
+          <span style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;border-radius:3px;background:#3498db"></div> مباشر</span>
+          <span style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;border-radius:3px;background:#2ecc71"></div> وسائل التواصل</span>
+          <span style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;border-radius:3px;background:#e74c3c"></div> بحث</span>
+          <span style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;border-radius:3px;background:#f39c12"></div> إعلانات</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="page-settings" class="page hidden">
+      <h2 class="form-title mb-2">إعدادات المتجر</h2>
+      
+      <div class="form-card">
+        <h3 class="form-title">معلومات المتجر</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>اسم المتجر</label>
+            <input type="text" value="Lensora">
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" value="support@lensora.com">
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" value="+966XXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>العملة الافتراضية</label>
+            <select><option value="SAR">ريال سعودي (ر.س)</option><option value="USD">دولار أمريكي ($)</option><option value="AED">درهم إماراتي (د.إ)</option></select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-card">
+        <h3 class="form-title">الشحن والدفع</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>حد الشحن المجاني (ر.س)</label>
+            <input type="number" value="200">
+          </div>
+          <div class="form-group">
+            <label>تكلفة الشحن الأساسية</label>
+            <input type="number" value="15">
+          </div>
+          <div class="form-group">
+            <label>طرق الدفع المتاحة</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" checked> دفع عند الاستلام</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox" checked> بطاقة ائتمان</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px"><input type="checkbox"> Apple Pay</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex" style="justify-content:flex-end;gap:10px">
+        <button class="btn btn-secondary">إلغاء</button>
+        <button class="btn btn-primary" onclick="showToast('✅ تم حفظ الإعدادات', 'success')">حفظ التغييرات</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">إضافة منتج جديد</h3>
+      <button class="modal-close" onclick="closeProductModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="productForm">
+        <input type="hidden" id="editProductId">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>اسم المنتج *</label>
+            <input type="text" id="productName" required>
+          </div>
+          <div class="form-group">
+            <label>الاسم بالإنجليزية</label>
+            <input type="text" id="productEnName">
+          </div>
+          <div class="form-group">
+            <label>الفئة *</label>
+            <select id="productCategory" required>
+              <option value="">اختر فئة...</option>
+              <option value="brown">بني دافئ</option>
+              <option value="blue">أزرق ساحر</option>
+              <option value="green">أخضر زمردي</option>
+              <option value="gray">رمادي أنيق</option>
+              <option value="hazel">عسلي مميز</option>
+              <option value="purple">بنفسجي ملكي</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>السعر (ر.س) *</label>
+            <input type="number" id="productPrice" min="0" step="1" required>
+          </div>
+          <div class="form-group">
+            <label>الكمية المتاحة *</label>
+            <input type="number" id="productStock" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>لون العرض</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="color" id="productColor" value="#c9a84c" style="width:50px;height:40px;border:none;border-radius:6px;cursor:pointer">
+              <div class="color-preview" id="colorPreview"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>الوصف</label>
+          <textarea id="productDesc" placeholder="وصف المنتج..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProductModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveProduct()">حفظ المنتج</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let state = {
+  authenticated: false,
+  currentPage: 'dashboard',
+  products: [],
+  orders: []
+};
+
+// ===== AUTH =====
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  
+  // Demo auth (replace with real API)
+  if (email === 'admin@lensora.com' && pass === 'admin123') {
+    state.authenticated = true;
+    localStorage.setItem('lensora_admin', 'true');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.body.classList.remove('loading');
+    showToast('✅ مرحباً بك في لوحة التحكم', 'success');
+    loadProducts();
+  } else {
+    showToast('❌ بيانات الدخول غير صحيحة', 'error');
+  }
+}
+
+function handleLogout() {
+  state.authenticated = false;
+  localStorage.removeItem('lensora_admin');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginPass').value = '';
+  showToast('✅ تم تسجيل الخروج', 'success');
+}
+
+// Check auth on load
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('lensora_admin') === 'true') {
+    state.authenticated = true;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.body.classList.remove('loading');
+    loadProducts();
+  } else {
+    document.body.classList.remove('loading');
+  }
+});
+
+// ===== NAVIGATION =====
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('collapsed');
+  sidebar.classList.toggle('open');
+}
+
+function showPage(pageId) {
+  // Update active menu
+  document.querySelectorAll('.menu-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.page === pageId);
+  });
+  
+  // Show page
+  document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+  document.getElementById(`page-${pageId}`).classList.remove('hidden');
+  
+  // Update title
+  const titles = {
+    dashboard: 'لوحة التحكم',
+    products: 'إدارة المنتجات',
+    orders: 'الطلبات',
+    inventory: 'المخزون',
+    analytics: 'التحليلات',
+    settings: 'الإعدادات'
+  };
+  document.getElementById('pageTitle').textContent = titles[pageId] || 'لوحة التحكم';
+  
+  state.currentPage = pageId;
+  
+  // Close sidebar on mobile
+  if (window.innerWidth <= 1024) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+}
+
+// Menu click handlers
+document.querySelectorAll('.menu-item').forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    showPage(item.dataset.page);
+  });
+});
+
+// ===== PRODUCTS =====
+function loadProducts() {
+  // Demo data - replace with API call
+  state.products = [
+    {id:'b1',name:'عسل ذهبي',enName:'Golden Honey',category:'brown',categoryName:'بني دافئ',price:85,stock:30,color:'#D4A056'},
+    {id:'b2',name:'شوكولاتة',enName:'Chocolate',category:'brown',categoryName:'بني دافئ',price:95,stock:22,color:'#5C3A1E'},
+    {id:'bl1',name:'محيط',enName:'Ocean',category:'blue',categoryName:'أزرق ساحر',price:110,stock:25,color:'#2E6CB5'},
+    {id:'g2',name:'زمردي',enName:'Emerald',category:'green',categoryName:'أخضر زمردي',price:130,stock:10,color:'#2E8B57'},
+    {id:'hz3',name:'ذهبي',enName:'Golden',category:'hazel',categoryName:'عسلي مميز',price:110,stock:3,color:'#D4A056'},
+    {id:'b4',name:'بندق',enName:'Hazelnut',category:'brown',categoryName:'بني دافئ',price:88,stock:0,color:'#8B7355'}
+  ];
+  renderProductsTable();
+}
+
+function renderProductsTable() {
+  const tbody = document.getElementById('productsTableBody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = state.products.map(p => {
+    const stockClass = p.stock === 0 ? 'out-stock' : p.stock <= 5 ? 'low-stock' : 'in-stock';
+    const stockText = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
+    return `
+      <div class="table-row">
+        <div class="product-cell">
+          <div class="product-thumb" style="background:${p.color}">${p.name.charAt(0)}</div>
+          <div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-cat">${p.categoryName}</div>
+          </div>
+        </div>
+        <div>${p.categoryName}</div>
+        <div class="price-cell">${p.price} ر.س</div>
+        <div><span class="stock-badge ${stockClass}">${stockText} (${p.stock})</span></div>
+        <div class="action-btns">
+          <button class="action-btn edit" onclick="editProduct('${p.id}')">✏️</button>
+          <button class="action-btn delete" onclick="deleteProduct('${p.id}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openProductModal(productId = null) {
+  const modal = document.getElementById('productModal');
+  const title = document.getElementById('modalTitle');
+  const form = document.getElementById('productForm');
+  
+  if (productId) {
+    // Edit mode
+    const product = state.products.find(p => p.id === productId);
+    if (!product) return;
+    
+    title.textContent = 'تعديل المنتج';
+    document.getElementById('editProductId').value = product.id;
+    document.getElementById('productName').value = product.name;
+    document.getElementById('productEnName').value = product.enName || '';
+    document.getElementById('productCategory').value = product.category;
+    document.getElementById('productPrice').value = product.price;
+    document.getElementById('productStock').value = product.stock;
+    document.getElementById('productColor').value = product.color;
+    document.getElementById('productDesc').value = '';
+    document.getElementById('colorPreview').style.background = product.color;
+  } else {
+    // Add mode
+    title.textContent = 'إضافة منتج جديد';
+    form.reset();
+    document.getElementById('editProductId').value = '';
+    document.getElementById('colorPreview').style.background = '#c9a84c';
+  }
+  
+  modal.classList.add('open');
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.remove('open');
+}
+
+function saveProduct() {
+  const id = document.getElementById('editProductId').value;
+  const product = {
+    id: id || `p${Date.now()}`,
+    name: document.getElementById('productName').value,
+    enName: document.getElementById('productEnName').value,
+    category: document.getElementById('productCategory').value,
+    categoryName: document.getElementById('productCategory').options[document.getElementById('productCategory').selectedIndex].text,
+    price: parseInt(document.getElementById('productPrice').value),
+    stock: parseInt(document.getElementById('productStock').value),
+    color: document.getElementById('productColor').value
+  };
+  
+  if (id) {
+    // Update existing
+    const index = state.products.findIndex(p => p.id === id);
+    if (index !== -1) state.products[index] = product;
+    showToast('✅ تم تحديث المنتج', 'success');
+  } else {
+    // Add new
+    state.products.push(product);
+    showToast('✅ تمت إضافة المنتج', 'success');
+  }
+  
+  renderProductsTable();
+  closeProductModal();
+}
+
+function editProduct(id) {
+  openProductModal(id);
+}
+
+function deleteProduct(id) {
+  if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+    state.products = state.products.filter(p => p.id !== id);
+    renderProductsTable();
+    showToast('✅ تم حذف المنتج', 'success');
+  }
+}
+
+// Color preview
+document.getElementById('productColor')?.addEventListener('input', (e) => {
+  document.getElementById('colorPreview').style.background = e.target.value;
+});
+
+// ===== TOAST =====
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ===== EVENT LISTENERS =====
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeProductModal();
+  }
+});
+
+// Close modal on overlay click
+document.getElementById('productModal')?.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) {
+    closeProductModal();
+  }
+});
+
+// Handle window resize for sidebar
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 1024) {
+    document.getElementById('sidebar').classList.remove('collapsed', 'open');
+  }
+});
+</script>
+</body>
+</html>
