@@ -514,8 +514,10 @@ function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); 
 // ========== LOAD DATA ==========
 async function loadData() {
 try {
+// توحيد مفاتيح التخزين مع الداشبورد
 const localProducts = localStorage.getItem('lensora_products');
 const localCats = localStorage.getItem('lensora_categories');
+
 if (localProducts) {
 const parsed = JSON.parse(localProducts);
 state.products = parsed.map(p => ({
@@ -564,11 +566,23 @@ function showContact() { showToast('💬 support@lensora.com', 'info'); }
 function initSmoothSlider() {
 const track = document.getElementById('sliderTrack');
 const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
-const COLORS_DATA = [...new Map(state.products.map(p => [p.categoryId, p])).values()].map(p => ({
-id: p.categoryId, arName: p.categoryName, enName: p.categoryNameEn,
+
+// تجميع المنتجات حسب الفئة من البيانات المحملة (بدلاً من COLORS_DATA الثابتة)
+const grouped = {};
+state.products.forEach(p => {
+if (!grouped[p.categoryId]) {
+grouped[p.categoryId] = {
+id: p.categoryId,
+arName: p.categoryName,
+enName: p.categoryNameEn,
 cardBg: `linear-gradient(135deg,${adjColor(p.color||'#c9a84c',-60)} 0%,${p.color||'#c9a84c'} 50%,${adjColor(p.color||'#c9a84c',30)} 100%)`,
-lenses: state.products.filter(lp => lp.categoryId === p.categoryId)
-}));
+lenses: []
+};
+}
+grouped[p.categoryId].lenses.push(p);
+});
+const COLORS_DATA = Object.values(grouped);
+
 let html = '';
 COLORS_DATA.forEach((c, idx) => {
 if (!c.lenses.length) return;
