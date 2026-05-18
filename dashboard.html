@@ -27,10 +27,24 @@ body.loading{overflow:hidden}
 .lens-wrapper{position:relative;border-radius:50%;overflow:hidden;transition:all .3s}
 .lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}
 
-/* طبقة اللون الدائرية */
-.lens-color-circle{position:absolute;border-radius:50%;mix-blend-mode:multiply;transition:all .2s}
+/* طبقة اللون الدائرية - قابلة للسحب */
+.lens-color-circle{
+  position:absolute;border-radius:50%;mix-blend-mode:multiply;transition:all .1s;
+  cursor:grab;user-select:none;touch-action:none;
+  /* تأثيرات العدسة المقعرة والواقعية */
+  box-shadow:
+    inset 0 0 20px rgba(0,0,0,.4),
+    inset 0 2px 8px rgba(255,255,255,.3),
+    0 4px 12px rgba(0,0,0,.2);
+  /* نمط خطوط القزحية */
+  background-image:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.15) 0%, transparent 40%),
+    repeating-radial-gradient(circle at center, transparent 0%, transparent 8%, rgba(0,0,0,.08) 8%, rgba(0,0,0,.08) 9%, transparent 10%),
+    conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,.05) 10deg, transparent 20deg, rgba(0,0,0,.03) 30deg, transparent 40deg);
+}
+.lens-color-circle:active{cursor:grabbing}
 
-/* تأثيرات العدسة الواقعية */
+/* تأثيرات العدسة الواقعية الإضافية */
 .lens-effects{position:absolute;inset:0;border-radius:50%;pointer-events:none}
 
 /* الحلقة الخارجية المضيئة */
@@ -60,11 +74,16 @@ body.loading{overflow:hidden}
 .close-enlarged:hover{background:var(--error)}
 
 /* عناصر التحكم في المعاينة */
-.lens-controls{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-width:200px;z-index:3001}
+.lens-controls{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-width:220px;z-index:3001}
 .lens-control-row{display:flex;align-items:center;gap:8px}
-.lens-control-row label{font-size:9px;color:var(--text-dim);min-width:50px}
+.lens-control-row label{font-size:9px;color:var(--text-dim);min-width:55px}
 .lens-control-row input[type="range"]{flex:1;accent-color:var(--gold)}
-.lens-control-row span{font-size:9px;color:var(--gold);min-width:35px;text-align:center}
+.lens-control-row span{font-size:9px;color:var(--gold);min-width:40px;text-align:center}
+.lens-hint{font-size:8px;color:var(--text-dim);text-align:center;margin-top:4px}
+
+/* مؤشر السحب */
+.drag-indicator{position:absolute;top:4px;right:4px;background:rgba(201,168,76,.2);border:1px solid var(--gold);border-radius:4px;padding:2px 4px;font-size:8px;color:var(--gold);pointer-events:none;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
 
 /* LOGIN */
 .login-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -226,7 +245,7 @@ body.loading{overflow:hidden}
 .fgrid{grid-template-columns:1fr}
 .colors-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
 .topbar-title{font-size:14px}
-.lens-controls{min-width:180px;padding:10px 14px}
+.lens-controls{min-width:200px;padding:10px 14px}
 }
 </style>
 </head>
@@ -322,7 +341,7 @@ body.loading{overflow:hidden}
 <div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button></div></div></div>
 
 <!-- LENS IMAGES -->
-<div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">اضغطي على أي عدسة لتكبيرها والتحكم في حجمها وشفافيتها</p><div id="colorsList" class="colors-grid"></div></div></div>
+<div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">✨ اضغطي على أي عدسة لتكبيرها، ثم اسحبي الدائرة الملونة لتركيبها على العين</p><div id="colorsList" class="colors-grid"></div></div></div>
 
 <!-- VISIBILITY -->
 <div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
@@ -333,7 +352,7 @@ body.loading{overflow:hidden}
 </main></div>
 
 <!-- EDIT MODAL -->
-<div class="overlay" id="editModal"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align-center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div><div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div><div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
+<div class="overlay" id="editModal"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div><div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div><div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
 
 <!-- COLOR IMAGE MODAL -->
 <div class="overlay" id="colorImgModal"><div class="modal" style="max-width:380px"><div class="modal-head"><h3 class="modal-title">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div><div class="modal-body" style="text-align:center"><p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p><div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div><input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button><button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button></div></div></div></div>
@@ -354,7 +373,18 @@ body.loading{overflow:hidden}
         <input type="range" id="previewOpacity" min="0" max="100" value="70" oninput="updatePreviewLens()">
         <span id="previewOpacityVal">70%</span>
       </div>
+      <div class="lens-control-row">
+        <label>محاذاة س:</label>
+        <input type="range" id="previewOffsetX" min="-30" max="30" value="0" oninput="updatePreviewLens()">
+        <span id="previewOffsetXVal">0%</span>
+      </div>
+      <div class="lens-control-row">
+        <label>محاذاة ص:</label>
+        <input type="range" id="previewOffsetY" min="-30" max="30" value="0" oninput="updatePreviewLens()">
+        <span id="previewOffsetYVal">0%</span>
+      </div>
       <button class="btn btn-gold btn-sm" onclick="applyPreviewChanges()">✅ تطبيق التغييرات</button>
+      <div class="lens-hint">💡 اسحبي الدائرة الملونة مباشرة لتركيبها على العين</div>
     </div>
   </div>
 </div>
@@ -378,27 +408,27 @@ state.categories = [
 {id:'purple',ar:'بنفسجي ملكي',en:'Royal Purple',color:'#7B5EA7'}
 ];
 state.products = [
-{id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',rating:4.8,reviews:124,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',opacity:0.75,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',desc:'بني غامق عميق يعطي نظرة ساحرة',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'b3',nameAr:'كراميل',nameEn:'Caramel',category:'brown',price:90,stock:18,color:'#C68642',opacity:0.65,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',desc:'بني فاتح كريمي مثالي',rating:4.7,reviews:156,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'b4',nameAr:'بندق',nameEn:'Hazelnut',category:'brown',price:88,stock:0,color:'#8B7355',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',desc:'بني متوسط مع لمسات ذهبية',rating:4.6,reviews:67,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',desc:'أزرق محيطي عميق مع لمعة طبيعية',rating:4.9,reviews:203,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'bl2',nameAr:'سماء',nameEn:'Sky',category:'blue',price:100,stock:15,color:'#87CEEB',opacity:0.6,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',desc:'أزرق سماوي فاتح براقة',rating:4.7,reviews:145,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'bl3',nameAr:'ثلجي',nameEn:'Snowy',category:'blue',price:120,stock:8,color:'#B8D4E8',opacity:0.5,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',desc:'أزرق فاتح ثلجي مذهل',rating:5.0,reviews:78,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'bl4',nameAr:'زفير',nameEn:'Zephyr',category:'blue',price:115,stock:12,color:'#5B6CBF',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',desc:'أزرق بنفسجي غامض',rating:4.8,reviews:92,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',desc:'أخضر زيتوني ناعم',rating:4.6,reviews:134,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'g2',nameAr:'زمردي',nameEn:'Emerald',category:'green',price:130,stock:10,color:'#2E8B57',opacity:0.75,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',desc:'أخضر زمردي فاخر لامع',rating:4.9,reviews:187,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'g3',nameAr:'فيروزي',nameEn:'Turquoise',category:'green',price:115,stock:5,color:'#40B5A5',opacity:0.65,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',desc:'أخضر فيروزي مائي منعش',rating:4.8,reviews:56,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'g4',nameAr:'غابة',nameEn:'Forest',category:'green',price:108,stock:14,color:'#2E6B3B',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',desc:'أخضر غامق غامض',rating:4.7,reviews:98,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'gr1',nameAr:'فضي',nameEn:'Silver',category:'gray',price:100,stock:28,color:'#B8B8B8',opacity:0.6,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',desc:'رمادي فضي لامع أنيق',rating:4.7,reviews:167,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'gr2',nameAr:'فحمي',nameEn:'Charcoal',category:'gray',price:95,stock:16,color:'#4A4A4A',opacity:0.8,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',desc:'رمادي فحمي قوي',rating:4.8,reviews:112,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'gr3',nameAr:'دخاني',nameEn:'Smoky',category:'gray',price:105,stock:7,color:'#6B6B7B',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',desc:'رمادي دخاني بلمسة بنفسجية',rating:4.9,reviews:84,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',opacity:0.65,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',desc:'عسلي لوزي فاتح طبيعي',rating:4.8,reviews:201,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'hz2',nameAr:'نحاسي',nameEn:'Copper',category:'hazel',price:100,stock:20,color:'#B87333',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',desc:'عسلي نحاسي دافئ ببريق',rating:4.7,reviews:143,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'hz3',nameAr:'ذهبي',nameEn:'Golden',category:'hazel',price:110,stock:3,color:'#D4A056',opacity:0.6,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',desc:'عسلي ذهبي لامع',rating:5.0,reviews:45,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'p1',nameAr:'لافندر',nameEn:'Lavender',category:'purple',price:110,stock:18,color:'#A88BC5',opacity:0.65,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',desc:'بنفسجي لافندر رومانسي',rating:4.8,reviews:156,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'p2',nameAr:'أرجواني',nameEn:'Majestic',category:'purple',price:120,stock:11,color:'#6B3FA0',opacity:0.7,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',desc:'بنفسجي غامق ملكي',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
-{id:'p3',nameAr:'ليلكي',nameEn:'Lilac',category:'purple',price:115,stock:6,color:'#9B7FBF',opacity:0.6,lensSize:85,gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',desc:'بنفسجي فاتح ليلكي',rating:4.7,reviews:72,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE}
+{id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#D4A056,#8B5E3C,#5C3A1E)',desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',rating:4.8,reviews:124,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',opacity:0.75,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#7B5230,#4A2A10,#2E1808)',desc:'بني غامق عميق يعطي نظرة ساحرة',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'b3',nameAr:'كراميل',nameEn:'Caramel',category:'brown',price:90,stock:18,color:'#C68642',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#C68642,#8B5E3C,#5C3A1E)',desc:'بني فاتح كريمي مثالي',rating:4.7,reviews:156,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'b4',nameAr:'بندق',nameEn:'Hazelnut',category:'brown',price:88,stock:0,color:'#8B7355',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#A0845C,#7B6B4F,#5A4D36)',desc:'بني متوسط مع لمسات ذهبية',rating:4.6,reviews:67,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#5B9BD5,#2E6CB5,#1B3A5C)',desc:'أزرق محيطي عميق مع لمعة طبيعية',rating:4.9,reviews:203,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'bl2',nameAr:'سماء',nameEn:'Sky',category:'blue',price:100,stock:15,color:'#87CEEB',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#87CEEB,#5BA3D9,#3A7BBF)',desc:'أزرق سماوي فاتح براقة',rating:4.7,reviews:145,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'bl3',nameAr:'ثلجي',nameEn:'Snowy',category:'blue',price:120,stock:8,color:'#B8D4E8',opacity:0.5,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#D0E4F0,#A8C8DC,#7BAFC8)',desc:'أزرق فاتح ثلجي مذهل',rating:5.0,reviews:78,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'bl4',nameAr:'زفير',nameEn:'Zephyr',category:'blue',price:115,stock:12,color:'#5B6CBF',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#7B8CDF,#4A5AAF,#2E3A7B)',desc:'أزرق بنفسجي غامض',rating:4.8,reviews:92,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#8BA85C,#6B8E4E,#4A6B32)',desc:'أخضر زيتوني ناعم',rating:4.6,reviews:134,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'g2',nameAr:'زمردي',nameEn:'Emerald',category:'green',price:130,stock:10,color:'#2E8B57',opacity:0.75,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#3CB371,#2E8B57,#1B5E3B)',desc:'أخضر زمردي فاخر لامع',rating:4.9,reviews:187,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'g3',nameAr:'فيروزي',nameEn:'Turquoise',category:'green',price:115,stock:5,color:'#40B5A5',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#5CD4C4,#40B5A5,#2A8A7B)',desc:'أخضر فيروزي مائي منعش',rating:4.8,reviews:56,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'g4',nameAr:'غابة',nameEn:'Forest',category:'green',price:108,stock:14,color:'#2E6B3B',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#3E8B4B,#2E6B3B,#1B4B28)',desc:'أخضر غامق غامض',rating:4.7,reviews:98,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'gr1',nameAr:'فضي',nameEn:'Silver',category:'gray',price:100,stock:28,color:'#B8B8B8',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#D0D0D0,#A8A8A8,#787878)',desc:'رمادي فضي لامع أنيق',rating:4.7,reviews:167,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'gr2',nameAr:'فحمي',nameEn:'Charcoal',category:'gray',price:95,stock:16,color:'#4A4A4A',opacity:0.8,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#6A6A6A,#3A3A3A,#202020)',desc:'رمادي فحمي قوي',rating:4.8,reviews:112,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'gr3',nameAr:'دخاني',nameEn:'Smoky',category:'gray',price:105,stock:7,color:'#6B6B7B',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#8B8B9B,#6B6B7B,#4A4A5A)',desc:'رمادي دخاني بلمسة بنفسجية',rating:4.9,reviews:84,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#D4B878,#C4A265,#8B7355)',desc:'عسلي لوزي فاتح طبيعي',rating:4.8,reviews:201,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'hz2',nameAr:'نحاسي',nameEn:'Copper',category:'hazel',price:100,stock:20,color:'#B87333',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#D4944A,#B87333,#7B4A1E)',desc:'عسلي نحاسي دافئ ببريق',rating:4.7,reviews:143,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'hz3',nameAr:'ذهبي',nameEn:'Golden',category:'hazel',price:110,stock:3,color:'#D4A056',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#E8C070,#D4A056,#8B6A32)',desc:'عسلي ذهبي لامع',rating:5.0,reviews:45,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'p1',nameAr:'لافندر',nameEn:'Lavender',category:'purple',price:110,stock:18,color:'#A88BC5',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',desc:'بنفسجي لافندر رومانسي',rating:4.8,reviews:156,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'p2',nameAr:'أرجواني',nameEn:'Majestic',category:'purple',price:120,stock:11,color:'#6B3FA0',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',desc:'بنفسجي غامق ملكي',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
+{id:'p3',nameAr:'ليلكي',nameEn:'Lilac',category:'purple',price:115,stock:6,color:'#9B7FBF',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',desc:'بنفسجي فاتح ليلكي',rating:4.7,reviews:72,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE}
 ];}
 
 // ==================== PERSISTENCE ====================
@@ -426,11 +456,86 @@ function renderCategories() { const el = document.getElementById('categoriesList
 function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(); const en = document.getElementById('newCatNameEn').value.trim(); const color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
 function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return; state.categories = state.categories.filter(c => c.id !== id); state.products = state.products.filter(p => p.category !== id); saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats(); toast('✅ تم الحذف', 'success'); }
 
+// ==================== DRAG FUNCTIONALITY FOR LENS ==========
+let dragState = { isDragging: false, productId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0 };
+
+function initDrag(element, productId) {
+  element.addEventListener('mousedown', startDrag);
+  element.addEventListener('touchstart', startDrag, { passive: false });
+  
+  function startDrag(e) {
+    e.preventDefault();
+    const p = state.products.find(x => x.id === productId);
+    if (!p) return;
+    
+    dragState = {
+      isDragging: true,
+      productId: productId,
+      startX: e.type === 'touchstart' ? e.touches[0].clientX : e.clientX,
+      startY: e.type === 'touchstart' ? e.touches[0].clientY : e.clientY,
+      startOffsetX: p.offsetX || 0,
+      startOffsetY: p.offsetY || 0
+    };
+    
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('touchmove', onDrag, { passive: false });
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+  }
+  
+  function onDrag(e) {
+    if (!dragState.isDragging) return;
+    e.preventDefault();
+    
+    const p = state.products.find(x => x.id === dragState.productId);
+    if (!p) return;
+    
+    const wrapper = element.closest('.lens-wrapper');
+    const rect = wrapper.getBoundingClientRect();
+    const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+    
+    // حساب الإزاحة كنسبة مئوية من حجم العدسة
+    const deltaX = ((currentX - dragState.startX) / rect.width) * 100;
+    const deltaY = ((currentY - dragState.startY) / rect.height) * 100;
+    
+    // تحديث المواضع مع حدود
+    p.offsetX = Math.max(-30, Math.min(30, dragState.startOffsetX + deltaX));
+    p.offsetY = Math.max(-30, Math.min(30, dragState.startOffsetY + deltaY));
+    
+    // تحديث العرض الفوري
+    element.style.transform = `translate(${p.offsetX}%, ${p.offsetY}%)`;
+    
+    // تحديث عناصر التحكم في المعاينة إذا كانت مفتوحة
+    if (state.previewProductId === productId) {
+      document.getElementById('previewOffsetX').value = Math.round(p.offsetX);
+      document.getElementById('previewOffsetXVal').textContent = Math.round(p.offsetX) + '%';
+      document.getElementById('previewOffsetY').value = Math.round(p.offsetY);
+      document.getElementById('previewOffsetYVal').textContent = Math.round(p.offsetY) + '%';
+    }
+  }
+  
+  function endDrag() {
+    if (dragState.isDragging) {
+      dragState.isDragging = false;
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('touchmove', onDrag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+      saveState();
+      renderProducts();
+      renderLensImages();
+    }
+  }
+}
+
 // ==================== REALISTIC LENS RENDERER ==========
 function renderRealisticLens(p, size='34px', isPreview=false, previewId=null) {
   const hasRealImg = !!p.lensImage;
   const opacity = p.opacity || 0.7;
   const lensSize = p.lensSize || 85;
+  const offsetX = p.offsetX || 0;
+  const offsetY = p.offsetY || 0;
   const baseImg = p.baseLens || BASE_LENS_TEMPLATE;
   const colorLayerSize = `${lensSize}%`;
   
@@ -440,8 +545,11 @@ function renderRealisticLens(p, size='34px', isPreview=false, previewId=null) {
         <!-- صورة النيني الأساسية -->
         <img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'">
         
-        <!-- طبقة اللون الدائرية -->
-        <div class="lens-color-circle" style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity}"></div>
+        <!-- طبقة اللون الدائرية - قابلة للسحب -->
+        <div class="lens-color-circle" id="colorCircle-${p.id}" 
+             style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)">
+          ${!isPreview ? '<div class="drag-indicator">👆 اسحبي</div>' : ''}
+        </div>
         
         <!-- تأثيرات العدسة الواقعية -->
         <div class="lens-effects">
@@ -471,11 +579,19 @@ function openLensPreview(productId) {
   // عرض العدسة بحجم كبير
   content.innerHTML = renderRealisticLens(p, '200px', true, 'previewLensWrapper');
   
+  // تهيئة السحب للدائرة الملونة
+  const colorCircle = document.getElementById(`colorCircle-${productId}`);
+  if (colorCircle) initDrag(colorCircle, productId);
+  
   // ضبط عناصر التحكم
   document.getElementById('previewSize').value = p.lensSize || 85;
   document.getElementById('previewSizeVal').textContent = (p.lensSize || 85) + '%';
   document.getElementById('previewOpacity').value = Math.round((p.opacity || 0.7) * 100);
   document.getElementById('previewOpacityVal').textContent = Math.round((p.opacity || 0.7) * 100) + '%';
+  document.getElementById('previewOffsetX').value = p.offsetX || 0;
+  document.getElementById('previewOffsetXVal').textContent = (p.offsetX || 0) + '%';
+  document.getElementById('previewOffsetY').value = p.offsetY || 0;
+  document.getElementById('previewOffsetYVal').textContent = (p.offsetY || 0) + '%';
   
   document.getElementById('lensPreviewModal').classList.add('show');
 }
@@ -491,9 +607,13 @@ function updatePreviewLens() {
   
   const size = document.getElementById('previewSize').value;
   const opacity = document.getElementById('previewOpacity').value / 100;
+  const offsetX = parseInt(document.getElementById('previewOffsetX').value);
+  const offsetY = parseInt(document.getElementById('previewOffsetY').value);
   
   document.getElementById('previewSizeVal').textContent = size + '%';
   document.getElementById('previewOpacityVal').textContent = Math.round(opacity * 100) + '%';
+  document.getElementById('previewOffsetXVal').textContent = offsetX + '%';
+  document.getElementById('previewOffsetYVal').textContent = offsetY + '%';
   
   // تحديث العرض المباشر
   const colorCircle = document.querySelector('#previewLensWrapper .lens-color-circle');
@@ -501,6 +621,7 @@ function updatePreviewLens() {
     colorCircle.style.width = size + '%';
     colorCircle.style.height = size + '%';
     colorCircle.style.opacity = opacity;
+    colorCircle.style.transform = `translate(${offsetX}%, ${offsetY}%)`;
   }
 }
 
@@ -510,6 +631,8 @@ function applyPreviewChanges() {
   
   p.lensSize = parseInt(document.getElementById('previewSize').value);
   p.opacity = parseInt(document.getElementById('previewOpacity').value) / 100;
+  p.offsetX = parseInt(document.getElementById('previewOffsetX').value);
+  p.offsetY = parseInt(document.getElementById('previewOffsetY').value);
   
   saveState();
   renderProducts();
@@ -536,7 +659,7 @@ function saveProduct() {
   const visible = document.getElementById('pVisible').checked;
   if (!nameAr || !category || isNaN(price) || isNaN(stock) || !color) { toast('❌ أكمل الحقول المطلوبة وتأكد من اختيار الفئة', 'error'); return; }
   const id = 'p_' + Date.now();
-  state.products.push({ id, nameAr, nameEn, category, price, stock, color, opacity, lensSize, gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE });
+  state.products.push({ id, nameAr, nameEn, category, price, stock, color, opacity, lensSize, offsetX:0, offsetY:0, gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE });
   saveState(); updateStats(); renderProducts(); renderLensImages(); toast('✅ تمت إضافة المنتج', 'success');
   document.getElementById('pNameAr').value=''; document.getElementById('pNameEn').value=''; document.getElementById('pPrice').value=''; document.getElementById('pStock').value=''; document.getElementById('pDesc').value=''; document.getElementById('pCategory').value=''; document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056'; document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%'; document.getElementById('pLensSize').value='85'; document.getElementById('pLensSizeVal').textContent='85%';
   state.currentLensImg=null; state.currentCardImg=null;
@@ -592,12 +715,14 @@ function buildStoreHTML(data) {
     const dots = lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join(''); 
     const lensSize = main.lensSize || 85;
     const opacity = main.opacity || 0.7;
+    const offsetX = main.offsetX || 0;
+    const offsetY = main.offsetY || 0;
     const lensContent = main.lensImage 
       ? `<img src="${main.lensImage}" class="lens-real-img">` 
-      : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-circle" style="inset:calc((100% - ${lensSize}%)/2);width:${lensSize}%;height:${lensSize}%;background:${main.color};opacity:${opacity};border-radius:50%;mix-blend-mode:multiply"></div><div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div></div>`;
+      : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-circle" style="inset:calc((100% - ${lensSize}%)/2);width:${lensSize}%;height:${lensSize}%;background:${main.color};opacity:${opacity};border-radius:50%;mix-blend-mode:multiply;transform:translate(${offsetX}%, ${offsetY}%)"></div><div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div></div>`;
     cardsHTML += `<div class="slider-card">${settings.showCardImages && main.cardImage ? `<div class="card-img-bg" style="background-image:url(${main.cardImage})"></div>` : ''}<div class="card-bg" style="${main.cardImage?'background:'+main.color+';opacity:.3':'background:'+main.color}"></div><div class="card-visual"><div class="card-lens-sphere">${lensContent}</div>${settings.showColors?`<div class="card-dots">${dots}</div>`:''}</div><div class="card-body"><div class="card-badge"><span class="dot"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:'<div class="card-price"></div>'}<button class="card-btn">اكتشفي ✦</button></div></div></div>`; 
   }); 
-  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}.lens-layer-wrap{position:relative;width:100%;height:100%;border-radius:inherit;overflow:hidden}.lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}.lens-color-circle{position:absolute;border-radius:50%;mix-blend-mode:multiply}.lens-effects{position:absolute;inset:0;border-radius:50%;pointer-events:none}.lens-outer-ring{position:absolute;inset:2px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),transparent 60%);opacity:.6}.lens-depth-gradient{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.3) 100%)}.lens-specular{position:absolute;width:35%;height:20%;top:15%;left:20%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.9),rgba(255,255,255,.1) 70%,transparent);transform:rotate(-25deg);filter:blur(1px)}.lens-specular-2{position:absolute;width:20%;height:10%;bottom:20%;right:25%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.6),transparent);filter:blur(2px)}.lens-edge{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),inset 0 2px 4px rgba(0,0,0,.2)}.lens-real-img{position:relative;z-index:10;width:90%;height:90%;object-fit:contain;border-radius:50%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.slider-card{flex:0 0 260px;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);border:1px solid rgba(201,168,76,.06);position:relative}.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}.card-bg{position:absolute;inset:0;z-index:0}.slider-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none;z-index:1}.card-visual{position:relative;height:160px;z-index:4;display:flex;align-items:center;justify-content:center}.card-lens-sphere{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:5}.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}.card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}.card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);overflow:hidden}.card-body{position:relative;z-index:4;padding:14px 16px}.card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);margin-bottom:8px}.card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}.card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}.card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}.card-price{font-size:11px;color:var(--text-dim)}.card-price strong{font-size:16px;color:var(--gold);font-weight:700}.card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;border:none}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}@media(max-width:600px){.slider-card{flex:0 0 240px}.hero{min-height:40vh}}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`; 
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}.lens-layer-wrap{position:relative;width:100%;height:100%;border-radius:inherit;overflow:hidden}.lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}.lens-color-circle{position:absolute;border-radius:50%;mix-blend-mode:multiply;box-shadow:inset 0 0 20px rgba(0,0,0,.4),inset 0 2px 8px rgba(255,255,255,.3),0 4px 12px rgba(0,0,0,.2);background-image:radial-gradient(circle at 30% 30%, rgba(255,255,255,.15) 0%, transparent 40%),repeating-radial-gradient(circle at center, transparent 0%, transparent 8%, rgba(0,0,0,.08) 8%, rgba(0,0,0,.08) 9%, transparent 10%),conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,.05) 10deg, transparent 20deg, rgba(0,0,0,.03) 30deg, transparent 40deg)}.lens-effects{position:absolute;inset:0;border-radius:50%;pointer-events:none}.lens-outer-ring{position:absolute;inset:2px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),transparent 60%);opacity:.6}.lens-depth-gradient{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.3) 100%)}.lens-specular{position:absolute;width:35%;height:20%;top:15%;left:20%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.9),rgba(255,255,255,.1) 70%,transparent);transform:rotate(-25deg);filter:blur(1px)}.lens-specular-2{position:absolute;width:20%;height:10%;bottom:20%;right:25%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.6),transparent);filter:blur(2px)}.lens-edge{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),inset 0 2px 4px rgba(0,0,0,.2)}.lens-real-img{position:relative;z-index:10;width:90%;height:90%;object-fit:contain;border-radius:50%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.slider-card{flex:0 0 260px;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);border:1px solid rgba(201,168,76,.06);position:relative}.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}.card-bg{position:absolute;inset:0;z-index:0}.slider-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none;z-index:1}.card-visual{position:relative;height:160px;z-index:4;display:flex;align-items:center;justify-content:center}.card-lens-sphere{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:5}.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}.card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}.card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);overflow:hidden}.card-body{position:relative;z-index:4;padding:14px 16px}.card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);margin-bottom:8px}.card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}.card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}.card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}.card-price{font-size:11px;color:var(--text-dim)}.card-price strong{font-size:16px;color:var(--gold);font-weight:700}.card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;border:none}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}@media(max-width:600px){.slider-card{flex:0 0 240px}.hero{min-height:40vh}}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`; 
 }
 </script>
 </body>
