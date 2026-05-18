@@ -251,7 +251,7 @@ body.loading{overflow:hidden}
 <div class="side-user">
 <div class="side-avatar">م</div>
 <div><div class="side-name">مدير المتجر</div><div class="side-role">مسؤول</div></div>
-<button class="side-logout" onclick="doLogout()">🚪</button>
+<button class="side-logout" onclick="doLogout()" aria-label="تسجيل الخروج">🚪</button>
 </div>
 </div>
 </aside>
@@ -265,10 +265,10 @@ body.loading{overflow:hidden}
 <!-- OVERVIEW -->
 <div class="page active" id="page-overview">
 <div class="stats">
-<div class="stat"><div class="stat-icon">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
-<div class="stat"><div class="stat-icon">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
-<div class="stat"><div class="stat-icon">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
-<div class="stat"><div class="stat-icon">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
+<div class="stat"><div class="stat-icon" aria-hidden="true">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
+<div class="stat"><div class="stat-icon" aria-hidden="true">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
+<div class="stat"><div class="stat-icon" aria-hidden="true">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
+<div class="stat"><div class="stat-icon" aria-hidden="true">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
 </div>
 <div class="fcard"><h3 class="ftitle">المنتجات المخفية</h3><div id="hiddenOverviewList" style="color:var(--text-dim);font-size:12px"></div></div>
 </div>
@@ -279,10 +279,10 @@ body.loading{overflow:hidden}
 <h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
 <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
 <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
-<select id="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
+<select id="filterCat" onchange="renderProducts()" aria-label="تصفية حسب الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
 </div>
 </div>
-<div class="fcard" style="padding:0;overflow:hidden"><div class="p-table-wrap"><table class="p-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
+<div class="fcard" style="padding:0;overflow:hidden"><div class="p-table-wrap"><table class="p-table"><thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
 </div>
 
 <!-- ADD PRODUCT -->
@@ -290,24 +290,62 @@ body.loading{overflow:hidden}
 <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
 <div class="fcard">
 <div class="fgrid">
-<div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي"></div>
+<div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي" aria-required="true"></div>
 <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
-<div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory"><option value="">-- اختر الفئة --</option></select></div>
-<div class="fgroup"><label for="pPrice">السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85"></div>
-<div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30"></div>
-<div class="fgroup"><label for="pColor">اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
-<div class="fgroup"><label for="pOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'"><span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
-<div class="fgroup"><label for="pLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'"><span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div>
+<div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" aria-required="true"><option value="">-- اختر الفئة --</option></select></div>
+<div class="fgroup"><label for="pPrice">السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85" aria-required="true"></div>
+<div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30" aria-required="true"></div>
+<div class="fgroup">
+  <label for="pColor">اللون (HEX)</label>
+  <div style="display:flex;gap:6px;align-items:center">
+    <input type="color" id="pColor" value="#D4A056" aria-label="اختر اللون" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+    <input type="text" id="pColorHex" value="#D4A056" aria-label="كود اللون" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+  </div>
 </div>
-<div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
-<div style="margin-top:14px"><label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"><span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span></div></div>
-<div style="margin-top:14px"><label for="cardImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة بطاقة المنتج (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()"><span class="upload-icon">🖼️</span><span>صورة البطاقة</span></div><input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')"><span style="font-size:10px;color:var(--text-dim)">خلفية البطاقة في السلايدر</span></div></div>
-<div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center"><label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" checked><span for="pVisible">معروض في المتجر</span></label><button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button></div>
+<div class="fgroup">
+  <label for="pOpacity">شفافية اللون (%)</label>
+  <div style="display:flex;align-items:center;gap:8px">
+    <input type="range" id="pOpacity" min="0" max="100" value="70" aria-label="شفافية اللون" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
+    <span id="pOpacityVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
+  </div>
+</div>
+<div class="fgroup">
+  <label for="pLensSize">حجم العدسة (%)</label>
+  <div style="display:flex;align-items:center;gap:8px">
+    <input type="range" id="pLensSize" min="50" max="100" value="85" aria-label="حجم العدسة" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'">
+    <span id="pLensSizeVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
+  </div>
+</div>
+</div>
+<div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..." aria-label="وصف المنتج"></textarea></div>
+<div style="margin-top:14px">
+  <label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+    <div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0" aria-label="رفع صورة العدسة"><span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span></div>
+    <input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')" aria-label="اختر صورة العدسة">
+    <span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span>
+  </div>
+</div>
+<div style="margin-top:14px">
+  <label for="cardImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة بطاقة المنتج (اختياري)</label>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+    <div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()" role="button" tabindex="0" aria-label="رفع صورة البطاقة"><span class="upload-icon" aria-hidden="true">🖼️</span><span>صورة البطاقة</span></div>
+    <input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')" aria-label="اختر صورة البطاقة">
+    <span style="font-size:10px;color:var(--text-dim)">خلفية البطاقة في السلايدر</span>
+  </div>
+</div>
+<div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
+  <label class="toggle-label" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
+    <input type="checkbox" id="pVisible" checked aria-label="معروض في المتجر">
+    <span>معروض في المتجر</span>
+  </label>
+  <button class="btn btn-gold" onclick="saveProduct()" aria-label="حفظ المنتج">💾 حفظ المنتج</button>
+</div>
 </div>
 </div>
 
 <!-- CATEGORIES -->
-<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button></div></div></div>
+<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" aria-label="لون الفئة" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" aria-label="إضافة فئة">➕ إضافة</button></div></div></div>
 
 <!-- LENS IMAGES -->
 <div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">✨ اضغطي على العدسة لتكبيرها وتعديلها، أو على 📷 لرفع صورة جديدة</p><div id="colorsList" class="colors-grid"></div></div></div>
@@ -316,58 +354,100 @@ body.loading{overflow:hidden}
 <div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
 
 <!-- DISPLAY SETTINGS -->
-<div class="page" id="page-display"><h2 class="ftitle mb-2">إعدادات العرض</h2><div class="fcard"><div class="setting-row"><div><label for="settingShowPrice" class="setting-lbl">إظهار الأسعار</label><div class="setting-desc">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowStock" class="setting-lbl">إظهار الكمية</label><div class="setting-desc">عرض عدد القطع المتاحة</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowColors" class="setting-lbl">إظهار ألوان العدسات</label><div class="setting-desc">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowCardImages" class="setting-lbl">إظهار صور البطاقات</label><div class="setting-desc">خلفية البطاقات في السلايدر</div></div><label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div></div><div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3><p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p><div id="hiddenColorsList" class="colors-grid"></div></div></div>
+<div class="page" id="page-display"><h2 class="ftitle mb-2">إعدادات العرض</h2><div class="fcard">
+  <div class="setting-row">
+    <div>
+      <span class="setting-lbl" id="lblShowPrice">إظهار الأسعار</span>
+      <div class="setting-desc">عرض السعر في البطاقات</div>
+    </div>
+    <label class="toggle" aria-labelledby="lblShowPrice">
+      <input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="setting-row">
+    <div>
+      <span class="setting-lbl" id="lblShowStock">إظهار الكمية</span>
+      <div class="setting-desc">عرض عدد القطع المتاحة</div>
+    </div>
+    <label class="toggle" aria-labelledby="lblShowStock">
+      <input type="checkbox" id="settingShowStock" checked onchange="updateSettings()">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="setting-row">
+    <div>
+      <span class="setting-lbl" id="lblShowColors">إظهار ألوان العدسات</span>
+      <div class="setting-desc">عرض الدوائر الملونة</div>
+    </div>
+    <label class="toggle" aria-labelledby="lblShowColors">
+      <input type="checkbox" id="settingShowColors" checked onchange="updateSettings()">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="setting-row">
+    <div>
+      <span class="setting-lbl" id="lblShowCardImages">إظهار صور البطاقات</span>
+      <div class="setting-desc">خلفية البطاقات في السلايدر</div>
+    </div>
+    <label class="toggle" aria-labelledby="lblShowCardImages">
+      <input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+</div>
+<div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3><p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p><div id="hiddenColorsList" class="colors-grid"></div></div></div>
 
 </main></div>
 
 <!-- EDIT MODAL -->
-<div class="overlay" id="editModal"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div><div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div><div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
+<div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" aria-label="اختر اللون" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" aria-label="كود اللون" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" aria-label="شفافية اللون" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align-center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" aria-label="حجم العدسة" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" aria-label="وصف المنتج"></textarea></div><div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()" role="button" tabindex="0" aria-label="تغيير صورة العدسة"><span class="upload-icon" aria-hidden="true">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)" aria-label="اختر صورة العدسة"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div><div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()" role="button" tabindex="0" aria-label="تغيير صورة البطاقة"><span class="upload-icon" aria-hidden="true">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)" aria-label="اختر صورة البطاقة"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()" aria-label="حفظ التعديلات">💾 حفظ</button></div></div></div>
 
 <!-- COLOR IMAGE MODAL -->
-<div class="overlay" id="colorImgModal"><div class="modal" style="max-width:380px"><div class="modal-head"><h3 class="modal-title">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div><div class="modal-body" style="text-align:center"><p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p><div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div><input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button><button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button></div></div></div></div>
+<div class="overlay" id="colorImgModal" role="dialog" aria-modal="true" aria-labelledby="colorImgModalTitle"><div class="modal" style="max-width:380px"><div class="modal-head"><h3 class="modal-title" id="colorImgModalTitle">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()" aria-label="إغلاق">✕</button></div><div class="modal-body" style="text-align:center"><p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p><div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()" role="button" tabindex="0" aria-label="اضغط لرفع الصورة"><span class="upload-icon" aria-hidden="true">📷</span><span>اضغط للرفع</span></div><input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)" aria-label="اختر صورة العدسة"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()" aria-label="رفع صورة">📷 رفع صورة</button><button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none" aria-label="إزالة الصورة">🗑️ إزالة</button></div></div></div></div>
 
 <!-- REALISTIC LENS PREVIEW MODAL -->
-<div class="overlay" id="lensPreviewModal">
+<div class="overlay" id="lensPreviewModal" role="dialog" aria-modal="true" aria-labelledby="lensPreviewTitle">
   <div class="lens-preview-container enlarged" id="enlargedLens">
-    <button class="close-enlarged" onclick="closeLensPreview()">✕</button>
+    <button class="close-enlarged" onclick="closeLensPreview()" aria-label="إغلاق">✕</button>
     <div id="enlargedLensContent"></div>
     <div class="lens-controls">
       <div class="lens-control-row">
-        <label>الحجم:</label>
-        <input type="range" id="previewSize" min="50" max="100" value="85" oninput="updatePreviewLens()">
-        <span id="previewSizeVal">85%</span>
+        <label for="previewSize">الحجم:</label>
+        <input type="range" id="previewSize" min="50" max="100" value="85" oninput="updatePreviewLens()" aria-label="حجم العدسة">
+        <span id="previewSizeVal" aria-live="polite">85%</span>
       </div>
       <div class="lens-control-row">
-        <label>الشفافية:</label>
-        <input type="range" id="previewOpacity" min="0" max="100" value="70" oninput="updatePreviewLens()">
-        <span id="previewOpacityVal">70%</span>
+        <label for="previewOpacity">الشفافية:</label>
+        <input type="range" id="previewOpacity" min="0" max="100" value="70" oninput="updatePreviewLens()" aria-label="شفافية اللون">
+        <span id="previewOpacityVal" aria-live="polite">70%</span>
       </div>
       <div class="lens-control-row">
-        <label>محاذاة س:</label>
-        <input type="range" id="previewOffsetX" min="-30" max="30" value="0" oninput="updatePreviewLens()">
-        <span id="previewOffsetXVal">0%</span>
+        <label for="previewOffsetX">محاذاة س:</label>
+        <input type="range" id="previewOffsetX" min="-30" max="30" value="0" oninput="updatePreviewLens()" aria-label="محاذاة أفقية">
+        <span id="previewOffsetXVal" aria-live="polite">0%</span>
       </div>
       <div class="lens-control-row">
-        <label>محاذاة ص:</label>
-        <input type="range" id="previewOffsetY" min="-30" max="30" value="0" oninput="updatePreviewLens()">
-        <span id="previewOffsetYVal">0%</span>
+        <label for="previewOffsetY">محاذاة ص:</label>
+        <input type="range" id="previewOffsetY" min="-30" max="30" value="0" oninput="updatePreviewLens()" aria-label="محاذاة رأسية">
+        <span id="previewOffsetYVal" aria-live="polite">0%</span>
       </div>
-      <button class="btn btn-gold btn-sm" onclick="applyPreviewChanges()">✅ تطبيق التغييرات</button>
+      <button class="btn btn-gold btn-sm" onclick="applyPreviewChanges()" aria-label="تطبيق التغييرات">✅ تطبيق التغييرات</button>
       <div class="lens-hint">💡 اسحبي الدائرة الملونة مباشرة لتركيبها على العين</div>
     </div>
   </div>
 </div>
 
 <!-- PRODUCT PREVIEW MODAL -->
-<div class="preview-modal" id="productPreviewModal">
+<div class="preview-modal" id="productPreviewModal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
   <div class="preview-content">
     <div class="preview-header">
-      <h3 class="preview-title">معاينة المنتج</h3>
-      <button class="preview-close" onclick="closeProductPreview()">✕</button>
+      <h3 class="preview-title" id="previewModalTitle">معاينة المنتج</h3>
+      <button class="preview-close" onclick="closeProductPreview()" aria-label="إغلاق">✕</button>
     </div>
     <div class="preview-body">
       <div class="eye-preview">
-        <div class="eye-large" id="previewEyeLarge"></div>
+        <div class="eye-large" id="previewEyeLarge" role="img" aria-label="معاينة العدسة على العين"></div>
         <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
           <span class="badge on" id="previewStockBadge">متوفر</span>
           <span class="badge" style="background:rgba(201,168,76,.1);color:var(--gold)" id="previewCategoryBadge">فئة</span>
@@ -386,25 +466,25 @@ body.loading{overflow:hidden}
           <h4>🎨 تخصيص العدسة</h4>
           <div class="control-group">
             <label>اختر لون العدسة:</label>
-            <div class="color-palette" id="previewColorPalette"></div>
-            <input type="color" id="previewCustomColor" class="color-custom-input" value="#D4A056" onchange="updatePreviewColor(this.value)">
+            <div class="color-palette" id="previewColorPalette" role="radiogroup" aria-label="ألوان العدسة"></div>
+            <input type="color" id="previewCustomColor" class="color-custom-input" value="#D4A056" onchange="updatePreviewColor(this.value)" aria-label="لون مخصص">
           </div>
           <div class="control-group">
-            <label>حجم العدسة: <span id="previewSizeDisplay">85%</span></label>
-            <input type="range" id="previewSizeControl" min="50" max="100" value="85" oninput="updatePreviewFromControls()">
+            <label for="previewSizeControl">حجم العدسة: <span id="previewSizeDisplay">85%</span></label>
+            <input type="range" id="previewSizeControl" min="50" max="100" value="85" oninput="updatePreviewFromControls()" aria-label="حجم العدسة">
           </div>
           <div class="control-group">
-            <label>شفافية اللون: <span id="previewOpacityDisplay">70%</span></label>
-            <input type="range" id="previewOpacityControl" min="0" max="100" value="70" oninput="updatePreviewFromControls()">
+            <label for="previewOpacityControl">شفافية اللون: <span id="previewOpacityDisplay">70%</span></label>
+            <input type="range" id="previewOpacityControl" min="0" max="100" value="70" oninput="updatePreviewFromControls()" aria-label="شفافية اللون">
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div class="control-group">
-              <label>محاذاة أفقي: <span id="previewOffsetXDisplay">0%</span></label>
-              <input type="range" id="previewOffsetXControl" min="-30" max="30" value="0" oninput="updatePreviewFromControls()">
+              <label for="previewOffsetXControl">محاذاة أفقي: <span id="previewOffsetXDisplay">0%</span></label>
+              <input type="range" id="previewOffsetXControl" min="-30" max="30" value="0" oninput="updatePreviewFromControls()" aria-label="محاذاة أفقية">
             </div>
             <div class="control-group">
-              <label>محاذاة رأسي: <span id="previewOffsetYDisplay">0%</span></label>
-              <input type="range" id="previewOffsetYControl" min="-30" max="30" value="0" oninput="updatePreviewFromControls()">
+              <label for="previewOffsetYControl">محاذاة رأسي: <span id="previewOffsetYDisplay">0%</span></label>
+              <input type="range" id="previewOffsetYControl" min="-30" max="30" value="0" oninput="updatePreviewFromControls()" aria-label="محاذاة رأسية">
             </div>
           </div>
         </div>
@@ -412,12 +492,12 @@ body.loading{overflow:hidden}
     </div>
     <div class="preview-actions">
       <button class="btn btn-ghost" onclick="closeProductPreview()">إغلاق</button>
-      <button class="btn btn-gold" onclick="savePreviewChanges()">💾 حفظ التغييرات</button>
+      <button class="btn btn-gold" onclick="savePreviewChanges()" aria-label="حفظ التغييرات">💾 حفظ التغييرات</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ==================== STATE ====================
@@ -473,7 +553,6 @@ document.addEventListener('DOMContentLoaded', () => { if (localStorage.getItem('
 // ==================== INIT & NAV ====================
 function initDashboard() { populateCatSelects(); updateStats(); renderProducts(); renderCategories(); renderLensImages(); renderVisibility(); renderDisplaySettings(); renderHiddenColors(); renderHiddenOverview(); }
 function goToPage(pageId) { 
-  // ✅ تحميل البيانات الأساسية أولاً
   if (state.categories.length === 0) { initDefaults(); loadState(); }
   document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId)); 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
@@ -481,7 +560,6 @@ function goToPage(pageId) {
   if (el) el.classList.add('active'); 
   const titles = { overview:'نظرة عامة', allproducts:'جميع المنتجات', addproduct:'إضافة منتج', categories:'الفئات', lensimages:'صور العدسات', visibility:'إخفاء/إظهار', display:'إعدادات العرض' }; 
   document.getElementById('pageTitle').textContent = titles[pageId] || ''; 
-  // ✅ تعبئة القوائم عند الحاجة
   if (pageId === 'addproduct' || pageId === 'allproducts') { populateCatSelects(); renderProducts(); }
   if (pageId === 'visibility') renderVisibility(); 
   if (pageId === 'categories') renderCategories(); 
@@ -513,7 +591,7 @@ function populateCatSelects() {
     if (currentVal && state.categories.some(c => c.id === currentVal)) { sel.value = currentVal; }
   }); 
 }
-function renderCategories() { const el = document.getElementById('categoriesList'); el.innerHTML = state.categories.map(c => { const cnt = state.products.filter(p => p.category === c.id).length; return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')">✕</button></div>`; }).join(''); }
+function renderCategories() { const el = document.getElementById('categoriesList'); el.innerHTML = state.categories.map(c => { const cnt = state.products.filter(p => p.category === c.id).length; return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')" aria-label="حذف الفئة ${c.ar}">✕</button></div>`; }).join(''); }
 function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(); const en = document.getElementById('newCatNameEn').value.trim(); const color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
 function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return; state.categories = state.categories.filter(c => c.id !== id); state.products = state.products.filter(p => p.category !== id); saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats(); toast('✅ تم الحذف', 'success'); }
 
@@ -578,14 +656,14 @@ function renderRealisticLens(p, size='34px', isPreview=false, previewId=null, in
   const colorLayerSize = `${lensSize}%`;
   return `<div class="lens-preview-container" ${!isPreview && interactive ? `onclick="openLensPreview('${p.id}')"` : ''} id="${previewId || ''}">
     <div class="lens-wrapper" style="width:${size};height:${size}">
-      <img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'">
+      <img src="${baseImg}" class="lens-base-template" alt="صورة العين الأساسية" onerror="this.style.display='none'">
       <div class="lens-color-circle" id="colorCircle-${p.id}" style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)">
         ${!isPreview && interactive ? '<div class="drag-indicator">👆 اسحبي</div>' : ''}
       </div>
       <div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div>
-      ${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" alt="real">` : ''}
+      ${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" alt="صورة العدسة الحقيقية">` : ''}
     </div>
-    ${!isPreview && interactive ? `<button class="lens-zoom-btn" onclick="event.stopPropagation();openLensPreview('${p.id}')">🔍 تكبير</button>` : ''}
+    ${!isPreview && interactive ? `<button class="lens-zoom-btn" onclick="event.stopPropagation();openLensPreview('${p.id}')" aria-label="تكبير المعاينة">🔍 تكبير</button>` : ''}
   </div>`;
 }
 
@@ -619,7 +697,7 @@ function openProductPreview(productId) {
 function closeProductPreview() { document.getElementById('productPreviewModal').classList.remove('show'); state.currentPreviewProduct = null; }
 function renderColorPalette(currentColor) {
   const palette = document.getElementById('previewColorPalette');
-  palette.innerHTML = PRESET_COLORS.map(color => `<div class="color-swatch ${color === currentColor ? 'active' : ''}" style="background:${color}" onclick="updatePreviewColor('${color}')"></div>`).join('') + `<div class="color-swatch custom" title="لون مخصص">🎨</div>`;
+  palette.innerHTML = PRESET_COLORS.map(color => `<div class="color-swatch ${color === currentColor ? 'active' : ''}" style="background:${color}" onclick="updatePreviewColor('${color}')" role="radio" aria-checked="${color===currentColor}" tabindex="0"></div>`).join('') + `<div class="color-swatch custom" title="لون مخصص" role="radio" aria-label="اختر لون مخصص">🎨</div>`;
 }
 function updatePreviewColor(color) {
   if (!state.currentPreviewProduct) return;
@@ -654,10 +732,10 @@ function updatePreviewEyeLarge() {
   const offsetY = p.offsetY || 0;
   const baseImg = p.baseLens || BASE_LENS_TEMPLATE;
   const colorLayerSize = `${lensSize}%`;
-  container.innerHTML = `<img src="${baseImg}" style="width:100%;height:100%;object-fit:cover;opacity:.3" onerror="this.style.display='none'">
+  container.innerHTML = `<img src="${baseImg}" style="width:100%;height:100%;object-fit:cover;opacity:.3" alt="صورة العين" onerror="this.style.display='none'">
     <div class="lens-color-circle" style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)"></div>
     <div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div>
-    ${p.lensImage ? `<img src="${p.lensImage}" class="lens-real-img" style="width:90%;height:90%;position:relative;z-index:10">` : ''}`;
+    ${p.lensImage ? `<img src="${p.lensImage}" class="lens-real-img" style="width:90%;height:90%;position:relative;z-index:10" alt="صورة العدسة المرفوعة">` : ''}`;
   const colorCircle = container.querySelector('.lens-color-circle');
   if (colorCircle) initDrag(colorCircle, 'preview');
 }
@@ -744,7 +822,7 @@ function renderProducts() {
     const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on'; 
     const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر'; 
     const thumb = renderRealisticLens(p, '34px', false, null, false);
-    return `<tr><td>${thumb}</td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${p.price} ر.س</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="openProductPreview('${p.id}')" title="معاينة">👁️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف">🗑️</button></div></td></tr>`; 
+    return `<tr><td>${thumb}</td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${p.price} ر.س</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="openProductPreview('${p.id}')" title="معاينة" aria-label="معاينة ${p.nameAr}">👁️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل" aria-label="تعديل ${p.nameAr}">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}" aria-label="${p.visible?'إخفاء':'إظهار'} ${p.nameAr}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف" aria-label="حذف ${p.nameAr}">🗑️</button></div></td></tr>`; 
   }).join(''); 
 }
 
@@ -756,7 +834,7 @@ function previewImg(input, uploadId, stateKey) {
   reader.onload = (e) => { 
     state[stateKey] = e.target.result; 
     const upload = document.getElementById(uploadId); 
-    upload.innerHTML = `<img src="${e.target.result}">`; 
+    upload.innerHTML = `<img src="${e.target.result}" alt="معاينة الصورة">`; 
   }; 
   reader.readAsDataURL(file); 
 }
@@ -773,7 +851,6 @@ function saveProduct() {
   const desc = document.getElementById('pDesc').value.trim();
   const visible = document.getElementById('pVisible').checked;
   
-  // ✅ تحقق محسّن مع رسائل أوضح
   if (!nameAr) { toast('❌ أدخل اسم المنتج (عربي)', 'error'); return; }
   if (!category || category === '') { 
     toast('❌ اختر فئة للمنتج من القائمة', 'error'); 
@@ -800,7 +877,6 @@ function saveProduct() {
   renderLensImages(); 
   toast('✅ تمت إضافة المنتج بنجاح', 'success');
   
-  // ✅ تفريغ الحقول بعد الحفظ
   document.getElementById('pNameAr').value=''; 
   document.getElementById('pNameEn').value=''; 
   document.getElementById('pPrice').value=''; 
@@ -819,30 +895,30 @@ function saveProduct() {
   document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
   document.getElementById('cardImgUpload').innerHTML='<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>';
 }
-function editProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; populateCatSelects(); document.getElementById('editId').value = p.id; document.getElementById('editNameAr').value = p.nameAr; document.getElementById('editNameEn').value = p.nameEn || ''; document.getElementById('editCategory').value = p.category; document.getElementById('editPrice').value = p.price; document.getElementById('editStock').value = p.stock; document.getElementById('editColor').value = p.color; document.getElementById('editColorHex').value = p.color; document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; document.getElementById('editLensSize').value = p.lensSize || 85; document.getElementById('editLensSizeVal').textContent = (p.lensSize || 85)+'%'; document.getElementById('editDesc').value = p.desc || ''; const lensUp = document.getElementById('editLensUpload'); lensUp.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>تغيير</span>'; const cardUp = document.getElementById('editCardUpload'); cardUp.innerHTML = p.cardImage ? `<img src="${p.cardImage}">` : '<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>'; document.getElementById('editModal').classList.add('show'); }
+function editProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; populateCatSelects(); document.getElementById('editId').value = p.id; document.getElementById('editNameAr').value = p.nameAr; document.getElementById('editNameEn').value = p.nameEn || ''; document.getElementById('editCategory').value = p.category; document.getElementById('editPrice').value = p.price; document.getElementById('editStock').value = p.stock; document.getElementById('editColor').value = p.color; document.getElementById('editColorHex').value = p.color; document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; document.getElementById('editLensSize').value = p.lensSize || 85; document.getElementById('editLensSizeVal').textContent = (p.lensSize || 85)+'%'; document.getElementById('editDesc').value = p.desc || ''; const lensUp = document.getElementById('editLensUpload'); lensUp.innerHTML = p.lensImage ? `<img src="${p.lensImage}" alt="صورة العدسة">` : '<span class="upload-icon">📷</span><span>تغيير</span>'; const cardUp = document.getElementById('editCardUpload'); cardUp.innerHTML = p.cardImage ? `<img src="${p.cardImage}" alt="صورة البطاقة">` : '<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>'; document.getElementById('editModal').classList.add('show'); }
 function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
-function previewEditImg(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editLensUpload').innerHTML = `<img src="${e.target.result}">`; }; reader.readAsDataURL(file); }
-function previewEditCard(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editCardUpload').innerHTML = `<img src="${e.target.result}">`; }; reader.readAsDataURL(file); }
+function previewEditImg(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editLensUpload').innerHTML = `<img src="${e.target.result}" alt="معاينة الصورة">`; }; reader.readAsDataURL(file); }
+function previewEditCard(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editCardUpload').innerHTML = `<img src="${e.target.result}" alt="معاينة البطاقة">`; }; reader.readAsDataURL(file); }
 function updateProduct() { const id = document.getElementById('editId').value; const p = state.products.find(x => x.id === id); if (!p) return; p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; p.nameEn = document.getElementById('editNameEn').value.trim(); p.category = document.getElementById('editCategory').value || p.category; p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; p.color = document.getElementById('editColor').value; p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; p.lensSize = parseInt(document.getElementById('editLensSize').value); p.desc = document.getElementById('editDesc').value.trim(); p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; const lensImg = document.getElementById('editLensUpload').querySelector('img'); if (lensImg) p.lensImage = lensImg.src; const cardImg = document.getElementById('editCardUpload').querySelector('img'); if (cardImg) p.cardImage = cardImg.src; saveState(); renderProducts(); renderLensImages(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); }
 function deleteProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; if (!confirm(`حذف "${p.nameAr}"؟`)) return; state.products = state.products.filter(x => x.id !== id); saveState(); renderProducts(); renderLensImages(); updateStats(); toast('✅ تم حذف المنتج', 'success'); }
 function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️🗨️ تم إخفاء "${p.nameAr}"`, 'success'); }
 
 // ==================== VISIBILITY & LENS IMAGES ====================
-function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const thumb = renderRealisticLens(p, '36px'); return `<div class="vis-item">${thumb}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 6px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const thumb = renderRealisticLens(p, '36px'); return `<div class="vis-item">${thumb}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" aria-label="تبديل ظهور ${p.nameAr}"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
 function renderLensImages() { 
   const el = document.getElementById('colorsList'); 
   if (!el) return; 
   el.innerHTML = state.products.map(p => { 
     const hasImg = !!p.lensImage; 
     return `<div class="color-card">
-      <div class="color-swatch-grid" onclick="openLensPreview('${p.id}')" style="cursor:pointer">
-        ${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>`}
+      <div class="color-swatch-grid" onclick="openLensPreview('${p.id}')" style="cursor:pointer" role="button" tabindex="0" aria-label="معاينة ${p.nameAr}">
+        ${hasImg ? `<img src="${p.lensImage}" alt="صورة العدسة ${p.nameAr}"><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>`}
       </div>
       <div class="color-info">
         <span class="color-name">${p.nameAr}</span>
         <div class="color-actions">
-          <button class="btn btn-ghost btn-icon btn-sm" onclick="event.stopPropagation();openColorImgModal('${p.id}')" title="رفع/تغيير صورة العدسة">📷</button>
-          ${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" title="إزالة الصورة">🗑️</button>` : ''}
+          <button class="btn btn-ghost btn-icon btn-sm" onclick="event.stopPropagation();openColorImgModal('${p.id}')" title="رفع/تغيير صورة العدسة" aria-label="رفع صورة لـ ${p.nameAr}">📷</button>
+          ${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" title="إزالة الصورة" aria-label="إزالة صورة ${p.nameAr}">🗑️</button>` : ''}
         </div>
       </div>
     </div>`; 
@@ -853,7 +929,7 @@ function openColorImgModal(productId) {
   const p = state.products.find(x => x.id === productId); 
   if (!p) return; 
   const area = document.getElementById('colorImgArea'); 
-  area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>'; 
+  area.innerHTML = p.lensImage ? `<img src="${p.lensImage}" alt="صورة العدسة الحالية">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>'; 
   document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none'; 
   document.getElementById('colorImgModal').classList.add('show'); 
 }
@@ -901,7 +977,7 @@ function removeProdImg(id) {
 // ==================== DISPLAY SETTINGS ====================
 function renderDisplaySettings() { const s = state.settings; const el1 = document.getElementById('settingShowPrice'); if(el1) el1.checked = s.showPrice; const el2 = document.getElementById('settingShowStock'); if(el2) el2.checked = s.showStock; const el3 = document.getElementById('settingShowColors'); if(el3) el3.checked = s.showColors; const el4 = document.getElementById('settingShowCardImages'); if(el4) el4.checked = s.showCardImages; }
 function updateSettings() { state.settings.showPrice = document.getElementById('settingShowPrice').checked; state.settings.showStock = document.getElementById('settingShowStock').checked; state.settings.showColors = document.getElementById('settingShowColors').checked; state.settings.showCardImages = document.getElementById('settingShowCardImages').checked; saveState(); toast('✅ تم حفظ الإعدادات', 'success'); }
-function renderHiddenColors() { const el = document.getElementById('hiddenColorsList'); if (!el) return; el.innerHTML = state.products.map(p => { const isHidden = state.hiddenColorIds.includes(p.id); return `<div class="color-card"><div class="color-swatch-grid"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div></div><div class="color-info"><span class="color-name">${p.nameAr}</span><label class="toggle"><input type="checkbox" ${!isHidden?'checked':''} onchange="toggleColorHide('${p.id}')"><span class="toggle-slider"></span></label></div></div>`; }).join(''); }
+function renderHiddenColors() { const el = document.getElementById('hiddenColorsList'); if (!el) return; el.innerHTML = state.products.map(p => { const isHidden = state.hiddenColorIds.includes(p.id); return `<div class="color-card"><div class="color-swatch-grid"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div></div><div class="color-info"><span class="color-name">${p.nameAr}</span><label class="toggle" aria-label="تبديل إخفاء ${p.nameAr}"><input type="checkbox" ${!isHidden?'checked':''} onchange="toggleColorHide('${p.id}')"><span class="toggle-slider"></span></label></div></div>`; }).join(''); }
 function toggleColorHide(id) { const idx = state.hiddenColorIds.indexOf(id); if (idx === -1) state.hiddenColorIds.push(id); else state.hiddenColorIds.splice(idx, 1); saveState(); toast('✅ تم التحديث', 'success'); }
 
 // ==================== HELPERS ====================
@@ -934,9 +1010,9 @@ function buildStoreHTML(data) {
     const offsetX = main.offsetX || 0;
     const offsetY = main.offsetY || 0;
     const lensContent = main.lensImage 
-      ? `<img src="${main.lensImage}" class="lens-real-img">` 
-      : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-circle" style="inset:calc((100% - ${lensSize}%)/2);width:${lensSize}%;height:${lensSize}%;background:${main.color};opacity:${opacity};border-radius:50%;mix-blend-mode:multiply;transform:translate(${offsetX}%, ${offsetY}%)"></div><div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div></div>`;
-    cardsHTML += `<div class="slider-card">${settings.showCardImages && main.cardImage ? `<div class="card-img-bg" style="background-image:url(${main.cardImage})"></div>` : ''}<div class="card-bg" style="${main.cardImage?'background:'+main.color+';opacity:.3':'background:'+main.color}"></div><div class="card-visual"><div class="card-lens-sphere">${lensContent}</div>${settings.showColors?`<div class="card-dots">${dots}</div>`:''}</div><div class="card-body"><div class="card-badge"><span class="dot"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:'<div class="card-price"></div>'}<button class="card-btn">اكتشفي ✦</button></div></div></div>`; 
+      ? `<img src="${main.lensImage}" class="lens-real-img" alt="صورة العدسة">` 
+      : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" alt="صورة العين" onerror="this.style.display='none'"><div class="lens-color-circle" style="inset:calc((100% - ${lensSize}%)/2);width:${lensSize}%;height:${lensSize}%;background:${main.color};opacity:${opacity};border-radius:50%;mix-blend-mode:multiply;transform:translate(${offsetX}%, ${offsetY}%)"></div><div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div></div>`;
+    cardsHTML += `<div class="slider-card">${settings.showCardImages && main.cardImage ? `<div class="card-img-bg" style="background-image:url(${main.cardImage})" aria-hidden="true"></div>` : ''}<div class="card-bg" style="${main.cardImage?'background:'+main.color+';opacity:.3':'background:'+main.color}"></div><div class="card-visual"><div class="card-lens-sphere">${lensContent}</div>${settings.showColors?`<div class="card-dots" role="list" aria-label="ألوان المنتج">${dots}</div>`:''}</div><div class="card-body"><div class="card-badge"><span class="dot" aria-hidden="true"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:'<div class="card-price"></div>'}<button class="card-btn">اكتشفي ✦</button></div></div></div>`; 
   }); 
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}.lens-layer-wrap{position:relative;width:100%;height:100%;border-radius:inherit;overflow:hidden}.lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}.lens-color-circle{position:absolute;border-radius:50%;mix-blend-mode:multiply;box-shadow:inset 0 0 20px rgba(0,0,0,.4),inset 0 2px 8px rgba(255,255,255,.3),0 4px 12px rgba(0,0,0,.2);background-image:radial-gradient(circle at 30% 30%, rgba(255,255,255,.15) 0%, transparent 40%),repeating-radial-gradient(circle at center, transparent 0%, transparent 8%, rgba(0,0,0,.08) 8%, rgba(0,0,0,.08) 9%, transparent 10%),conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,.05) 10deg, transparent 20deg, rgba(0,0,0,.03) 30deg, transparent 40deg)}.lens-effects{position:absolute;inset:0;border-radius:50%;pointer-events:none}.lens-outer-ring{position:absolute;inset:2px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),transparent 60%);opacity:.6}.lens-depth-gradient{position:absolute;inset:0;border-radius:50%;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.3) 100%)}.lens-specular{position:absolute;width:35%;height:20%;top:15%;left:20%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.9),rgba(255,255,255,.1) 70%,transparent);transform:rotate(-25deg);filter:blur(1px)}.lens-specular-2{position:absolute;width:20%;height:10%;bottom:20%;right:25%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,255,255,.6),transparent);filter:blur(2px)}.lens-edge{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),inset 0 2px 4px rgba(0,0,0,.2)}.lens-real-img{position:relative;z-index:10;width:90%;height:90%;object-fit:contain;border-radius:50%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.slider-card{flex:0 0 260px;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);border:1px solid rgba(201,168,76,.06);position:relative}.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}.card-bg{position:absolute;inset:0;z-index:0}.slider-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none;z-index:1}.card-visual{position:relative;height:160px;z-index:4;display:flex;align-items:center;justify-content:center}.card-lens-sphere{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:5}.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}.card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}.card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);overflow:hidden}.card-body{position:relative;z-index:4;padding:14px 16px}.card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);margin-bottom:8px}.card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}.card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}.card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}.card-price{font-size:11px;color:var(--text-dim)}.card-price strong{font-size:16px;color:var(--gold);font-weight:700}.card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;border:none}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}@media(max-width:600px){.slider-card{flex:0 0 240px}.hero{min-height:40vh}}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`; 
 }
