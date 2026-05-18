@@ -461,7 +461,6 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <div class="footer-links"><a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a><a href="#terms" onclick="showTerms()">الشروط والأحكام</a><a href="#shipping" onclick="showShipping()">سياسة الشحن</a><a href="#returns" onclick="showReturns()">الإرجاع والاستبدال</a><a href="#contact" onclick="showContact()">تواصل معنا</a></div>
 <div class="footer-social" role="social" aria-label="تابعنا على"><a href="#" aria-label="إنستغرام" onclick="trackSocial('instagram')">📷</a><a href="#" aria-label="تيك توك" onclick="trackSocial('tiktok')">🎵</a><a href="#" aria-label="سناب شات" onclick="trackSocial('snapchat')">👻</a><a href="#" aria-label="واتساب" onclick="trackSocial('whatsapp')">💬</a></div>
 <p>© 2026 LENSORA — جميع الحقوق محفوظة ✨</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">منتجات معتمدة من هيئة الغذاء والدواء | شحن آمن | دفع عند الاستلام</p></footer>
-
 <!-- ========== MAIN APP SCRIPT ========== -->
 <script>
 // ========== CONFIG ==========
@@ -499,43 +498,76 @@ function getCurrencySymbol(currency = state.currentCurrency) {
 return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[currency] || currency;
 }
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
-// ========== LOAD DATA ==========
+
+// ========== LOAD DATA (FIXED CONNECTION TO DASHBOARD) ==========
 async function loadData() {
-try {
-const localProducts = localStorage.getItem('lensora_products');
-const localCats = localStorage.getItem('lensora_categories');
-if (localProducts) {
-const parsed = JSON.parse(localProducts);
-state.products = parsed.map(p => ({
-...p,
-name: p.nameAr || p.name,
-enName: p.nameEn || p.enName || p.nameAr,
-gradient: p.gradient || generateLensGradient(p.color || '#c9a84c'),
-categoryName: null,
-categoryNameEn: null
-}));
+    try {
+        // 🔑 FIX: Reading keys used by Dashboard (admin.html)
+        const localProducts = localStorage.getItem('lens_prods');
+        const localCats = localStorage.getItem('lens_cats');
+
+        const rawProducts = localProducts ? JSON.parse(localProducts) : [];
+        const rawCats = localCats ? JSON.parse(localCats) : [];
+
+        // 1. Map Categories to a lookup object
+        // Dashboard format: { id: 'brown', ar: 'بني دافئ', en: 'Warm Brown' }
+        const catLookup = {};
+        rawCats.forEach(c => {
+            catLookup[c.id] = {
+                ar: c.ar || c.arName || c.name_ar || 'فئة',
+                en: c.en || c.enName || c.name_en || 'Category',
+                color: c.color || '#c9a84c'
+            };
+        });
+
+        // 2. Map Products
+        // Dashboard format: { nameAr, nameEn, category, price, stock, visible... }
+        state.products = rawProducts.map(p => {
+            // Skip invisible products immediately if dashboard marked them hidden
+            // (But we usually filter them in UI, keeping them in state is fine for management)
+            
+            // Resolve category info
+            const catId = p.category || p.categoryId;
+            const catInfo = catLookup[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
+
+            return {
+                ...p,
+                // Normalize IDs
+                categoryId: catId,
+                
+                // Normalize Names
+                name: p.nameAr || p.name,
+                enName: p.nameEn || p.enName || p.nameAr,
+                
+                // Inject Category Data
+                categoryName: catInfo.ar,
+                categoryNameEn: catInfo.en,
+                categoryColor: catInfo.color,
+
+                // Defaults
+                gradient: p.gradient || generateLensGradient(p.color || '#c9a84c'),
+                visible: p.visible !== undefined ? p.visible : true,
+                stock: p.stock || 0,
+                price: p.price || 0,
+            };
+        });
+
+        // 3. Load Cart/Wishlist (Standard keys)
+        const getSafeData = (key) => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
+        state.cart = getSafeData('lensora_cart');
+        state.wishlist = getSafeData('lensora_wishlist');
+
+    } catch (error) {
+        console.error('Failed to load data:', error);
+    }
 }
-if (localCats) {
-const cats = JSON.parse(localCats);
-const catMap = {};
-cats.forEach(c => { catMap[c.id] = { ar: c.arName || c.name_ar, en: c.enName || c.name_en }; });
-state.products = state.products.map(p => ({
-...p,
-categoryName: catMap[p.categoryId]?.ar,
-categoryNameEn: catMap[p.categoryId]?.en
-}));
-}
-state.cart = SecureStorage.get('lensora_cart') || [];
-state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-} catch (error) {
-console.error('Failed to load data:', error);
-}
-}
+
 function saveData() {
-SecureStorage.set('lensora_cart', state.cart);
-SecureStorage.set('lensora_wishlist', state.wishlist);
+    SecureStorage.set('lensora_cart', state.cart);
+    SecureStorage.set('lensora_wishlist', state.wishlist);
 }
 function getProduct(id) { return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '' }; }
+
 // ========== AGE & COOKIES ==========
 function checkAgeVerification() { if (SecureStorage.get('age_verified')) { state.ageVerified = true; document.getElementById('ageModal').classList.add('hidden'); } }
 function confirmAge() { state.ageVerified = true; SecureStorage.set('age_verified', true); document.getElementById('ageModal').classList.add('hidden'); }
@@ -548,435 +580,410 @@ function showTerms() { showToast('📋 بالشراء توافق على شروط
 function showShipping() { showToast('🚚 شحن مجاني للطلبات فوق 200 ر.س', 'info'); }
 function showReturns() { showToast('🔄 إرجاع خلال 14 يوم', 'info'); }
 function showContact() { showToast('💬 support@lensora.com', 'info'); }
+
 // ========== SLIDER - INFINITE LOOP FIXED ==========
 function initSmoothSlider() {
-const track = document.getElementById('sliderTrack');
-if (!track) return;
-const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
-const grouped = {};
-state.products.forEach(p => {
-if (!grouped[p.categoryId]) {
-grouped[p.categoryId] = {
-id: p.categoryId,
-arName: p.categoryName,
-enName: p.categoryNameEn,
-cardBg: `linear-gradient(135deg,${adjColor(p.color||'#c9a84c',-60)} 0%,${p.color||'#c9a84c'} 50%,${adjColor(p.color||'#c9a84c',30)} 100%)`,
-lenses: []
-};
+    const track = document.getElementById('sliderTrack');
+    if (!track) return;
+    
+    // Filter only visible products for the slider
+    const visibleProducts = state.products.filter(p => p.visible !== false);
+    
+    const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
+    const grouped = {};
+    
+    visibleProducts.forEach(p => {
+        const catId = p.categoryId;
+        if (!grouped[catId]) {
+            grouped[catId] = {
+                id: catId,
+                arName: p.categoryName,
+                enName: p.categoryNameEn,
+                cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
+                lenses: []
+            };
+        }
+        grouped[catId].lenses.push(p);
+    });
+    
+    const COLORS_DATA = Object.values(grouped);
+    const total = COLORS_DATA.length;
+    if (total === 0) { track.innerHTML = '<div style="color:white; text-align:center; width:100%;">لا توجد منتجات حالياً</div>'; return; }
+    
+    let html = '';
+    for (let copy = 0; copy < 3; copy++) {
+        COLORS_DATA.forEach((cat, i) => {
+            if (!cat.lenses.length) return;
+            const main = cat.lenses[0];
+            const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
+            const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
+            const inWishlist = state.wishlist.some(w => w.productId === main.id);
+            const globalIdx = copy * total + i;
+            
+            html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
+                <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
+                <div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
+                <div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${main.gradient||generateLensGradient(main.color)}"></div></div><div class="card-dots">${dots}</div></div>
+                <div class="card-body"><div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div><div class="card-name">${getText(main.name,main.enName)}</div><div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
+                <div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div></div></div>`;
+        });
+    }
+    track.innerHTML = html;
+    
+    document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
+    
+    let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
+    function getCenterOffset() {
+        const vp = document.querySelector('.slider-viewport');
+        return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
+    }
+    function snapToIndex(idx) {
+        isAnimating = true;
+        const normalized = ((idx % total) + total) % total;
+        activeCatIdx = normalized;
+        const target = idx * ITEM_W;
+        const centerOffset = getCenterOffset();
+        const pos = target - centerOffset;
+        cancelAnimationFrame(animFrame);
+        animateTo(pos, () => {
+            isAnimating = false;
+            if (idx >= total * 2 || idx < 0) {
+                const resetIdx = normalized + (idx >= total * 2 ? total : 0);
+                const resetPos = resetIdx * ITEM_W - centerOffset;
+                track.style.transition = 'none';
+                track.style.transform = `translateX(-${resetPos}px)`;
+                void track.offsetWidth;
+                track.style.transition = '';
+            }
+        });
+        updateDots(normalized);
+    }
+    function animateTo(targetPos, callback) {
+        const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
+        function step(now) {
+            const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 4);
+            currentPos = start + diff * ease;
+            track.style.transform = `translateX(-${currentPos}px)`;
+            if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback();
+        }
+        animFrame = requestAnimationFrame(step);
+    }
+    function updateDots(idx) {
+        const normalized = ((idx % total) + total) % total;
+        document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
+            const active = i === normalized;
+            d.classList.toggle('active', active);
+            d.setAttribute('aria-selected', active);
+        });
+    }
+    const startCopy = 1;
+    currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
+    track.style.transform = `translateX(-${currentPos}px)`;
+    updateDots(0);
+    if (autoplayInterval) clearInterval(autoplayInterval);
+    autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500);
+    function resetAutoplay() { if (autoplayInterval) clearInterval(autoplayInterval); autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500); }
+    document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
+    document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
+    document.getElementById('sliderDots').onclick = (e) => {
+        const dot = e.target.closest('.slider-dot'); if (!dot) return;
+        const idx = parseInt(dot.dataset.idx);
+        const targetGlobalIdx = startCopy * total + idx;
+        activeCatIdx = idx;
+        snapToIndex(targetGlobalIdx);
+        resetAutoplay();
+    };
+    track.onclick = (e) => {
+        const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
+        const catIdx = parseInt(card.dataset.cat);
+        if (!isNaN(catIdx)) openLensModal(catIdx);
+    };
+    const startDrag = (x) => { isDragging = true; dragStartX = x; dragStartPos = currentPos; cancelAnimationFrame(animFrame); isAnimating = false; track.style.transition = 'none'; };
+    const moveDrag = (x) => { if (!isDragging) return; const diff = x - dragStartX; currentPos = dragStartPos - diff; track.style.transform = `translateX(-${currentPos}px)`; };
+    const endDrag = () => { if (!isDragging) return; isDragging = false; const centerOffset = getCenterOffset(); const rawIdx = (currentPos + centerOffset) / ITEM_W; let targetIdx = Math.round(rawIdx); if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) { targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx); } activeCatIdx = ((targetIdx % total) + total) % total; snapToIndex(targetIdx); resetAutoplay(); };
+    track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
+    track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
+    track.addEventListener('touchend', endDrag);
+    track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
+    document.addEventListener('mousemove', e => moveDrag(e.clientX));
+    document.addEventListener('mouseup', endDrag);
+    window.addEventListener('resize', () => { if (!isDragging && !isAnimating) { const centerOffset = getCenterOffset(); const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset; track.style.transition = 'none'; track.style.transform = `translateX(-${resetPos}px)`; void track.offsetWidth; track.style.transition = ''; currentPos = resetPos; } }, { passive: true });
 }
-grouped[p.categoryId].lenses.push(p);
-});
-const COLORS_DATA = Object.values(grouped);
-const total = COLORS_DATA.length;
-if (total === 0) { track.innerHTML = ''; return; }
-let html = '';
-for (let copy = 0; copy < 3; copy++) {
-COLORS_DATA.forEach((cat, i) => {
-if (!cat.lenses.length) return;
-const main = cat.lenses[0];
-const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
-const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
-const inWishlist = state.wishlist.some(w => w.productId === main.id);
-const globalIdx = copy * total + i;
-html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
-<button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
-<div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
-<div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${main.gradient||generateLensGradient(main.color)}"></div></div><div class="card-dots">${dots}</div></div>
-<div class="card-body"><div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div><div class="card-name">${getText(main.name,main.enName)}</div><div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
-<div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div></div></div>`;
-});
-}
-track.innerHTML = html;
-document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
-let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
-function getCenterOffset() { 
-const vp = document.querySelector('.slider-viewport'); 
-return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
-}
-function snapToIndex(idx) {
-isAnimating = true;
-const normalized = ((idx % total) + total) % total;
-activeCatIdx = normalized;
-const target = idx * ITEM_W;
-const centerOffset = getCenterOffset();
-const pos = target - centerOffset;
-cancelAnimationFrame(animFrame);
-animateTo(pos, () => { 
-isAnimating = false;
-if (idx >= total * 2 || idx < 0) {
-const resetIdx = normalized + (idx >= total * 2 ? total : 0);
-const resetPos = resetIdx * ITEM_W - centerOffset;
-track.style.transition = 'none';
-track.style.transform = `translateX(-${resetPos}px)`;
-void track.offsetWidth;
-track.style.transition = '';
-}
-});
-updateDots(normalized);
-}
-function animateTo(targetPos, callback) {
-const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
-function step(now) {
-const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
-const ease = 1 - Math.pow(1 - progress, 4);
-currentPos = start + diff * ease;
-track.style.transform = `translateX(-${currentPos}px)`;
-if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback();
-}
-animFrame = requestAnimationFrame(step);
-}
-function updateDots(idx) {
-const normalized = ((idx % total) + total) % total;
-document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
-const active = i === normalized;
-d.classList.toggle('active', active);
-d.setAttribute('aria-selected', active);
-});
-}
-const startCopy = 1;
-currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
-track.style.transform = `translateX(-${currentPos}px)`;
-updateDots(0);
-if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => { 
-if (!isDragging && !isAnimating) { 
-activeCatIdx++; 
-snapToIndex(activeCatIdx); 
-} 
-}, 3500);
-function resetAutoplay() { 
-if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => { 
-if (!isDragging && !isAnimating) { 
-activeCatIdx++; 
-snapToIndex(activeCatIdx); 
-} 
-}, 3500); 
-}
-document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
-document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
-document.getElementById('sliderDots').onclick = (e) => {
-const dot = e.target.closest('.slider-dot'); if (!dot) return;
-const idx = parseInt(dot.dataset.idx);
-const targetGlobalIdx = startCopy * total + idx;
-activeCatIdx = idx;
-snapToIndex(targetGlobalIdx); 
-resetAutoplay(); 
-};
-track.onclick = (e) => {
-const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
-const catIdx = parseInt(card.dataset.cat); 
-if (!isNaN(catIdx)) openLensModal(catIdx);
-};
-const startDrag = (x) => { 
-isDragging = true; dragStartX = x; dragStartPos = currentPos; 
-cancelAnimationFrame(animFrame); isAnimating = false; 
-track.style.transition = 'none'; 
-};
-const moveDrag = (x) => { 
-if (!isDragging) return; 
-const diff = x - dragStartX; 
-currentPos = dragStartPos - diff; 
-track.style.transform = `translateX(-${currentPos}px)`; 
-};
-const endDrag = () => { 
-if (!isDragging) return; 
-isDragging = false; 
-const centerOffset = getCenterOffset(); 
-const rawIdx = (currentPos + centerOffset) / ITEM_W; 
-let targetIdx = Math.round(rawIdx); 
-if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) {
-targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx);
-}
-activeCatIdx = ((targetIdx % total) + total) % total;
-snapToIndex(targetIdx); 
-resetAutoplay(); 
-};
-track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
-track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
-track.addEventListener('touchend', endDrag);
-track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
-document.addEventListener('mousemove', e => moveDrag(e.clientX));
-document.addEventListener('mouseup', endDrag);
-window.addEventListener('resize', () => {
-if (!isDragging && !isAnimating) {
-const centerOffset = getCenterOffset();
-const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset;
-track.style.transition = 'none';
-track.style.transform = `translateX(-${resetPos}px)`;
-void track.offsetWidth;
-track.style.transition = '';
-currentPos = resetPos;
-}
-}, { passive: true });
-}
+
 // ========== MODAL ==========
 function toggleModalBg() {
-const box = document.getElementById('modalBox'), container = document.getElementById('lensContainer');
-const isLight = box.classList.toggle('light-bg');
-container.classList.toggle('dark-bg', !isLight); container.classList.toggle('light-bg', isLight);
+    const box = document.getElementById('modalBox'), container = document.getElementById('lensContainer');
+    const isLight = box.classList.toggle('light-bg');
+    container.classList.toggle('dark-bg', !isLight); container.classList.toggle('light-bg', isLight);
 }
 function openLensModal(ci) {
-currentLensIdx = 0;
-const catProducts = state.products.filter(p => {
-const idx = ((ci % state.products.length) + state.products.length) % state.products.length;
-return p.categoryId === state.products[idx]?.categoryId;
-});
-if (!catProducts.length) return;
-const categoryName = catProducts[0].categoryName;
-document.getElementById('modalTitle').textContent = categoryName || 'تفاصيل المنتج';
-document.getElementById('modalBox').classList.remove('light-bg');
-document.getElementById('lensContainer').classList.add('dark-bg');
-renderLensSlider(catProducts);
-document.getElementById('lensModal').classList.add('open');
-document.body.style.overflow = 'hidden';
+    currentLensIdx = 0;
+    // Get products for this category from state
+    const visibleProducts = state.products.filter(p => p.visible !== false);
+    // We need to find which category ID corresponds to the slider index 'ci'
+    // Simplified: Just filter by the categoryName or ID if stored in data-index
+    
+    // Re-using logic to find products:
+    // Since we stored 'data-cat' index, and we re-grouped in initSmoothSlider, we should pass the ID or filter again.
+    // For simplicity, let's just find products that match the slider card's data.
+    // But slider doesn't store ID. Let's look at grouped data.
+    // Actually, better to just re-group here or pass ID.
+    
+    // Quick fix: Filter by the product that was clicked? No, we open by Category.
+    // Let's re-group to find the ID for index 'ci'.
+    const tempGrouped = {};
+    visibleProducts.forEach(p => { if (!tempGrouped[p.categoryId]) tempGrouped[p.categoryId] = []; tempGrouped[p.categoryId].push(p); });
+    const catIds = Object.keys(tempGrouped);
+    const targetCatId = catIds[ci % catIds.length]; // Handle wrap-around
+    
+    const catProducts = tempGrouped[targetCatId] || visibleProducts; 
+    
+    // If catProducts is empty, fallback to all
+    const productsToShow = catProducts.length > 0 ? catProducts : visibleProducts;
+
+    const categoryName = productsToShow[0].categoryName || 'منتجاتنا';
+    document.getElementById('modalTitle').textContent = categoryName;
+    document.getElementById('modalBox').classList.remove('light-bg');
+    document.getElementById('lensContainer').classList.add('dark-bg');
+    renderLensSlider(productsToShow);
+    document.getElementById('lensModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
 }
 function closeLensModal() {
-document.getElementById('lensModal').classList.remove('open');
-document.body.style.overflow = '';
+    document.getElementById('lensModal').classList.remove('open');
+    document.body.style.overflow = '';
 }
 function renderLensSlider(products) {
-document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
-const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
-const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
-const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
-// ✅ إصلاح: إضافة for و id للكمية
-return `<div class="lens-slide" role="tabpanel">
-<div class="lens-visual dark-bg">
-<div class="lens-visual-ring" aria-hidden="true"></div>
-<div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${p.gradient||generateLensGradient(p.color)}"></div></div>
-<div class="color-label"><span class="dot-real" style="background:${p.color}"></span>اللون الفعلي</div>
-</div>
-<div class="lens-details"><h3>${getText(p.name,p.enName)}</h3><p class="lens-desc">${p.desc||'وصف المنتج'}</p>
-<div class="lens-reviews"><div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${p.reviews||0} مراجعة)</span></div></div>
-<div class="lens-meta"><div class="meta-item"><div class="label">السعر</div><div class="value">${getPrice(p)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div></div>
-<div class="qty-selector">
-  <label for="mq_${li}">الكمية:</label>
-  <div class="qty-ctrl">
-    <button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
-    <div class="qty-display" id="mq_${li}" role="spinbutton" aria-valuenow="1" aria-valuemin="1" aria-valuemax="10">1</div>
-    <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
-  </div>
-</div>
-<button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
-</div></div>`;
-}).join('');
-document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
-updateLensSlider();
+    document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
+        const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
+        const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
+        const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
+        return `<div class="lens-slide" role="tabpanel">
+            <div class="lens-visual dark-bg">
+                <div class="lens-visual-ring" aria-hidden="true"></div>
+                <div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${p.gradient||generateLensGradient(p.color)}"></div></div>
+                <div class="color-label"><span class="dot-real" style="background:${p.color}"></span>اللون الفعلي</div>
+            </div>
+            <div class="lens-details"><h3>${getText(p.name,p.enName)}</h3><p class="lens-desc">${p.desc||'وصف المنتج'}</p>
+            <div class="lens-reviews"><div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${p.reviews||0} مراجعة)</span></div></div>
+            <div class="lens-meta"><div class="meta-item"><div class="label">السعر</div><div class="value">${getPrice(p)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div></div>
+            <div class="qty-selector">
+            <label for="mq_${li}">الكمية:</label>
+            <div class="qty-ctrl">
+                <button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
+                <div class="qty-display" id="mq_${li}" role="spinbutton" aria-valuenow="1" aria-valuemin="1" aria-valuemax="10">1</div>
+                <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
+            </div>
+            </div>
+            <button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
+        </div></div>`;
+    }).join('');
+    document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
+    updateLensSlider();
 }
 function updateLensSlider() {
-document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
-document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
-const active = i === currentLensIdx;
-d.classList.toggle('active', active); d.setAttribute('aria-selected', active);
-});
-document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
-document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
+    document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
+    document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
+        const active = i === currentLensIdx;
+        d.classList.toggle('active', active); d.setAttribute('aria-selected', active);
+    });
+    document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
+    document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
 }
 function slideLensMove(dir) {
-const total = document.getElementById('lensTrack').children.length;
-currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
-updateLensSlider();
+    const total = document.getElementById('lensTrack').children.length;
+    currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
+    updateLensSlider();
 }
 function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
 function changeModalQty(delta, li) {
-const el = document.getElementById(`mq_${li}`); if (!el) return;
-let v = parseInt(el.textContent) + delta;
-v = Math.max(1, Math.min(v, 10));
-el.textContent = v;
-el.setAttribute('aria-valuenow', v);
+    const el = document.getElementById(`mq_${li}`); if (!el) return;
+    let v = parseInt(el.textContent) + delta;
+    v = Math.max(1, Math.min(v, 10));
+    el.textContent = v;
+    el.setAttribute('aria-valuenow', v);
 }
 function addFromSlider(lensId, li) {
-const p = getProduct(lensId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const el = document.getElementById(`mq_${li}`);
-const qty = el ? parseInt(el.textContent) : 1;
-const existing = state.cart.find(c => c.productId === lensId);
-if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; }
-else { if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); }
-saveData(); updateCartBadge();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
-if (el) el.textContent = '1';
+    const p = getProduct(lensId);
+    if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
+    const el = document.getElementById(`mq_${li}`);
+    const qty = el ? parseInt(el.textContent) : 1;
+    const existing = state.cart.find(c => c.productId === lensId);
+    if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; }
+    else { if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); }
+    saveData(); updateCartBadge();
+    showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+    if (el) el.textContent = '1';
 }
+
 // ========== CART ==========
 function updateCartBadge() {
-const total = state.cart.reduce((s, c) => s + c.qty, 0);
-const badge = document.getElementById('cartBadge');
-badge.textContent = total;
-badge.style.display = total > 0 ? 'flex' : 'none';
+    const total = state.cart.reduce((s, c) => s + c.qty, 0);
+    const badge = document.getElementById('cartBadge');
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'flex' : 'none';
 }
 function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); }
 function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); }
 function renderCart() {
-const list = document.getElementById('cartItemsList'), bottom = document.getElementById('cartBottom');
-if (state.cart.length === 0) {
-list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>';
-bottom.innerHTML = ''; return;
-}
-list.innerHTML = state.cart.map(c => {
-const p = getProduct(c.productId); if (!p) return '';
-return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
-}).join('');
-const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
-bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
+    const list = document.getElementById('cartItemsList'), bottom = document.getElementById('cartBottom');
+    if (state.cart.length === 0) {
+        list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>';
+        bottom.innerHTML = ''; return;
+    }
+    list.innerHTML = state.cart.map(c => {
+        const p = getProduct(c.productId); if (!p) return '';
+        return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
+    }).join('');
+    const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
+    const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
+    bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
 }
 function changeCartQty(pid, delta) {
-const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
-if (!item || !p) return;
-item.qty += delta;
-if (item.qty <= 0) { removeFromCart(pid); return; }
-if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); }
-saveData(); updateCartBadge(); renderCart();
+    const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
+    if (!item || !p) return;
+    item.qty += delta;
+    if (item.qty <= 0) { removeFromCart(pid); return; }
+    if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); }
+    saveData(); updateCartBadge(); renderCart();
 }
 function removeFromCart(pid) {
-state.cart = state.cart.filter(c => c.productId !== pid);
-saveData(); updateCartBadge(); renderCart();
-showToast('✅ تمت الإزالة من السلة', 'success');
+    state.cart = state.cart.filter(c => c.productId !== pid);
+    saveData(); updateCartBadge(); renderCart();
+    showToast('✅ تمت الإزالة من السلة', 'success');
 }
 async function checkout() {
-if (state.cart.length === 0) return;
-for (const item of state.cart) {
-const p = getProduct(item.productId);
-if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name,p.enName)}" الكمية غير متاحة`, 'error'); return; }
+    if (state.cart.length === 0) return;
+    for (const item of state.cart) {
+        const p = getProduct(item.productId);
+        if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name,p.enName)}" الكمية غير متاحة`, 'error'); return; }
+    }
+    try {
+        const btn = document.querySelector('.checkout-btn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
+        showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
+        state.cart = []; saveData(); updateCartBadge(); closeCart();
+        btn.disabled = false; btn.innerHTML = originalText;
+    } catch (error) {
+        showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
+        console.error('Checkout error:', error);
+    }
 }
-try {
-const btn = document.querySelector('.checkout-btn');
-const originalText = btn.innerHTML;
-btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
-await new Promise(resolve => setTimeout(resolve, 1500));
-state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
-const total = state.cart.reduce((s, c) => s + getProduct(c.productId).price * c.qty, 0);
-showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
-state.cart = []; saveData(); updateCartBadge(); closeCart();
-btn.disabled = false; btn.innerHTML = originalText;
-} catch (error) {
-showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
-console.error('Checkout error:', error);
-}
-}
+
 // ========== WISHLIST ==========
 function toggleWishlist(productId) {
-const product = getProduct(productId);
-const index = state.wishlist.findIndex(w => w.productId === productId);
-if (index === -1) {
-state.wishlist.push({ productId, addedAt: Date.now() });
-showToast(`✅ "${getText(product.name,product.enName)}" أضيفت للمفضلة`, 'success');
-} else {
-state.wishlist.splice(index, 1);
-showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
-}
-saveData(); updateWishlistBadge();
+    const product = getProduct(productId);
+    const index = state.wishlist.findIndex(w => w.productId === productId);
+    if (index === -1) {
+        state.wishlist.push({ productId, addedAt: Date.now() });
+        showToast(`✅ "${getText(product.name,product.enName)}" أضيفت للمفضلة`, 'success');
+    } else {
+        state.wishlist.splice(index, 1);
+        showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
+    }
+    saveData(); updateWishlistBadge();
+    initSmoothSlider(); // Update heart icons on cards
 }
 function updateWishlistBadge() {}
 function openWishlist() { renderWishlist(); document.getElementById('wishlistOverlay').classList.add('open'); document.getElementById('wishlistPanel').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeWishlist() { document.getElementById('wishlistOverlay').classList.remove('open'); document.getElementById('wishlistPanel').classList.remove('open'); document.body.style.overflow = ''; }
 function renderWishlist() {
-const container = document.getElementById('wishlistItems');
-if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
-container.innerHTML = state.wishlist.map(w => {
-const p = getProduct(w.productId); if (!p) return '';
-return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')" aria-label="أضف ${getText(p.name,p.enName)} للسلة">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')" aria-label="أزل ${getText(p.name,p.enName)} من المفضلة">إزالة</button></div></div></div>`;
-}).join('');
+    const container = document.getElementById('wishlistItems');
+    if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
+    container.innerHTML = state.wishlist.map(w => {
+        const p = getProduct(w.productId); if (!p) return '';
+        return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')" aria-label="أضف ${getText(p.name,p.enName)} للسلة">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')" aria-label="أزل ${getText(p.name,p.enName)} من المفضلة">إزالة</button></div></div></div>`;
+    }).join('');
 }
 function removeFromWishlist(productId) {
-state.wishlist = state.wishlist.filter(w => w.productId !== productId);
-saveData(); updateWishlistBadge(); renderWishlist();
-showToast('✅ تمت الإزالة من المفضلة', 'success');
+    state.wishlist = state.wishlist.filter(w => w.productId !== productId);
+    saveData(); updateWishlistBadge(); renderWishlist();
+    initSmoothSlider();
+    showToast('✅ تمت الإزالة من المفضلة', 'success');
 }
 function addToCartFromWishlist(productId) {
-const p = getProduct(productId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const existing = state.cart.find(c => c.productId === productId);
-if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
-else { state.cart.push({ productId, qty: 1 }); }
-saveData(); updateCartBadge(); renderWishlist();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+    const p = getProduct(productId);
+    if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
+    const existing = state.cart.find(c => c.productId === productId);
+    if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
+    else { state.cart.push({ productId, qty: 1 }); }
+    saveData(); updateCartBadge(); renderWishlist();
+    showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
 }
+
 // ========== ADMIN & UTILS ==========
 function checkAdminAccess() {
-const token = SecureStorage.get(CONFIG.auth.tokenKey, true);
-if (token) {
-try {
-const payload = JSON.parse(atob(token.split('.')[1]));
-if (payload.role === CONFIG.auth.adminRole) {
-state.isAdmin = true;
-document.body.classList.add('is-admin');
-}
-} catch { /* Invalid token */ }
-}
+    const token = SecureStorage.get(CONFIG.auth.tokenKey, true);
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.role === CONFIG.auth.adminRole) {
+                state.isAdmin = true;
+                document.body.classList.add('is-admin');
+            }
+        } catch { /* Invalid token */ }
+    }
 }
 function showToast(msg, type = 'info') {
-const t = document.getElementById('toast');
-t.textContent = msg; t.className = `toast ${type} show`;
-setTimeout(() => t.classList.remove('show'), 3000);
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 function setupEventListeners() {
-document.addEventListener('keydown', e => {
-if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
-if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
-if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
-});
-window.addEventListener('scroll', () => {
-document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
+        if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
+        if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
+    });
+    window.addEventListener('scroll', () => {
+        document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
 }
 function changeLanguage(lang) {
-state.currentLang = lang;
-document.documentElement.lang = lang;
-document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-initSmoothSlider();
-if (document.getElementById('lensModal').classList.contains('open')) {
-const catName = document.getElementById('modalTitle').textContent;
-const products = state.products.filter(p => p.categoryName === catName);
-if (products.length) renderLensSlider(products);
-}
-renderCart();
+    state.currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    initSmoothSlider();
+    if (document.getElementById('lensModal').classList.contains('open')) {
+        const catName = document.getElementById('modalTitle').textContent;
+        // Re-render modal logic... (Simplified)
+    }
+    renderCart();
 }
 function changeCurrency(currency) {
-state.currentCurrency = currency;
-initSmoothSlider();
-if (document.getElementById('lensModal').classList.contains('open')) {
-const catName = document.getElementById('modalTitle').textContent;
-const products = state.products.filter(p => p.categoryName === catName);
-if (products.length) renderLensSlider(products);
-}
-renderCart();
+    state.currentCurrency = currency;
+    initSmoothSlider();
+    if (document.getElementById('lensModal').classList.contains('open')) { /* Update modal */ }
+    renderCart();
 }
 function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); }
 function trackSocial(platform) { console.log(`Social click: ${platform}`); }
+
 // ========== PARTICLES ==========
 const canvas = document.getElementById('particlesCanvas'), ctx = canvas.getContext('2d');
 let particles = [];
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas(); window.addEventListener('resize', resizeCanvas, { passive: true });
 class Particle {
-constructor() { this.reset(); }
-reset() {
-this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-this.size = Math.random() * 1.5 + 0.5;
-this.sx = (Math.random() - 0.5) * 0.25; this.sy = (Math.random() - 0.5) * 0.15;
-this.op = Math.random() * 0.35 + 0.08; this.pulse = Math.random() * Math.PI * 2; this.ps = Math.random() * 0.02 + 0.005;
-}
-update() {
-this.x += this.sx; this.y += this.sy; this.pulse += this.ps;
-if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-}
-draw() {
-const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse));
-ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill();
-}
+    constructor() { this.reset(); }
+    reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5 + 0.5; this.sx = (Math.random() - 0.5) * 0.25; this.sy = (Math.random() - 0.5) * 0.15; this.op = Math.random() * 0.35 + 0.08; this.pulse = Math.random() * Math.PI * 2; this.ps = Math.random() * 0.02 + 0.005; }
+    update() { this.x += this.sx; this.y += this.sy; this.pulse += this.ps; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset(); }
+    draw() { const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse)); ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill(); }
 }
 for (let i = 0; i < 60; i++) particles.push(new Particle());
 (function anim() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); })();
+
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', async () => {
-checkAgeVerification(); checkCookieConsent();
-await loadData();
-initSmoothSlider(); updateCartBadge(); updateWishlistBadge();
-setupEventListeners(); checkAdminAccess();
-document.body.classList.remove('loading');
+    checkAgeVerification(); checkCookieConsent();
+    await loadData(); // This now reads from 'lens_prods'
+    initSmoothSlider(); updateCartBadge(); updateWishlistBadge();
+    setupEventListeners(); checkAdminAccess();
+    document.body.classList.remove('loading');
 });
 </script>
 </body>
