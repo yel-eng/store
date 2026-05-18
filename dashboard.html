@@ -299,7 +299,8 @@ body.loading{overflow:hidden}
 
 <script>
 // ==================== STATE ====================
-const BASE_LENS_TEMPLATE = 'https://cdn.jsdelivr.net/gh/yel-eng/store@main/arcus.png';
+// ✅ رابط صورة النيني مع تجاوز الكاش تلقائياً
+const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
 let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, showColors:true, showCardImages:true }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null };
 
 // ==================== DEFAULT DATA ====================
