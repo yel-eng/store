@@ -23,7 +23,6 @@ body.loading{overflow:hidden}
 .lens-preview-container{position:relative;display:inline-block;cursor:pointer;transition:transform .2s}
 .lens-preview-container:hover{transform:scale(1.05)}
 .lens-preview-container.enlarged{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:3000;display:flex;align-items:center;justify-content:center;transform:none!important}
-
 .lens-wrapper{position:relative;border-radius:50%;overflow:hidden;transition:all .3s}
 .lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3}
 
@@ -251,8 +250,9 @@ body.loading{overflow:hidden}
 .color-swatch-placeholder{width:100%;height:100%;position:relative}
 .color-swatch-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);color:#fff;font-size:10px;opacity:0;transition:opacity .2s}
 .color-swatch-grid:hover .color-swatch-overlay{opacity:1}
-.color-info{padding:8px;display:flex;align-items:center;justify-content:space-between}
-.color-name{font-size:10px;font-weight:600}
+.color-info{padding:8px;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.color-name{font-size:10px;font-weight:600;flex:1}
+.color-actions{display:flex;gap:2px}
 
 /* TOAST */
 .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(14,12,12,.95);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:var(--radius-sm);font-size:11px;z-index:9999;transition:transform .3s;max-width:90vw;text-align:center}
@@ -369,7 +369,7 @@ body.loading{overflow:hidden}
 <div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button></div></div></div>
 
 <!-- LENS IMAGES -->
-<div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">✨ اضغطي على أي عدسة لتكبيرها، ثم اسحبي الدائرة الملونة لتركيبها على العين</p><div id="colorsList" class="colors-grid"></div></div></div>
+<div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">✨ اضغطي على العدسة لتكبيرها وتعديلها، أو على 📷 لرفع صورة جديدة</p><div id="colorsList" class="colors-grid"></div></div></div>
 
 <!-- VISIBILITY -->
 <div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
@@ -417,7 +417,7 @@ body.loading{overflow:hidden}
   </div>
 </div>
 
-<!-- PRODUCT PREVIEW MODAL - جديد -->
+<!-- PRODUCT PREVIEW MODAL -->
 <div class="preview-modal" id="productPreviewModal">
   <div class="preview-content">
     <div class="preview-header">
@@ -425,7 +425,6 @@ body.loading{overflow:hidden}
       <button class="preview-close" onclick="closeProductPreview()">✕</button>
     </div>
     <div class="preview-body">
-      <!-- عرض العين الكبير -->
       <div class="eye-preview">
         <div class="eye-large" id="previewEyeLarge"></div>
         <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">
@@ -433,8 +432,6 @@ body.loading{overflow:hidden}
           <span class="badge" style="background:rgba(201,168,76,.1);color:var(--gold)" id="previewCategoryBadge">فئة</span>
         </div>
       </div>
-      
-      <!-- لوحة الألوان والتحكم -->
       <div class="product-info">
         <h2 class="product-name" id="previewProductName">اسم المنتج</h2>
         <span class="product-category" id="previewProductCategory">الفئة</span>
@@ -444,32 +441,21 @@ body.loading{overflow:hidden}
           <span>⭐ <span id="previewRating">4.8</span></span>
           <span>💬 <span id="previewReviews">124</span> مراجعة</span>
         </div>
-        
         <div class="preview-controls">
           <h4>🎨 تخصيص العدسة</h4>
-          
-          <!-- لوحة الألوان -->
           <div class="control-group">
             <label>اختر لون العدسة:</label>
-            <div class="color-palette" id="previewColorPalette">
-              <!-- سيتم ملؤها بالجافاسكربت -->
-            </div>
+            <div class="color-palette" id="previewColorPalette"></div>
             <input type="color" id="previewCustomColor" class="color-custom-input" value="#D4A056" onchange="updatePreviewColor(this.value)">
           </div>
-          
-          <!-- التحكم في الحجم -->
           <div class="control-group">
             <label>حجم العدسة: <span id="previewSizeDisplay">85%</span></label>
             <input type="range" id="previewSizeControl" min="50" max="100" value="85" oninput="updatePreviewFromControls()">
           </div>
-          
-          <!-- التحكم في الشفافية -->
           <div class="control-group">
             <label>شفافية اللون: <span id="previewOpacityDisplay">70%</span></label>
             <input type="range" id="previewOpacityControl" min="0" max="100" value="70" oninput="updatePreviewFromControls()">
           </div>
-          
-          <!-- التحكم في المحاذاة -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div class="control-group">
               <label>محاذاة أفقي: <span id="previewOffsetXDisplay">0%</span></label>
@@ -496,7 +482,6 @@ body.loading{overflow:hidden}
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
 const PRESET_COLORS = ['#D4A056','#2E6CB5','#2E8B57','#B8B8B8','#C4A265','#7B5EA7','#5C3A1E','#C68642','#8B7355','#87CEEB','#B8D4E8','#5B6CBF','#6B8E4E','#40B5A5','#2E6B3B','#4A4A4A','#6B6B7B','#B87333','#A88BC5','#6B3FA0','#9B7FBF'];
-
 let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, showColors:true, showCardImages:true }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null, previewProductId: null, currentPreviewProduct: null };
 
 // ==================== DEFAULT DATA ====================
@@ -561,51 +546,33 @@ function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاته
 
 // ==================== DRAG FUNCTIONALITY FOR LENS ==========
 let dragState = { isDragging: false, productId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0 };
-
 function initDrag(element, productId) {
   element.addEventListener('mousedown', startDrag);
   element.addEventListener('touchstart', startDrag, { passive: false });
-  
   function startDrag(e) {
     e.preventDefault();
     const p = state.products.find(x => x.id === productId);
     if (!p) return;
-    
-    dragState = {
-      isDragging: true,
-      productId: productId,
-      startX: e.type === 'touchstart' ? e.touches[0].clientX : e.clientX,
-      startY: e.type === 'touchstart' ? e.touches[0].clientY : e.clientY,
-      startOffsetX: p.offsetX || 0,
-      startOffsetY: p.offsetY || 0
-    };
-    
+    dragState = { isDragging: true, productId: productId, startX: e.type === 'touchstart' ? e.touches[0].clientX : e.clientX, startY: e.type === 'touchstart' ? e.touches[0].clientY : e.clientY, startOffsetX: p.offsetX || 0, startOffsetY: p.offsetY || 0 };
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('touchmove', onDrag, { passive: false });
     document.addEventListener('mouseup', endDrag);
     document.addEventListener('touchend', endDrag);
   }
-  
   function onDrag(e) {
     if (!dragState.isDragging) return;
     e.preventDefault();
-    
     const p = state.products.find(x => x.id === dragState.productId);
     if (!p) return;
-    
     const wrapper = element.closest('.lens-wrapper');
     const rect = wrapper.getBoundingClientRect();
     const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
     const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-    
     const deltaX = ((currentX - dragState.startX) / rect.width) * 100;
     const deltaY = ((currentY - dragState.startY) / rect.height) * 100;
-    
     p.offsetX = Math.max(-30, Math.min(30, dragState.startOffsetX + deltaX));
     p.offsetY = Math.max(-30, Math.min(30, dragState.startOffsetY + deltaY));
-    
     element.style.transform = `translate(${p.offsetX}%, ${p.offsetY}%)`;
-    
     if (state.previewProductId === productId) {
       document.getElementById('previewOffsetX').value = Math.round(p.offsetX);
       document.getElementById('previewOffsetXVal').textContent = Math.round(p.offsetX) + '%';
@@ -613,7 +580,6 @@ function initDrag(element, productId) {
       document.getElementById('previewOffsetYVal').textContent = Math.round(p.offsetY) + '%';
     }
   }
-  
   function endDrag() {
     if (dragState.isDragging) {
       dragState.isDragging = false;
@@ -637,38 +603,25 @@ function renderRealisticLens(p, size='34px', isPreview=false, previewId=null, in
   const offsetY = p.offsetY || 0;
   const baseImg = p.baseLens || BASE_LENS_TEMPLATE;
   const colorLayerSize = `${lensSize}%`;
-  
-  return `
-    <div class="lens-preview-container" ${!isPreview && interactive ? `onclick="openLensPreview('${p.id}')"` : ''} id="${previewId || ''}">
-      <div class="lens-wrapper" style="width:${size};height:${size}">
-        <img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'">
-        <div class="lens-color-circle" id="colorCircle-${p.id}" 
-             style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)">
-          ${!isPreview && interactive ? '<div class="drag-indicator">👆 اسحبي</div>' : ''}
-        </div>
-        <div class="lens-effects">
-          <div class="lens-outer-ring"></div>
-          <div class="lens-depth-gradient"></div>
-          <div class="lens-specular"></div>
-          <div class="lens-specular-2"></div>
-          <div class="lens-edge"></div>
-        </div>
-        ${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" alt="real">` : ''}
+  return `<div class="lens-preview-container" ${!isPreview && interactive ? `onclick="openLensPreview('${p.id}')"` : ''} id="${previewId || ''}">
+    <div class="lens-wrapper" style="width:${size};height:${size}">
+      <img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'">
+      <div class="lens-color-circle" id="colorCircle-${p.id}" style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)">
+        ${!isPreview && interactive ? '<div class="drag-indicator">👆 اسحبي</div>' : ''}
       </div>
-      ${!isPreview && interactive ? `<button class="lens-zoom-btn" onclick="event.stopPropagation();openLensPreview('${p.id}')">🔍 تكبير</button>` : ''}
+      <div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div>
+      ${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" alt="real">` : ''}
     </div>
-  `;
+    ${!isPreview && interactive ? `<button class="lens-zoom-btn" onclick="event.stopPropagation();openLensPreview('${p.id}')">🔍 تكبير</button>` : ''}
+  </div>`;
 }
 
 // ==================== PRODUCT PREVIEW FUNCTIONS ==========
 function openProductPreview(productId) {
   const p = state.products.find(x => x.id === productId);
   if (!p) return;
-  
-  state.currentPreviewProduct = {...p}; // نسخة للتعديل
+  state.currentPreviewProduct = {...p};
   const cat = state.categories.find(c => c.id === p.category);
-  
-  // تعبئة المعلومات
   document.getElementById('previewProductName').textContent = p.nameAr;
   document.getElementById('previewProductCategory').textContent = cat ? cat.ar : 'غير مصنف';
   document.getElementById('previewProductPrice').textContent = `${p.price} ر.س`;
@@ -677,11 +630,7 @@ function openProductPreview(productId) {
   document.getElementById('previewReviews').textContent = p.reviews || '0';
   document.getElementById('previewStockBadge').textContent = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
   document.getElementById('previewStockBadge').className = `badge ${p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on'}`;
-  
-  // إنشاء لوحة الألوان
   renderColorPalette(p.color);
-  
-  // ضبط عناصر التحكم
   document.getElementById('previewSizeControl').value = p.lensSize || 85;
   document.getElementById('previewSizeDisplay').textContent = (p.lensSize || 85) + '%';
   document.getElementById('previewOpacityControl').value = Math.round((p.opacity || 0.7) * 100);
@@ -691,27 +640,14 @@ function openProductPreview(productId) {
   document.getElementById('previewOffsetYControl').value = p.offsetY || 0;
   document.getElementById('previewOffsetYDisplay').textContent = (p.offsetY || 0) + '%';
   document.getElementById('previewCustomColor').value = p.color;
-  
-  // عرض العدسة الكبيرة
   updatePreviewEyeLarge();
-  
   document.getElementById('productPreviewModal').classList.add('show');
 }
-
-function closeProductPreview() {
-  document.getElementById('productPreviewModal').classList.remove('show');
-  state.currentPreviewProduct = null;
-}
-
+function closeProductPreview() { document.getElementById('productPreviewModal').classList.remove('show'); state.currentPreviewProduct = null; }
 function renderColorPalette(currentColor) {
   const palette = document.getElementById('previewColorPalette');
-  palette.innerHTML = PRESET_COLORS.map(color => 
-    `<div class="color-swatch ${color === currentColor ? 'active' : ''}" 
-         style="background:${color}" 
-         onclick="updatePreviewColor('${color}')"></div>`
-  ).join('') + `<div class="color-swatch custom" title="لون مخصص">🎨</div>`;
+  palette.innerHTML = PRESET_COLORS.map(color => `<div class="color-swatch ${color === currentColor ? 'active' : ''}" style="background:${color}" onclick="updatePreviewColor('${color}')"></div>`).join('') + `<div class="color-swatch custom" title="لون مخصص">🎨</div>`;
 }
-
 function updatePreviewColor(color) {
   if (!state.currentPreviewProduct) return;
   state.currentPreviewProduct.color = color;
@@ -719,63 +655,41 @@ function updatePreviewColor(color) {
   renderColorPalette(color);
   updatePreviewEyeLarge();
 }
-
 function updatePreviewFromControls() {
   if (!state.currentPreviewProduct) return;
-  
   const size = parseInt(document.getElementById('previewSizeControl').value);
   const opacity = parseInt(document.getElementById('previewOpacityControl').value) / 100;
   const offsetX = parseInt(document.getElementById('previewOffsetXControl').value);
   const offsetY = parseInt(document.getElementById('previewOffsetYControl').value);
-  
   document.getElementById('previewSizeDisplay').textContent = size + '%';
   document.getElementById('previewOpacityDisplay').textContent = Math.round(opacity * 100) + '%';
   document.getElementById('previewOffsetXDisplay').textContent = offsetX + '%';
   document.getElementById('previewOffsetYDisplay').textContent = offsetY + '%';
-  
   state.currentPreviewProduct.lensSize = size;
   state.currentPreviewProduct.opacity = opacity;
   state.currentPreviewProduct.offsetX = offsetX;
   state.currentPreviewProduct.offsetY = offsetY;
-  
   updatePreviewEyeLarge();
 }
-
 function updatePreviewEyeLarge() {
   if (!state.currentPreviewProduct) return;
   const p = state.currentPreviewProduct;
   const container = document.getElementById('previewEyeLarge');
-  
   const opacity = p.opacity || 0.7;
   const lensSize = p.lensSize || 85;
   const offsetX = p.offsetX || 0;
   const offsetY = p.offsetY || 0;
   const baseImg = p.baseLens || BASE_LENS_TEMPLATE;
   const colorLayerSize = `${lensSize}%`;
-  
-  container.innerHTML = `
-    <img src="${baseImg}" style="width:100%;height:100%;object-fit:cover;opacity:.3" onerror="this.style.display='none'">
-    <div class="lens-color-circle" 
-         style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)">
-    </div>
-    <div class="lens-effects">
-      <div class="lens-outer-ring"></div>
-      <div class="lens-depth-gradient"></div>
-      <div class="lens-specular"></div>
-      <div class="lens-specular-2"></div>
-      <div class="lens-edge"></div>
-    </div>
-    ${p.lensImage ? `<img src="${p.lensImage}" class="lens-real-img" style="width:90%;height:90%;position:relative;z-index:10">` : ''}
-  `;
-  
-  // تفعيل السحب في المعاينة الكبيرة
+  container.innerHTML = `<img src="${baseImg}" style="width:100%;height:100%;object-fit:cover;opacity:.3" onerror="this.style.display='none'">
+    <div class="lens-color-circle" style="inset:calc((100% - ${colorLayerSize})/2);width:${colorLayerSize};height:${colorLayerSize};background:${p.color};opacity:${opacity};transform:translate(${offsetX}%, ${offsetY}%)"></div>
+    <div class="lens-effects"><div class="lens-outer-ring"></div><div class="lens-depth-gradient"></div><div class="lens-specular"></div><div class="lens-specular-2"></div><div class="lens-edge"></div></div>
+    ${p.lensImage ? `<img src="${p.lensImage}" class="lens-real-img" style="width:90%;height:90%;position:relative;z-index:10">` : ''}`;
   const colorCircle = container.querySelector('.lens-color-circle');
   if (colorCircle) initDrag(colorCircle, 'preview');
 }
-
 function savePreviewChanges() {
   if (!state.currentPreviewProduct) return;
-  
   const p = state.products.find(x => x.id === state.currentPreviewProduct.id);
   if (p) {
     p.color = state.currentPreviewProduct.color;
@@ -783,7 +697,6 @@ function savePreviewChanges() {
     p.lensSize = state.currentPreviewProduct.lensSize;
     p.offsetX = state.currentPreviewProduct.offsetX;
     p.offsetY = state.currentPreviewProduct.offsetY;
-    
     saveState();
     renderProducts();
     renderLensImages();
@@ -796,15 +709,11 @@ function savePreviewChanges() {
 function openLensPreview(productId) {
   const p = state.products.find(x => x.id === productId);
   if (!p) return;
-  
   state.previewProductId = productId;
   const content = document.getElementById('enlargedLensContent');
-  
   content.innerHTML = renderRealisticLens(p, '200px', true, 'previewLensWrapper');
-  
   const colorCircle = document.getElementById(`colorCircle-${productId}`);
   if (colorCircle) initDrag(colorCircle, productId);
-  
   document.getElementById('previewSize').value = p.lensSize || 85;
   document.getElementById('previewSizeVal').textContent = (p.lensSize || 85) + '%';
   document.getElementById('previewOpacity').value = Math.round((p.opacity || 0.7) * 100);
@@ -813,29 +722,20 @@ function openLensPreview(productId) {
   document.getElementById('previewOffsetXVal').textContent = (p.offsetX || 0) + '%';
   document.getElementById('previewOffsetY').value = p.offsetY || 0;
   document.getElementById('previewOffsetYVal').textContent = (p.offsetY || 0) + '%';
-  
   document.getElementById('lensPreviewModal').classList.add('show');
 }
-
-function closeLensPreview() {
-  document.getElementById('lensPreviewModal').classList.remove('show');
-  state.previewProductId = null;
-}
-
+function closeLensPreview() { document.getElementById('lensPreviewModal').classList.remove('show'); state.previewProductId = null; }
 function updatePreviewLens() {
   const p = state.products.find(x => x.id === state.previewProductId);
   if (!p) return;
-  
   const size = document.getElementById('previewSize').value;
   const opacity = document.getElementById('previewOpacity').value / 100;
   const offsetX = parseInt(document.getElementById('previewOffsetX').value);
   const offsetY = parseInt(document.getElementById('previewOffsetY').value);
-  
   document.getElementById('previewSizeVal').textContent = size + '%';
   document.getElementById('previewOpacityVal').textContent = Math.round(opacity * 100) + '%';
   document.getElementById('previewOffsetXVal').textContent = offsetX + '%';
   document.getElementById('previewOffsetYVal').textContent = offsetY + '%';
-  
   const colorCircle = document.querySelector('#previewLensWrapper .lens-color-circle');
   if (colorCircle) {
     colorCircle.style.width = size + '%';
@@ -844,16 +744,13 @@ function updatePreviewLens() {
     colorCircle.style.transform = `translate(${offsetX}%, ${offsetY}%)`;
   }
 }
-
 function applyPreviewChanges() {
   const p = state.products.find(x => x.id === state.previewProductId);
   if (!p) return;
-  
   p.lensSize = parseInt(document.getElementById('previewSize').value);
   p.opacity = parseInt(document.getElementById('previewOpacity').value) / 100;
   p.offsetX = parseInt(document.getElementById('previewOffsetX').value);
   p.offsetY = parseInt(document.getElementById('previewOffsetY').value);
-  
   saveState();
   renderProducts();
   renderLensImages();
@@ -869,29 +766,12 @@ function renderProducts() {
   else if (filter === 'visible') prods = prods.filter(p => p.visible); 
   const tbody = document.getElementById('productsBody'); 
   if (!tbody) return; 
-  
   tbody.innerHTML = prods.map(p => { 
     const cat = state.categories.find(c => c.id === p.category); 
     const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on'; 
     const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر'; 
-    const thumb = renderRealisticLens(p, '34px', false, null, false); // غير تفاعلي في الجدول
-    
-    return `<tr>
-      <td>${thumb}</td>
-      <td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td>
-      <td>${cat?cat.ar:'-'}</td>
-      <td class="p-price">${p.price} ر.س</td>
-      <td><span class="badge ${sc}">${st} (${p.stock})</span></td>
-      <td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td>
-      <td style="white-space:nowrap">
-        <div style="display:flex;gap:3px">
-          <button class="btn btn-ghost btn-icon btn-sm" onclick="openProductPreview('${p.id}')" title="معاينة">👁️</button>
-          <button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button>
-          <button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button>
-          <button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف">🗑️</button>
-        </div>
-      </td>
-    </tr>`; 
+    const thumb = renderRealisticLens(p, '34px', false, null, false);
+    return `<tr><td>${thumb}</td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${p.price} ر.س</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="openProductPreview('${p.id}')" title="معاينة">👁️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف">🗑️</button></div></td></tr>`; 
   }).join(''); 
 }
 
@@ -927,12 +807,77 @@ function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p
 
 // ==================== VISIBILITY & LENS IMAGES ====================
 function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const thumb = renderRealisticLens(p, '36px'); return `<div class="vis-item">${thumb}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 6px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
-function renderLensImages() { const el = document.getElementById('colorsList'); if (!el) return; el.innerHTML = state.products.map(p => { const hasImg = !!p.lensImage; return `<div class="color-card"><div class="color-swatch-grid" onclick="openLensPreview('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:22px;height:22px;font-size:9px">🗑️</button>` : ''}</div></div>`; }).join(''); }
-function openColorImgModal(productId) { state.editingProductId = productId; const p = state.products.find(x => x.id === productId); if (!p) return; const area = document.getElementById('colorImgArea'); area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>'; document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none'; document.getElementById('colorImgModal').classList.add('show'); }
+
+// ✅ تم تعديل هذه الدالة لإضافة زر رفع الصورة
+function renderLensImages() { 
+  const el = document.getElementById('colorsList'); 
+  if (!el) return; 
+  el.innerHTML = state.products.map(p => { 
+    const hasImg = !!p.lensImage; 
+    return `<div class="color-card">
+      <div class="color-swatch-grid" onclick="openLensPreview('${p.id}')" style="cursor:pointer">
+        ${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${renderRealisticLens(p, '45px', true, null, false)}</div><div class="color-swatch-overlay">🔍 تكبير للتعديل</div>`}
+      </div>
+      <div class="color-info">
+        <span class="color-name">${p.nameAr}</span>
+        <div class="color-actions">
+          <button class="btn btn-ghost btn-icon btn-sm" onclick="event.stopPropagation();openColorImgModal('${p.id}')" title="رفع/تغيير صورة العدسة">📷</button>
+          ${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" title="إزالة الصورة">🗑️</button>` : ''}
+        </div>
+      </div>
+    </div>`; 
+  }).join(''); 
+}
+
+function openColorImgModal(productId) { 
+  state.editingProductId = productId; 
+  const p = state.products.find(x => x.id === productId); 
+  if (!p) return; 
+  const area = document.getElementById('colorImgArea'); 
+  area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>'; 
+  document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none'; 
+  document.getElementById('colorImgModal').classList.add('show'); 
+}
 function closeColorImgModal() { document.getElementById('colorImgModal').classList.remove('show'); state.editingProductId = null; }
-function saveColorImg(input) { const file = input.files[0]; if (!file || !state.editingProductId) return; const reader = new FileReader(); reader.onload = (e) => { const p = state.products.find(x => x.id === state.editingProductId); if (p) { p.lensImage = e.target.result; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إضافة الصورة', 'success'); } }; reader.readAsDataURL(file); }
-function removeColorImg() { if (!state.editingProductId) return; const p = state.products.find(x => x.id === state.editingProductId); if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إزالة الصورة', 'success'); } }
-function removeProdImg(id) { const p = state.products.find(x => x.id === id); if (p) { p.lensImage = null; saveState(); renderLensImages(); renderProducts(); toast('✅ تم إزالة الصورة', 'success'); } }
+function saveColorImg(input) { 
+  const file = input.files[0]; 
+  if (!file || !state.editingProductId) return; 
+  const reader = new FileReader(); 
+  reader.onload = (e) => { 
+    const p = state.products.find(x => x.id === state.editingProductId); 
+    if (p) { 
+      p.lensImage = e.target.result; 
+      saveState(); 
+      renderLensImages(); 
+      renderProducts(); 
+      closeColorImgModal(); 
+      toast('✅ تم إضافة الصورة', 'success'); 
+    } 
+  }; 
+  reader.readAsDataURL(file); 
+}
+function removeColorImg() { 
+  if (!state.editingProductId) return; 
+  const p = state.products.find(x => x.id === state.editingProductId); 
+  if (p) { 
+    p.lensImage = null; 
+    saveState(); 
+    renderLensImages(); 
+    renderProducts(); 
+    closeColorImgModal(); 
+    toast('✅ تم إزالة الصورة', 'success'); 
+  } 
+}
+function removeProdImg(id) { 
+  const p = state.products.find(x => x.id === id); 
+  if (p) { 
+    p.lensImage = null; 
+    saveState(); 
+    renderLensImages(); 
+    renderProducts(); 
+    toast('✅ تم إزالة الصورة', 'success'); 
+  } 
+}
 
 // ==================== DISPLAY SETTINGS ====================
 function renderDisplaySettings() { const s = state.settings; const el1 = document.getElementById('settingShowPrice'); if(el1) el1.checked = s.showPrice; const el2 = document.getElementById('settingShowStock'); if(el2) el2.checked = s.showStock; const el3 = document.getElementById('settingShowColors'); if(el3) el3.checked = s.showColors; const el4 = document.getElementById('settingShowCardImages'); if(el4) el4.checked = s.showCardImages; }
