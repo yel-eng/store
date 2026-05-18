@@ -52,6 +52,7 @@ body.loading::after{content:'';position:fixed;inset:0;background:var(--bg);z-ind
 button{cursor:pointer;border:none;font-family:inherit;background:none;color:inherit}
 button:disabled{cursor:not-allowed;opacity:.5}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* ========== AMBIENT BACKGROUND ========== */
 .ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .ambient-orb{position:absolute;border-radius:50%;filter:blur(150px);opacity:.06}
@@ -739,6 +740,7 @@ document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
 const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
 const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
 const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
+// ✅ إصلاح: إضافة for و id للكمية
 return `<div class="lens-slide" role="tabpanel">
 <div class="lens-visual dark-bg">
 <div class="lens-visual-ring" aria-hidden="true"></div>
@@ -748,7 +750,14 @@ return `<div class="lens-slide" role="tabpanel">
 <div class="lens-details"><h3>${getText(p.name,p.enName)}</h3><p class="lens-desc">${p.desc||'وصف المنتج'}</p>
 <div class="lens-reviews"><div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${p.reviews||0} مراجعة)</span></div></div>
 <div class="lens-meta"><div class="meta-item"><div class="label">السعر</div><div class="value">${getPrice(p)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div></div>
-<div class="qty-selector"><label>الكمية:</label><div class="qty-ctrl"><button onclick="changeModalQty(-1,${li})">−</button><div class="qty-display" id="mq_${li}">1</div><button onclick="changeModalQty(1,${li})">+</button></div></div>
+<div class="qty-selector">
+  <label for="mq_${li}">الكمية:</label>
+  <div class="qty-ctrl">
+    <button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
+    <div class="qty-display" id="mq_${li}" role="spinbutton" aria-valuenow="1" aria-valuemin="1" aria-valuemax="10">1</div>
+    <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
+  </div>
+</div>
 <button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
 </div></div>`;
 }).join('');
@@ -775,6 +784,7 @@ const el = document.getElementById(`mq_${li}`); if (!el) return;
 let v = parseInt(el.textContent) + delta;
 v = Math.max(1, Math.min(v, 10));
 el.textContent = v;
+el.setAttribute('aria-valuenow', v);
 }
 function addFromSlider(lensId, li) {
 const p = getProduct(lensId);
@@ -805,7 +815,7 @@ bottom.innerHTML = ''; return;
 }
 list.innerHTML = state.cart.map(c => {
 const p = getProduct(c.productId); if (!p) return '';
-return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)">−</button><span>${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')">🗑</button></div>`;
+return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
 }).join('');
 const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
 const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
@@ -866,7 +876,7 @@ const container = document.getElementById('wishlistItems');
 if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
 container.innerHTML = state.wishlist.map(w => {
 const p = getProduct(w.productId); if (!p) return '';
-return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')">إزالة</button></div></div></div>`;
+return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')" aria-label="أضف ${getText(p.name,p.enName)} للسلة">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')" aria-label="أزل ${getText(p.name,p.enName)} من المفضلة">إزالة</button></div></div></div>`;
 }).join('');
 }
 function removeFromWishlist(productId) {
