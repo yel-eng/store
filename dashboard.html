@@ -19,7 +19,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-tap-highlight-color:transparent}
 body.loading{overflow:hidden}
 
-/* ========== LENS LAYER STYLES - جديد ========== */
+/* ========== LENS LAYER STYLES ========== */
 .lens-layer-wrap{position:relative;width:100%;height:100%;border-radius:inherit;overflow:hidden}
 .lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25}
 .lens-color-layer{position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply}
@@ -119,7 +119,7 @@ body.loading{overflow:hidden}
 .toggle input:checked+.toggle-slider{background:var(--gold)}
 .toggle input:checked+.toggle-slider::before{transform:translateX(-18px)}
 
-/* FORM - FIXED LABELS */
+/* FORM */
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .fgroup{display:flex;flex-direction:column;gap:4px}
 .fgroup label{font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px}
@@ -177,8 +177,6 @@ body.loading{overflow:hidden}
 /* VISIBILITY LIST */
 .vis-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .vis-item:last-child{border-bottom:none}
-
-/* HIDDEN OVERVIEW */
 .hidden-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.05)}
 
 /* RESPONSIVE */
@@ -198,14 +196,8 @@ body.loading{overflow:hidden}
 <div class="login-logo">LENSORA</div>
 <div class="login-sub">لوحة التحكم الكاملة</div>
 <form class="login-form" onsubmit="doLogin(event)">
-<div class="fgroup">
-<label for="loginEmail">البريد الإلكتروني</label>
-<input type="email" id="loginEmail" placeholder="admin@lensora.com" required autocomplete="username">
-</div>
-<div class="fgroup">
-<label for="loginPass">كلمة المرور</label>
-<input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
-</div>
+<div class="fgroup"><label for="loginEmail">البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="admin@lensora.com" required autocomplete="username"></div>
+<div class="fgroup"><label for="loginPass">كلمة المرور</label><input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password"></div>
 <button type="submit">تسجيل الدخول</button>
 </form>
 <div class="login-hint">admin@lensora.com / admin123</div>
@@ -260,17 +252,10 @@ body.loading{overflow:hidden}
 <select id="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
 </div>
 </div>
-<div class="fcard" style="padding:0;overflow:hidden">
-<div class="p-table-wrap">
-<table class="p-table">
-<thead><tr><th>الصورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-<tbody id="productsBody"></tbody>
-</table>
-</div>
-</div>
+<div class="fcard" style="padding:0;overflow:hidden"><div class="p-table-wrap"><table class="p-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
 </div>
 
-<!-- ADD PRODUCT - مع حقل الشفافية -->
+<!-- ADD PRODUCT -->
 <div class="page" id="page-addproduct">
 <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
 <div class="fcard">
@@ -281,122 +266,41 @@ body.loading{overflow:hidden}
 <div class="fgroup"><label for="pPrice">السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85"></div>
 <div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30"></div>
 <div class="fgroup"><label for="pColor">اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
-<!-- ✅ حقل الشفافية الجديد -->
-<div class="fgroup">
-<label for="pOpacity">شفافية اللون فوق النيني (%)</label>
-<div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
-<span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
-</div>
-</div>
+<div class="fgroup"><label for="pOpacity">شفافية اللون فوق النيني (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'"><span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
 </div>
 <div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
-<div style="margin-top:14px"><label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري - فوق الطبقات)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"><span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span></div></div>
+<div style="margin-top:14px"><label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"><span style="font-size:10px;color:var(--text-dim)">JPG, PNG | 400×400 مثالي</span></div></div>
 <div style="margin-top:14px"><label for="cardImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة بطاقة المنتج (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload rect" id="cardImgUpload" onclick="document.getElementById('cardImgInput').click()"><span class="upload-icon">🖼️</span><span>صورة البطاقة</span></div><input type="file" id="cardImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'cardImgUpload','currentCardImg')"><span style="font-size:10px;color:var(--text-dim)">خلفية البطاقة في السلايدر</span></div></div>
 <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center"><label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" checked><span for="pVisible">معروض في المتجر</span></label><button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button></div>
 </div>
 </div>
 
 <!-- CATEGORIES -->
-<div class="page" id="page-categories">
-<h2 class="ftitle mb-2">إدارة الفئات</h2>
-<div class="fcard">
-<div id="categoriesList"></div>
-<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-<div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
-<div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
-<div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div>
-<button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button>
-</div>
-</div>
-</div>
+<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" style="align-self:flex-end">➕ إضافة</button></div></div></div>
 
 <!-- LENS IMAGES -->
-<div class="page" id="page-lensimages">
-<h2 class="ftitle mb-2">صور العدسات لكل منتج</h2>
-<div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">اضغط على أي عدسة لإضافة صورة حقيقية بدلاً من الدائرة الملونة</p><div id="colorsList" class="colors-grid"></div></div>
-</div>
+<div class="page" id="page-lensimages"><h2 class="ftitle mb-2">صور العدسات لكل منتج</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">اضغط على أي عدسة لإضافة صورة حقيقية بدلاً من الدائرة الملونة</p><div id="colorsList" class="colors-grid"></div></div></div>
 
 <!-- VISIBILITY -->
-<div class="page" id="page-visibility">
-<h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2>
-<div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div>
-</div>
+<div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
 
 <!-- DISPLAY SETTINGS -->
-<div class="page" id="page-display">
-<h2 class="ftitle mb-2">إعدادات العرض</h2>
-<div class="fcard">
-<div class="setting-row"><div><label for="settingShowPrice" class="setting-lbl">إظهار الأسعار</label><div class="setting-desc">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-<div class="setting-row"><div><label for="settingShowStock" class="setting-lbl">إظهار الكمية</label><div class="setting-desc">عرض عدد القطع المتاحة</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-<div class="setting-row"><div><label for="settingShowColors" class="setting-lbl">إظهار ألوان العدسات</label><div class="setting-desc">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-<div class="setting-row"><div><label for="settingShowCardImages" class="setting-lbl">إظهار صور البطاقات</label><div class="setting-desc">خلفية البطاقات في السلايدر</div></div><label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div>
-</div>
-<div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3><p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p><div id="hiddenColorsList" class="colors-grid"></div></div>
-</div>
+<div class="page" id="page-display"><h2 class="ftitle mb-2">إعدادات العرض</h2><div class="fcard"><div class="setting-row"><div><label for="settingShowPrice" class="setting-lbl">إظهار الأسعار</label><div class="setting-desc">عرض السعر في البطاقات</div></div><label class="toggle"><input type="checkbox" id="settingShowPrice" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowStock" class="setting-lbl">إظهار الكمية</label><div class="setting-desc">عرض عدد القطع المتاحة</div></div><label class="toggle"><input type="checkbox" id="settingShowStock" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowColors" class="setting-lbl">إظهار ألوان العدسات</label><div class="setting-desc">عرض الدوائر الملونة</div></div><label class="toggle"><input type="checkbox" id="settingShowColors" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div><div class="setting-row"><div><label for="settingShowCardImages" class="setting-lbl">إظهار صور البطاقات</label><div class="setting-desc">خلفية البطاقات في السلايدر</div></div><label class="toggle"><input type="checkbox" id="settingShowCardImages" checked onchange="updateSettings()"><span class="toggle-slider"></span></label></div></div><div class="fcard"><h3 class="ftitle">إخفاء ألوان/منتجات محددة</h3><p style="font-size:11px;color:var(--text-dim);margin-bottom:10px">أوقف اللون لإخفائه من المتجر مع الاحتفاظ به في لوحة التحكم</p><div id="hiddenColorsList" class="colors-grid"></div></div></div>
 
-</main>
-</div>
+</main></div>
 
 <!-- EDIT MODAL -->
-<div class="overlay" id="editModal">
-<div class="modal">
-<div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div>
-<div class="modal-body">
-<input type="hidden" id="editId">
-<div class="fgrid">
-<div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div>
-<div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div>
-<div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div>
-<div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div>
-<div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div>
-<div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
-<!-- ✅ حقل الشفافية في التعديل -->
-<div class="fgroup">
-<label for="editOpacity">شفافية اللون (%)</label>
-<div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'">
-<span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
-</div>
-</div>
-</div>
-<div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div>
-<div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div>
-<div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div>
-</div>
-<div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div>
-</div>
-</div>
+<div class="overlay" id="editModal"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div><div style="margin-top:10px"><label for="editLensInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload" id="editLensUpload" onclick="document.getElementById('editLensInput').click()"><span class="upload-icon">📷</span><span>تغيير</span></div><input type="file" id="editLensInput" accept="image/*" style="display:none" onchange="previewEditImg(this)"><span style="font-size:9px;color:var(--text-dim)">اضغط لتغيير الصورة</span></div></div><div style="margin-top:10px"><label for="editCardInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة البطاقة</label><div style="display:flex;align-items:center;gap:10px;margin-top:4px"><div class="img-upload rect" id="editCardUpload" onclick="document.getElementById('editCardInput').click()"><span class="upload-icon">🖼️</span><span>تغيير</span></div><input type="file" id="editCardInput" accept="image/*" style="display:none" onchange="previewEditCard(this)"><span style="font-size:9px;color:var(--text-dim)">صورة خلفية البطاقة</span></div></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
 
 <!-- COLOR IMAGE MODAL -->
-<div class="overlay" id="colorImgModal">
-<div class="modal" style="max-width:380px">
-<div class="modal-head"><h3 class="modal-title">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div>
-<div class="modal-body" style="text-align:center">
-<p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p>
-<div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div>
-<input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)">
-<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button><button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button></div>
-</div>
-</div>
-</div>
+<div class="overlay" id="colorImgModal"><div class="modal" style="max-width:380px"><div class="modal-head"><h3 class="modal-title">صورة العدسة</h3><button class="modal-close" onclick="closeColorImgModal()">✕</button></div><div class="modal-body" style="text-align:center"><p style="font-size:11px;color:var(--text-dim);margin-bottom:14px">ارفع صورة العدسة لهذا المنتج</p><div class="img-upload" style="width:120px;height:120px;margin:0 auto 14px" id="colorImgArea" onclick="document.getElementById('colorImgInput').click()"><span class="upload-icon">📷</span><span>اضغط للرفع</span></div><input type="file" id="colorImgInput" accept="image/*" style="display:none" onchange="saveColorImg(this)"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-gold btn-sm" onclick="document.getElementById('colorImgInput').click()">📷 رفع صورة</button><button class="btn btn-red btn-sm" id="removeColorImgBtn" onclick="removeColorImg()" style="display:none">🗑️ إزالة</button></div></div></div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 // ==================== STATE ====================
-// ✅ رابط النيني الأساسي - استبدليه بالرابط المباشر الفعلي
-const BASE_LENS_TEMPLATE = 'https://drive.google.com/uc?export=view&id=1QbPOehVM8QeW3QUm7TR6dtEe6JNnhEoP';
-
-let state = { 
-  categories: [], 
-  products: [], 
-  settings: { showPrice:true, showStock:true, showColors:true, showCardImages:true }, 
-  hiddenColorIds: [], 
-  currentLensImg: null, 
-  currentCardImg: null, 
-  editingProductId: null 
-};
+const BASE_LENS_TEMPLATE = 'https://cdn.jsdelivr.net/gh/yel-eng/store@main/arcus.png';
+let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, showColors:true, showCardImages:true }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null };
 
 // ==================== DEFAULT DATA ====================
 function initDefaults() {
@@ -431,8 +335,7 @@ state.products = [
 {id:'p1',nameAr:'لافندر',nameEn:'Lavender',category:'purple',price:110,stock:18,color:'#A88BC5',opacity:0.65,gradient:'radial-gradient(circle at 40% 35%,#C5A8DC,#A88BC5,#7B5EA7)',desc:'بنفسجي لافندر رومانسي',rating:4.8,reviews:156,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
 {id:'p2',nameAr:'أرجواني',nameEn:'Majestic',category:'purple',price:120,stock:11,color:'#6B3FA0',opacity:0.7,gradient:'radial-gradient(circle at 40% 35%,#8B5FC0,#6B3FA0,#4B2A70)',desc:'بنفسجي غامق ملكي',rating:4.9,reviews:89,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE},
 {id:'p3',nameAr:'ليلكي',nameEn:'Lilac',category:'purple',price:115,stock:6,color:'#9B7FBF',opacity:0.6,gradient:'radial-gradient(circle at 40% 35%,#B89FD4,#9B7FBF,#7B5FA0)',desc:'بنفسجي فاتح ليلكي',rating:4.7,reviews:72,visible:true,lensImage:null,cardImage:null,baseLens:BASE_LENS_TEMPLATE}
-];
-}
+];}
 
 // ==================== PERSISTENCE ====================
 function saveState() { try { localStorage.setItem('lens_cats', JSON.stringify(state.categories)); localStorage.setItem('lens_prods', JSON.stringify(state.products)); localStorage.setItem('lens_sett', JSON.stringify(state.settings)); localStorage.setItem('lens_hid_colors', JSON.stringify(state.hiddenColorIds)); } catch(e) { console.warn('Save error', e); } }
@@ -443,17 +346,13 @@ function doLogin(e) { e.preventDefault(); const em = document.getElementById('lo
 function doLogout() { localStorage.removeItem('lens_auth'); location.reload(); }
 document.addEventListener('DOMContentLoaded', () => { if (localStorage.getItem('lens_auth') === 'true') { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashboard').classList.add('active'); initDefaults(); loadState(); initDashboard(); } document.body.classList.remove('loading'); });
 
-// ==================== INIT ====================
+// ==================== INIT & NAV ====================
 function initDashboard() { populateCatSelects(); updateStats(); renderProducts(); renderCategories(); renderLensImages(); renderVisibility(); renderDisplaySettings(); renderHiddenColors(); renderHiddenOverview(); }
-
-// ==================== NAV ====================
-function goToPage(pageId) { document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId)); document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const el = document.getElementById('page-' + pageId); if (el) el.classList.add('active'); const titles = { overview:'نظرة عامة', allproducts:'جميع المنتجات', addproduct:'إضافة منتج', categories:'الفئات', lensimages:'صور العدسات', visibility:'إخفاء/إظهار', display:'إعدادات العرض' }; document.getElementById('pageTitle').textContent = titles[pageId] || ''; if (pageId === 'allproducts') renderProducts(); if (pageId === 'visibility') renderVisibility(); if (pageId === 'categories') renderCategories(); if (pageId === 'lensimages') renderLensImages(); if (pageId === 'display') { renderDisplaySettings(); renderHiddenColors(); } if (pageId === 'overview') { updateStats(); renderHiddenOverview(); } if (pageId === 'addproduct') { populateCatSelects(); } populateCatSelects(); }
+function goToPage(pageId) { document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId)); document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const el = document.getElementById('page-' + pageId); if (el) el.classList.add('active'); const titles = { overview:'نظرة عامة', allproducts:'جميع المنتجات', addproduct:'إضافة منتج', categories:'الفئات', lensimages:'صور العدسات', visibility:'إخفاء/إظهار', display:'إعدادات العرض' }; document.getElementById('pageTitle').textContent = titles[pageId] || ''; if (pageId === 'allproducts') renderProducts(); if (pageId === 'visibility') renderVisibility(); if (pageId === 'categories') renderCategories(); if (pageId === 'lensimages') renderLensImages(); if (pageId === 'display') { renderDisplaySettings(); renderHiddenColors(); } if (pageId === 'overview') { updateStats(); renderHiddenOverview(); } if (pageId === 'addproduct') populateCatSelects(); populateCatSelects(); }
 document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', function(e) { e.preventDefault(); goToPage(this.dataset.page); }); });
 
-// ==================== TOAST ====================
+// ==================== TOAST & STATS ====================
 function toast(msg, type='info') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(() => t.classList.remove('show'), 3000); }
-
-// ==================== STATS ====================
 function updateStats() { const all = state.products; document.getElementById('statProducts').textContent = all.length; document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; document.getElementById('statLowStock').textContent = all.filter(p => p.stock > 0 && p.stock <= 5).length; document.getElementById('statOutOfStock').textContent = all.filter(p => p.stock === 0).length; }
 function renderHiddenOverview() { const hidden = state.products.filter(p => !p.visible); const el = document.getElementById('hiddenOverviewList'); if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; } el.innerHTML = hidden.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.lensImage?'<img src="'+p.lensImage+'">':p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`; }).join(''); }
 
@@ -463,27 +362,19 @@ function renderCategories() { const el = document.getElementById('categoriesList
 function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(); const en = document.getElementById('newCatNameEn').value.trim(); const color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
 function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return; state.categories = state.categories.filter(c => c.id !== id); state.products = state.products.filter(p => p.category !== id); saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats(); toast('✅ تم الحذف', 'success'); }
 
-// ==================== LENS PREVIEW HELPER - جديد ==========
+// ==================== LENS PREVIEW HELPER ==========
 function renderLensPreview(p, size='34px') {
   const hasRealImg = !!p.lensImage;
   const opacity = p.opacity || 0.7;
   const baseImg = p.baseLens || BASE_LENS_TEMPLATE;
-  
-  return `
-    <div class="lens-layer-wrap" style="width:${size};height:${size};border-radius:8px">
-      <img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'">
-      <div class="lens-color-layer" style="background:${p.color};opacity:${opacity}"></div>
-      ${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" style="width:85%;height:85%">` : ''}
-    </div>
-  `;
+  return `<div class="lens-layer-wrap" style="width:${size};height:${size};border-radius:8px"><img src="${baseImg}" class="lens-base-template" alt="base" onerror="this.style.display='none'"><div class="lens-color-layer" style="background:${p.color};opacity:${opacity}"></div>${hasRealImg ? `<img src="${p.lensImage}" class="lens-real-img" style="width:85%;height:85%">` : ''}</div>`;
 }
 
 // ==================== PRODUCTS TABLE ====================
 function renderProducts() { const filter = document.getElementById('filterCat')?.value || ''; let prods = [...state.products]; if (filter === 'hidden') prods = prods.filter(p => !p.visible); else if (filter === 'visible') prods = prods.filter(p => p.visible); const tbody = document.getElementById('productsBody'); if (!tbody) return; tbody.innerHTML = prods.map(p => { const cat = state.categories.find(c => c.id === p.category); const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on'; const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر'; const thumb = renderLensPreview(p); return `<tr><td>${thumb}</td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${p.price} ر.س</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف">🗑️</button></div></td></tr>`; }).join(''); }
 
-// ==================== ADD PRODUCT ====================
+// ==================== ADD/EDIT PRODUCT ====================
 function previewImg(input, uploadId, stateKey) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { state[stateKey] = e.target.result; const upload = document.getElementById(uploadId); upload.innerHTML = `<img src="${e.target.result}">`; }; reader.readAsDataURL(file); }
-
 function saveProduct() {
   const nameAr = document.getElementById('pNameAr').value.trim();
   const nameEn = document.getElementById('pNameEn').value.trim();
@@ -491,79 +382,29 @@ function saveProduct() {
   const price = parseInt(document.getElementById('pPrice').value);
   const stock = parseInt(document.getElementById('pStock').value);
   const color = document.getElementById('pColor').value;
-  const opacity = parseInt(document.getElementById('pOpacity').value) / 100; // ✅ تحويل النسبة لرقم 0-1
+  const opacity = parseInt(document.getElementById('pOpacity').value) / 100;
   const desc = document.getElementById('pDesc').value.trim();
   const visible = document.getElementById('pVisible').checked;
-
-  if (!nameAr || !category || isNaN(price) || isNaN(stock) || !color) { 
-    toast('❌ أكمل الحقول المطلوبة وتأكد من اختيار الفئة', 'error'); 
-    return; 
-  }
-
+  if (!nameAr || !category || isNaN(price) || isNaN(stock) || !color) { toast('❌ أكمل الحقول المطلوبة وتأكد من اختيار الفئة', 'error'); return; }
   const id = 'p_' + Date.now();
-  state.products.push({ 
-    id, nameAr, nameEn, category, price, stock, color, opacity, // ✅ حفظ الشفافية
-    gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, 
-    desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, 
-    visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg,
-    baseLens: BASE_LENS_TEMPLATE // ✅ رابط النيني الأساسي
-  });
-
-  saveState(); updateStats(); renderProducts(); renderLensImages();
-  toast('✅ تمت إضافة المنتج', 'success');
-
-  // إعادة تعيين الحقول
-  document.getElementById('pNameAr').value=''; 
-  document.getElementById('pNameEn').value=''; 
-  document.getElementById('pPrice').value=''; 
-  document.getElementById('pStock').value=''; 
-  document.getElementById('pDesc').value=''; 
-  document.getElementById('pCategory').value='';
-  document.getElementById('pColor').value='#D4A056';
-  document.getElementById('pColorHex').value='#D4A056';
-  document.getElementById('pOpacity').value='70';
-  document.getElementById('pOpacityVal').textContent='70%';
-
+  state.products.push({ id, nameAr, nameEn, category, price, stock, color, opacity, gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE });
+  saveState(); updateStats(); renderProducts(); renderLensImages(); toast('✅ تمت إضافة المنتج', 'success');
+  document.getElementById('pNameAr').value=''; document.getElementById('pNameEn').value=''; document.getElementById('pPrice').value=''; document.getElementById('pStock').value=''; document.getElementById('pDesc').value=''; document.getElementById('pCategory').value=''; document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056'; document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%';
   state.currentLensImg=null; state.currentCardImg=null;
   document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
   document.getElementById('cardImgUpload').innerHTML='<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>';
 }
-
-// ==================== EDIT PRODUCT ====================
 function editProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; populateCatSelects(); document.getElementById('editId').value = p.id; document.getElementById('editNameAr').value = p.nameAr; document.getElementById('editNameEn').value = p.nameEn || ''; document.getElementById('editCategory').value = p.category; document.getElementById('editPrice').value = p.price; document.getElementById('editStock').value = p.stock; document.getElementById('editColor').value = p.color; document.getElementById('editColorHex').value = p.color; document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; document.getElementById('editDesc').value = p.desc || ''; const lensUp = document.getElementById('editLensUpload'); lensUp.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>تغيير</span>'; const cardUp = document.getElementById('editCardUpload'); cardUp.innerHTML = p.cardImage ? `<img src="${p.cardImage}">` : '<span class="upload-icon">🖼️</span><span>صورة البطاقة</span>'; document.getElementById('editModal').classList.add('show'); }
 function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
 function previewEditImg(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editLensUpload').innerHTML = `<img src="${e.target.result}">`; }; reader.readAsDataURL(file); }
 function previewEditCard(input) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { document.getElementById('editCardUpload').innerHTML = `<img src="${e.target.result}">`; }; reader.readAsDataURL(file); }
-
-function updateProduct() { 
-  const id = document.getElementById('editId').value; 
-  const p = state.products.find(x => x.id === id); 
-  if (!p) return; 
-  p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; 
-  p.nameEn = document.getElementById('editNameEn').value.trim(); 
-  p.category = document.getElementById('editCategory').value || p.category; 
-  p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; 
-  p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; 
-  p.color = document.getElementById('editColor').value; 
-  p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; // ✅ تحديث الشفافية
-  p.desc = document.getElementById('editDesc').value.trim(); 
-  p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; 
-  const lensImg = document.getElementById('editLensUpload').querySelector('img'); 
-  if (lensImg) p.lensImage = lensImg.src; 
-  const cardImg = document.getElementById('editCardUpload').querySelector('img'); 
-  if (cardImg) p.cardImage = cardImg.src; 
-  saveState(); renderProducts(); renderLensImages(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); 
-}
-
+function updateProduct() { const id = document.getElementById('editId').value; const p = state.products.find(x => x.id === id); if (!p) return; p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; p.nameEn = document.getElementById('editNameEn').value.trim(); p.category = document.getElementById('editCategory').value || p.category; p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; p.color = document.getElementById('editColor').value; p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; p.desc = document.getElementById('editDesc').value.trim(); p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; const lensImg = document.getElementById('editLensUpload').querySelector('img'); if (lensImg) p.lensImage = lensImg.src; const cardImg = document.getElementById('editCardUpload').querySelector('img'); if (cardImg) p.cardImage = cardImg.src; saveState(); renderProducts(); renderLensImages(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); }
 function deleteProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; if (!confirm(`حذف "${p.nameAr}"؟`)) return; state.products = state.products.filter(x => x.id !== id); saveState(); renderProducts(); renderLensImages(); updateStats(); toast('✅ تم حذف المنتج', 'success'); }
 function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️🗨️ تم إخفاء "${p.nameAr}"`, 'success'); }
 
-// ==================== VISIBILITY LIST ====================
+// ==================== VISIBILITY & LENS IMAGES ====================
 function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const thumb = renderLensPreview(p, '36px'); return `<div class="vis-item">${thumb}<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" style="margin:0 6px"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
-
-// ==================== LENS IMAGES GRID ====================
 function renderLensImages() { const el = document.getElementById('colorsList'); if (!el) return; el.innerHTML = state.products.map(p => { const hasImg = !!p.lensImage; return `<div class="color-card"><div class="color-swatch" onclick="openColorImgModal('${p.id}')">${hasImg ? `<img src="${p.lensImage}"><div class="color-swatch-overlay">📷 تغيير</div>` : `<div class="lens-layer-wrap"><img src="${p.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-layer" style="background:${p.color};opacity:${p.opacity||0.7}"></div><div class="color-swatch-overlay">📷 إضافة صورة حقيقية</div></div>`}</div><div class="color-info"><span class="color-name">${p.nameAr}</span>${hasImg ? `<button class="btn btn-red btn-icon btn-sm" onclick="event.stopPropagation();removeProdImg('${p.id}')" style="width:22px;height:22px;font-size:9px">🗑️</button>` : ''}</div></div>`; }).join(''); }
-
 function openColorImgModal(productId) { state.editingProductId = productId; const p = state.products.find(x => x.id === productId); if (!p) return; const area = document.getElementById('colorImgArea'); area.innerHTML = p.lensImage ? `<img src="${p.lensImage}">` : '<span class="upload-icon">📷</span><span>اضغط للرفع</span>'; document.getElementById('removeColorImgBtn').style.display = p.lensImage ? 'inline-flex' : 'none'; document.getElementById('colorImgModal').classList.add('show'); }
 function closeColorImgModal() { document.getElementById('colorImgModal').classList.remove('show'); state.editingProductId = null; }
 function saveColorImg(input) { const file = input.files[0]; if (!file || !state.editingProductId) return; const reader = new FileReader(); reader.onload = (e) => { const p = state.products.find(x => x.id === state.editingProductId); if (p) { p.lensImage = e.target.result; saveState(); renderLensImages(); renderProducts(); closeColorImgModal(); toast('✅ تم إضافة الصورة', 'success'); } }; reader.readAsDataURL(file); }
@@ -578,21 +419,16 @@ function toggleColorHide(id) { const idx = state.hiddenColorIds.indexOf(id); if 
 
 // ==================== HELPERS ====================
 function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
-
-// Color picker sync
 document.getElementById('pColor')?.addEventListener('input', e => { document.getElementById('pColorHex').value = e.target.value; });
 document.getElementById('pColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('pColor').value = e.target.value; });
 document.getElementById('editColor')?.addEventListener('input', e => { document.getElementById('editColorHex').value = e.target.value; });
 document.getElementById('editColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('editColor').value = e.target.value; });
-
-// Close modals on overlay click
 document.getElementById('editModal')?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) closeEditModal(); });
 document.getElementById('colorImgModal')?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) closeColorImgModal(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape'){closeEditModal();closeColorImgModal();} });
 
 // ==================== OPEN STORE PREVIEW ====================
 function openStore() { const storeData = { categories: state.categories, products: state.products.filter(p => { if (!p.visible) return false; if (state.hiddenColorIds.includes(p.id)) return false; return true; }), settings: state.settings }; const html = buildStoreHTML(storeData); const blob = new Blob([html], {type:'text/html'}); window.open(URL.createObjectURL(blob), '_blank'); }
-
 function buildStoreHTML(data) { 
   const {categories, products, settings} = data; 
   const grouped = {}; 
@@ -604,15 +440,9 @@ function buildStoreHTML(data) {
     const main = lenses[0]; 
     const totalStock = lenses.reduce((s,l) => s+l.stock, 0); 
     const dots = lenses.map(l => `<div class="card-dot" style="background:${l.gradient}"></div>`).join(''); 
-    
-    // ✅ عرض العدسة مع الطبقات في المعاينة
-    const lensContent = main.lensImage 
-      ? `<img src="${main.lensImage}" class="lens-real-img">` 
-      : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-layer" style="background:${main.gradient};opacity:${main.opacity||0.7};border-radius:50%"></div></div>`;
-    
+    const lensContent = main.lensImage ? `<img src="${main.lensImage}" class="lens-real-img">` : `<div class="lens-layer-wrap" style="width:80px;height:80px;border-radius:50%"><img src="${main.baseLens||BASE_LENS_TEMPLATE}" class="lens-base-template" onerror="this.style.display='none'"><div class="lens-color-layer" style="background:${main.gradient};opacity:${main.opacity||0.7};border-radius:50%"></div></div>`;
     cardsHTML += `<div class="slider-card">${settings.showCardImages && main.cardImage ? `<div class="card-img-bg" style="background-image:url(${main.cardImage})"></div>` : ''}<div class="card-bg" style="${main.cardImage?'background:'+main.color+';opacity:.3':'background:'+main.color}"></div><div class="card-visual"><div class="card-lens-sphere">${lensContent}</div>${settings.showColors?`<div class="card-dots">${dots}</div>`:''}</div><div class="card-body"><div class="card-badge"><span class="dot"></span>${c.ar}</div><div class="card-name">${main.nameAr}</div>${settings.showStock?`<div class="card-count">${lenses.length} تدرجات · ${totalStock} قطعة</div>`:`<div class="card-count">${lenses.length} تدرجات</div>`}<div class="card-footer">${settings.showPrice?`<div class="card-price">من <strong>${main.price} ر.س</strong></div>`:'<div class="card-price"></div>'}<button class="card-btn">اكتشفي ✦</button></div></div></div>`; 
   }); 
-  
   return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}.lens-layer-wrap{position:relative;width:100%;height:100%;border-radius:inherit;overflow:hidden}.lens-base-template{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25}.lens-color-layer{position:absolute;inset:0;border-radius:inherit;mix-blend-mode:multiply}.lens-real-img{position:relative;z-index:2;width:85%;height:85%;object-fit:contain;border-radius:50%}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.slider-card{flex:0 0 260px;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);border:1px solid rgba(201,168,76,.06);position:relative}.card-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25}.card-bg{position:absolute;inset:0;z-index:0}.slider-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(18,14,12,.9) 70%);pointer-events:none;z-index:1}.card-visual{position:relative;height:160px;z-index:4;display:flex;align-items:center;justify-content:center}.card-lens-sphere{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:5}.card-lens-sphere::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,.06)}.card-lens-inner{width:80px;height:80px;border-radius:50%;box-shadow:inset 0 0 16px rgba(0,0,0,.4)}.card-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:6}.card-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.1);overflow:hidden}.card-body{position:relative;z-index:4;padding:14px 16px}.card-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:var(--gold);margin-bottom:8px}.card-badge .dot{width:4px;height:4px;border-radius:50%;background:var(--gold)}.card-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}.card-count{font-size:10px;color:var(--text-dim);margin-bottom:12px}.card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)}.card-price{font-size:11px;color:var(--text-dim)}.card-price strong{font-size:16px;color:var(--gold);font-weight:700}.card-btn{padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:10px;border:none}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}@media(max-width:600px){.slider-card{flex:0 0 240px}.hero{min-height:40vh}}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`; 
 }
 </script>
