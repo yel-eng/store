@@ -466,6 +466,7 @@ document.getElementById('editModal')?.addEventListener('click', e => { if(e.targ
 document.addEventListener('keydown', e => { if(e.key==='Escape'){closeEditModal();} });
 
 // ==================== OPEN STORE PREVIEW ====================
+function getCurrencySymbol() { return 'ر.س'; } // Simplified for preview
 function openStore() { 
 const storeData = { 
 categories: state.categories, 
@@ -497,7 +498,7 @@ cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;back
 <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div>
 <div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات · ${totalStock} قطعة</div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)">
-<div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${main.price} ر.س</strong></div>
+<div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${main.price} ${getCurrencySymbol()}</strong></div>
 <button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button>
 </div>
 </div>
