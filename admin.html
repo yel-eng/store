@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LENSORA — لوحة التحكم الكاملة</title>
+<!-- ✅ Fixed Favicon (Emoji Eye) to prevent 404 error -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 <style>
 :root{
 --bg:#0a0808;--card-bg:rgba(26,22,20,.85);--gold:#c9a84c;--gold-light:#e8d5a3;
@@ -151,8 +152,8 @@ body.loading{overflow:hidden}
 <div class="login-logo">LENSORA</div>
 <div class="login-sub">لوحة التحكم الكاملة</div>
 <form class="login-form" onsubmit="doLogin(event)">
-<div class="fgroup"><label for="loginEmail">البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="admin@lensora.com" required autocomplete="username"></div>
-<div class="fgroup"><label for="loginPass">كلمة المرور</label><input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password"></div>
+<div class="fgroup"><label for="loginEmail">البريد الإلكتروني</label><input type="email" id="loginEmail" name="loginEmail" placeholder="admin@lensora.com" required autocomplete="username"></div>
+<div class="fgroup"><label for="loginPass">كلمة المرور</label><input type="password" id="loginPass" name="loginPass" placeholder="••••••••" required autocomplete="current-password"></div>
 <button type="submit">تسجيل الدخول</button>
 </form>
 <div class="login-hint">admin@lensora.com / admin123</div>
@@ -181,8 +182,8 @@ body.loading{overflow:hidden}
 <header class="topbar">
 <h1 class="topbar-title" id="pageTitle">نظرة عامة</h1>
 <div class="topbar-actions">
-    <!-- Added Currency Selector for Admin Preview Context -->
-    <select id="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
+    <label for="adminCurrency" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">اختر العملة</label>
+    <select id="adminCurrency" name="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
         <option value="SAR">ر.س</option>
         <option value="EGP">ج.م</option>
         <option value="USD">$</option>
@@ -207,7 +208,8 @@ body.loading{overflow:hidden}
 <h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
 <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
 <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
-<select id="filterCat" onchange="renderProducts()" aria-label="تصفية حسب الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
+<label for="filterCat" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">تصفية حسب الفئة</label>
+<select id="filterCat" name="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
 </div>
 </div>
 <div class="fcard" style="padding:0;overflow:hidden"><div class="p-table-wrap"><table class="p-table"><thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
@@ -217,63 +219,63 @@ body.loading{overflow:hidden}
 <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
 <div class="fcard">
 <div class="fgrid">
-<div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي" aria-required="true"></div>
-<div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
-<div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" aria-required="true"><option value="">-- اختر الفئة --</option></select></div>
-<div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85" aria-required="true"></div>
-<div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30" aria-required="true"></div>
+<div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" name="pNameAr" placeholder="مثال: عسل ذهبي" required></div>
+<div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" name="pNameEn" placeholder="Golden Honey"></div>
+<div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" name="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
+<div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" name="pPrice" min="0" step="1" placeholder="85" required></div>
+<div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" name="pStock" min="0" placeholder="30" required></div>
 <div class="fgroup">
 <label for="pColor">اللون (HEX)</label>
 <div style="display:flex;gap:6px;align-items:center">
-<input type="color" id="pColor" value="#D4A056" aria-label="اختر اللون" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
-<input type="text" id="pColorHex" value="#D4A056" aria-label="كود اللون" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+<input type="color" id="pColor" name="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+<input type="text" id="pColorHex" name="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
 </div>
 </div>
 <div class="fgroup">
 <label for="pOpacity">شفافية اللون (%)</label>
 <div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="pOpacity" min="0" max="100" value="70" aria-label="شفافية اللون" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
-<span id="pOpacityVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
+<input type="range" id="pOpacity" name="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
+<span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
 </div>
 </div>
 <div class="fgroup">
 <label for="pLensSize">حجم العدسة (%)</label>
 <div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="pLensSize" min="50" max="100" value="85" aria-label="حجم العدسة" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'">
-<span id="pLensSizeVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
+<input type="range" id="pLensSize" name="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'">
+<span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
 </div>
 </div>
 </div>
-<div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..." aria-label="وصف المنتج"></textarea></div>
+<div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" name="pDesc" placeholder="وصف المنتج..."></textarea></div>
 <div style="margin-top:14px">
 <label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label>
 <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
-<div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0" aria-label="رفع صورة العدسة"><span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span></div>
-<input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')" aria-label="اختر صورة العدسة">
+<div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0"><span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span></div>
+<input type="file" id="lensImgInput" name="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
 </div>
 </div>
 <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
-<label class="toggle-label" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
-<input type="checkbox" id="pVisible" checked aria-label="معروض في المتجر">
+<label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
+<input type="checkbox" id="pVisible" name="pVisible" checked>
 <span>معروض في المتجر</span>
 </label>
-<button class="btn btn-gold" onclick="saveProduct()" aria-label="حفظ المنتج">💾 حفظ المنتج</button>
+<button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
 </div>
 </div>
 </div>
 <!-- CATEGORIES -->
-<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" aria-label="لون الفئة" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()" aria-label="إضافة فئة">➕ إضافة</button></div></div></div>
+<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" name="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" name="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" name="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button></div></div></div>
 <!-- VISIBILITY -->
 <div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
 <!-- EDIT MODAL -->
-<div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" aria-label="اختر اللون" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" aria-label="كود اللون" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" aria-label="شفافية اللون" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align-center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" aria-label="حجم العدسة" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" aria-live="polite" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" aria-label="وصف المنتج"></textarea></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()" aria-label="حفظ التعديلات">💾 حفظ</button></div></div></div>
+<div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr" name="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn" name="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory" name="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" name="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" name="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" name="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" name="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" name="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" name="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" name="editDesc"></textarea></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
 let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, currency: 'SAR' }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null };
 
-// ==================== PERSISTENCE - ✅ FIXED KEYS ==========
+// ==================== PERSISTENCE ====================
 function saveState() { 
 try { 
 localStorage.setItem('lens_cats', JSON.stringify(state.categories));
@@ -292,10 +294,7 @@ if (c) state.categories = JSON.parse(c);
 if (p) state.products = JSON.parse(p);
 if (s) state.settings = JSON.parse(s);
 if (hc) state.hiddenColorIds = JSON.parse(hc);
-// Sync UI with loaded settings
-if(state.settings.currency) {
-    document.getElementById('adminCurrency').value = state.settings.currency;
-}
+if(state.settings.currency) document.getElementById('adminCurrency').value = state.settings.currency;
 } catch(e) { console.warn('Load error', e); } 
 }
 
@@ -365,19 +364,15 @@ function getCurrencySymbol(curr) {
     const symbols = { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' };
     return symbols[curr] || curr;
 }
-
 function convertPrice(priceSAR, targetCurr) {
-    // Approximate rates for demo/admin preview purposes
     const rates = { SAR: 1, USD: 0.27, AED: 0.99, EGP: 12.5 };
-    const rate = rates[targetCurr] || 1;
-    return Math.round(priceSAR * rate);
+    return Math.round(priceSAR * (rates[targetCurr] || 1));
 }
-
 function updateAdminCurrency() {
     const newCurr = document.getElementById('adminCurrency').value;
     state.settings.currency = newCurr;
     saveState();
-    renderProducts(); // Re-render table with new currency
+    renderProducts();
     toast(`تم تغيير العملة إلى ${getCurrencySymbol(newCurr)}`, 'success');
 }
 
@@ -388,17 +383,17 @@ const sel = document.getElementById(sid);
 if (!sel) return;
 const currentVal = sel.value;
 sel.innerHTML = sid === 'editCategory' ? '' : '<option value="">-- اختر الفئة --</option>';
-if (!state.categories || state.categories.length === 0) { initDefaults(); }
+if (!state.categories || state.categories.length === 0) initDefaults();
 state.categories.forEach(c => {
 const option = document.createElement('option');
 option.value = c.id;
 option.textContent = c.ar;
 sel.appendChild(option);
 });
-if (currentVal && state.categories.some(c => c.id === currentVal)) { sel.value = currentVal; }
+if (currentVal && state.categories.some(c => c.id === currentVal)) sel.value = currentVal;
 });
 }
-function renderCategories() { const el = document.getElementById('categoriesList'); el.innerHTML = state.categories.map(c => { const cnt = state.products.filter(p => p.category === c.id).length; return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')" aria-label="حذف الفئة ${c.ar}">✕</button></div>`; }).join(''); }
+function renderCategories() { const el = document.getElementById('categoriesList'); el.innerHTML = state.categories.map(c => { const cnt = state.products.filter(p => p.category === c.id).length; return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')">✕</button></div>`; }).join(''); }
 function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(); const en = document.getElementById('newCatNameEn').value.trim(); const color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
 function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return; state.categories = state.categories.filter(c => c.id !== id); state.products = state.products.filter(p => p.category !== id); saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats(); toast('✅ تم الحذف', 'success'); }
 
@@ -417,28 +412,25 @@ const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on';
 const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
 const displayPrice = convertPrice(p.price, currentCurr);
 const currSym = getCurrencySymbol(currentCurr);
-
-return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل" aria-label="تعديل ${p.nameAr}">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}" aria-label="${p.visible?'إخفاء':'إظهار'} ${p.nameAr}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف" aria-label="حذف ${p.nameAr}">🗑️</button></div></td></tr>`;
+return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')">${p.visible?'👁️':'️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button></div></td></tr>`;
 }).join('');
 }
 
-// ==================== ADD/EDIT PRODUCT - ✅ FIXED ==========
+// ==================== ADD/EDIT PRODUCT ====================
 function previewImg(input, uploadId, stateKey) {
 const file = input.files[0];
 if (!file) return;
 const reader = new FileReader();
 reader.onload = (e) => {
 state[stateKey] = e.target.result;
-const upload = document.getElementById(uploadId);
-upload.innerHTML = `<img src="${e.target.result}" alt="معاينة الصورة">`;
+document.getElementById(uploadId).innerHTML = `<img src="${e.target.result}" alt="معاينة">`;
 };
 reader.readAsDataURL(file);
 }
 function saveProduct() {
 const nameAr = document.getElementById('pNameAr').value.trim();
 const nameEn = document.getElementById('pNameEn').value.trim();
-const categorySelect = document.getElementById('pCategory');
-const category = categorySelect ? categorySelect.value : '';
+const category = document.getElementById('pCategory').value;
 const price = parseFloat(document.getElementById('pPrice').value);
 const stock = parseInt(document.getElementById('pStock').value);
 const color = document.getElementById('pColor').value;
@@ -446,53 +438,65 @@ const opacity = parseFloat(document.getElementById('pOpacity').value) / 100;
 const lensSize = parseInt(document.getElementById('pLensSize').value);
 const desc = document.getElementById('pDesc').value.trim();
 const visible = document.getElementById('pVisible').checked;
-if (!nameAr) { toast('❌ أدخل اسم المنتج (عربي)', 'error'); return; }
-if (!category || category === '') {
-toast('❌ اختر فئة للمنتج من القائمة', 'error');
-categorySelect?.focus();
-return;
-}
+if (!nameAr) { toast('❌ أدخل اسم المنتج', 'error'); return; }
+if (!category) { toast('❌ اختر فئة', 'error'); return; }
 if (isNaN(price) || price < 0) { toast('❌ أدخل سعراً صحيحاً', 'error'); return; }
 if (isNaN(stock) || stock < 0) { toast('❌ أدخل كمية صحيحة', 'error'); return; }
 if (!color || !/^#[0-9a-fA-F]{6}$/.test(color)) { toast('❌ اختر لوناً صحيحاً', 'error'); return; }
-const id = 'p_' + Date.now();
 state.products.push({
-id, nameAr, nameEn, category, price, stock, color, opacity, lensSize,
-offsetX:0, offsetY:0,
+id: 'p_' + Date.now(), nameAr, nameEn, category, price, stock, color, opacity, lensSize,
 gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`,
 desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10,
-visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg,
-baseLens: BASE_LENS_TEMPLATE
+visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE
 });
-saveState(); // ✅ يحفظ في lens_prods
-updateStats();
-renderProducts();
-toast('✅ تمت إضافة المنتج بنجاح', 'success');
-// تفريغ الحقول
-document.getElementById('pNameAr').value='';
-document.getElementById('pNameEn').value='';
-document.getElementById('pPrice').value='';
-document.getElementById('pStock').value='';
-document.getElementById('pDesc').value='';
-document.getElementById('pCategory').value='';
-document.getElementById('pColor').value='#D4A056';
-document.getElementById('pColorHex').value='#D4A056';
-document.getElementById('pOpacity').value='70';
-document.getElementById('pOpacityVal').textContent='70%';
-document.getElementById('pLensSize').value='85';
-document.getElementById('pLensSizeVal').textContent='85%';
-state.currentLensImg=null;
-state.currentCardImg=null;
+saveState(); updateStats(); renderProducts();
+toast('✅ تمت إضافة المنتج', 'success');
+['pNameAr','pNameEn','pPrice','pStock','pDesc','pCategory'].forEach(id => document.getElementById(id).value='');
+document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056';
+document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%';
+document.getElementById('pLensSize').value='85'; document.getElementById('pLensSizeVal').textContent='85%';
+state.currentLensImg=null; state.currentCardImg=null;
 document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
 }
-function editProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; populateCatSelects(); document.getElementById('editId').value = p.id; document.getElementById('editNameAr').value = p.nameAr; document.getElementById('editNameEn').value = p.nameEn || ''; document.getElementById('editCategory').value = p.category; document.getElementById('editPrice').value = p.price; document.getElementById('editStock').value = p.stock; document.getElementById('editColor').value = p.color; document.getElementById('editColorHex').value = p.color; document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; document.getElementById('editLensSize').value = p.lensSize || 85; document.getElementById('editLensSizeVal').textContent = (p.lensSize || 85)+'%'; document.getElementById('editDesc').value = p.desc || ''; document.getElementById('editModal').classList.add('show'); }
+function editProduct(id) { 
+const p = state.products.find(x => x.id === id); if (!p) return; 
+populateCatSelects(); 
+document.getElementById('editId').value = p.id; 
+document.getElementById('editNameAr').value = p.nameAr; 
+document.getElementById('editNameEn').value = p.nameEn || ''; 
+document.getElementById('editCategory').value = p.category; 
+document.getElementById('editPrice').value = p.price; 
+document.getElementById('editStock').value = p.stock; 
+document.getElementById('editColor').value = p.color; 
+document.getElementById('editColorHex').value = p.color; 
+document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); 
+document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; 
+document.getElementById('editLensSize').value = p.lensSize || 85; 
+document.getElementById('editLensSizeVal').textContent = (p.lensSize || 85)+'%'; 
+document.getElementById('editDesc').value = p.desc || ''; 
+document.getElementById('editModal').classList.add('show'); 
+}
 function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
-function updateProduct() { const id = document.getElementById('editId').value; const p = state.products.find(x => x.id === id); if (!p) return; p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; p.nameEn = document.getElementById('editNameEn').value.trim(); p.category = document.getElementById('editCategory').value || p.category; p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; p.color = document.getElementById('editColor').value; p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; p.lensSize = parseInt(document.getElementById('editLensSize').value); p.desc = document.getElementById('editDesc').value.trim(); p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; const lensImg = document.getElementById('editLensUpload')?.querySelector('img'); if (lensImg) p.lensImage = lensImg.src; const cardImg = document.getElementById('editCardUpload')?.querySelector('img'); if (cardImg) p.cardImage = cardImg.src; saveState(); renderProducts(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); }
+function updateProduct() { 
+const id = document.getElementById('editId').value; 
+const p = state.products.find(x => x.id === id); if (!p) return; 
+p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; 
+p.nameEn = document.getElementById('editNameEn').value.trim(); 
+p.category = document.getElementById('editCategory').value || p.category; 
+p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; 
+p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; 
+p.color = document.getElementById('editColor').value; 
+p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; 
+p.lensSize = parseInt(document.getElementById('editLensSize').value); 
+p.desc = document.getElementById('editDesc').value.trim(); 
+p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; 
+saveState(); renderProducts(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); 
+}
 function deleteProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; if (!confirm(`حذف "${p.nameAr}"؟`)) return; state.products = state.products.filter(x => x.id !== id); saveState(); renderProducts(); updateStats(); toast('✅ تم حذف المنتج', 'success'); }
-function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️🗨️ تم إخفاء "${p.nameAr}"`, 'success'); }
+function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️️ تم إخفاء "${p.nameAr}"`, 'success'); }
 
 // ==================== VISIBILITY ====================
-function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const currentCurr = state.settings.currency || 'SAR'; const currSym = getCurrencySymbol(currentCurr); el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const displayPrice = convertPrice(p.price, currentCurr); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${displayPrice} ${currSym}</div></div><label class="toggle" aria-label="تبديل ظهور ${p.nameAr}"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const currentCurr = state.settings.currency || 'SAR'; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div></div><label class="toggle"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
 
 // ==================== HELPERS ====================
 function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
@@ -501,18 +505,13 @@ document.getElementById('pColorHex')?.addEventListener('input', e => { if(/^#[0-
 document.getElementById('editColor')?.addEventListener('input', e => { document.getElementById('editColorHex').value = e.target.value; });
 document.getElementById('editColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('editColor').value = e.target.value; });
 document.getElementById('editModal')?.addEventListener('click', e => { if(e.target.classList.contains('overlay')) closeEditModal(); });
-document.addEventListener('keydown', e => { if(e.key==='Escape'){closeEditModal();} });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeEditModal(); });
 
-// ==================== OPEN STORE PREVIEW ====================
+// ==================== STORE PREVIEW ====================
 function openStore() { 
-const storeData = { 
-categories: state.categories, 
-products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)), 
-settings: state.settings 
-}; 
+const storeData = { categories: state.categories, products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)), settings: state.settings }; 
 const html = buildStoreHTML(storeData); 
-const blob = new Blob([html], {type:'text/html'}); 
-window.open(URL.createObjectURL(blob), '_blank'); 
+window.open(URL.createObjectURL(new Blob([html], {type:'text/html'})), '_blank'); 
 }
 function buildStoreHTML(data) {
 const {categories, products, settings} = data;
@@ -520,32 +519,14 @@ const grouped = {};
 categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; });
 let cardsHTML = '';
 const currSym = getCurrencySymbol(settings.currency || 'SAR');
-
 categories.forEach(c => {
 if (!grouped[c.id] || grouped[c.id].lenses.length === 0) return;
 const lenses = grouped[c.id].lenses;
 const main = lenses[0];
-const totalStock = lenses.reduce((s,l) => s+l.stock, 0);
 const displayPrice = convertPrice(main.price, settings.currency || 'SAR');
-
-const dots = lenses.map(l => `<div style="width:16px;height:16px;border-radius:50%;background:${l.gradient};border:2px solid rgba(255,255,255,.1)"></div>`).join('');
-cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;background:rgba(18,14,12,.85);border:1px solid rgba(201,168,76,.06);position:relative">
-<div style="position:absolute;inset:0;background:${c.color};opacity:.3"></div>
-<div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center">
-<div style="width:100px;height:100px;border-radius:50%;background:${main.gradient};box-shadow:inset 0 0 30px rgba(0,0,0,.4)"></div>
-</div>
-<div style="position:relative;padding:14px 16px">
-<div style="display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:#c9a84c;margin-bottom:8px">${c.ar}</div>
-<div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div>
-<div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات · ${totalStock} قطعة</div>
-<div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)">
-<div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${displayPrice} ${currSym}</strong></div>
-<button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button>
-</div>
-</div>
-</div>`;
+cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;background:rgba(18,14,12,.85);border:1px solid rgba(201,168,76,.06);position:relative"><div style="position:absolute;inset:0;background:${c.color};opacity:.3"></div><div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center"><div style="width:100px;height:100px;border-radius:50%;background:${main.gradient};box-shadow:inset 0 0 30px rgba(0,0,0,.4)"></div></div><div style="position:relative;padding:14px 16px"><div style="display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:#c9a84c;margin-bottom:8px">${c.ar}</div><div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div><div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات</div><div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)"><div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${displayPrice} ${currSym}</strong></div><button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button></div></div></div>`;
 });
-return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً (${currSym})</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`;
+return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>معاينة</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:40px 20px}.hero{text-align:center;margin-bottom:40px}.hero h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:clamp(32px,8vw,52px)}.track{display:flex;gap:14px;overflow-x:auto;padding:20px 0}</style></head><body><div class="hero"><h1>LENSORA</h1><p style="color:var(--text-dim)">معاينة المتجر (${currSym})</p></div><div class="track">${cardsHTML||'<p style="text-align:center;color:var(--text-dim)">لا توجد منتجات</p>'}</div></body></html>`;
 }
 </script>
 </body>
