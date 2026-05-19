@@ -410,7 +410,12 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <div class="nav-actions">
 <div class="lang-currency" role="group" aria-label="تغيير اللغة والعملة">
 <select id="langSelect" aria-label="اختر اللغة" onchange="changeLanguage(this.value)"><option value="ar">العربية</option><option value="en">English</option></select>
-<select id="currencySelect" aria-label="اختر العملة" onchange="changeCurrency(this.value)"><option value="SAR">ر.س</option><option value="USD">$</option><option value="AED">د.إ</option></select></div>
+<select id="currencySelect" aria-label="اختر العملة" onchange="changeCurrency(this.value)">
+    <option value="SAR">ر.س</option>
+    <option value="USD">$</option>
+    <option value="AED">د.إ</option>
+    <option value="EGP">ج.م</option> <!-- Added EGP -->
+</select></div>
 <button class="cart-btn" onclick="openCart()" aria-label="فتح سلة المشتريات">🛒 <span class="sr-only">السلة</span><span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite"></span></button>
 <a href="admin.html" class="admin-link" id="adminLink" aria-label="لوحة التحكم">⚙️ <span>الداشبورد</span></a></div></nav>
 <span class="sr-only" style="position:absolute;left:-9999px">موقع Lensora للعدسات الملونة الفاخرة</span>
@@ -468,7 +473,16 @@ const CONFIG = {
 baseUrl: 'https://lensora.com',
 api: { baseUrl: '/api', timeout: 10000 },
 auth: { tokenKey: 'lensora_auth_token', adminRole: 'admin' },
-i18n: { defaultLang: 'ar', defaultCurrency: 'SAR', exchangeRates: { SAR: 1, USD: 0.27, AED: 0.99 } }
+i18n: { 
+    defaultLang: 'ar', 
+    defaultCurrency: 'SAR', 
+    exchangeRates: { 
+        SAR: 1, 
+        USD: 0.27, 
+        AED: 0.99,
+        EGP: 12.5 // Added EGP Rate (Approximate)
+    } 
+}
 };
 // ========== SECURE STORAGE ==========
 const SecureStorage = {
@@ -495,7 +509,7 @@ const rate = CONFIG.i18n.exchangeRates[currency] || 1;
 return Math.round(product.price * rate);
 }
 function getCurrencySymbol(currency = state.currentCurrency) {
-return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[currency] || currency;
+return { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' }[currency] || currency;
 }
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
 
@@ -577,6 +591,26 @@ offsetY: p.offsetY || 0
 };
 });
 console.log(`✅ تم معالجة ${state.products.length} منتج`);
+} else {
+    // Demo Data if empty (First Run)
+    console.log('ℹ️ لا توجد بيانات محلية، تحميل بيانات تجريبية...');
+    const demoCats = [
+        {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
+        {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'}
+    ];
+    const demoProds = [
+        {id:'p1', nameAr:'عسل ذهبي', nameEn:'Golden Honey', category:'brown', price:85, stock:50, color:'#D4A056', visible:true},
+        {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', category:'brown', price:85, stock:30, color:'#8B4513', visible:true},
+        {id:'p3', nameAr:'محيط', nameEn:'Ocean', category:'blue', price:90, stock:20, color:'#2E6CB5', visible:true}
+    ];
+    
+    // Save Demo Data to LocalStorage so Admin can see it too
+    localStorage.setItem('lens_cats', JSON.stringify(demoCats));
+    localStorage.setItem('lens_prods', JSON.stringify(demoProds));
+    
+    // Reload logic recursively once to process demo data
+    await loadData();
+    return;
 }
 
 // 3. تحميل السلة والمفضلة
@@ -628,6 +662,7 @@ grouped[catId] = {
 id: catId,
 arName: p.categoryName,
 enName: p.categoryNameEn,
+color: p.categoryColor || '#c9a84c', // Get category color
 cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
 lenses: []
 };
@@ -666,10 +701,11 @@ html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="
 </div>
 <div class="card-body">
 <div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
-<div class="card-name">${getText(main.name,main.enName)}</div>
-<div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
+<!-- Changed Name to Category Name -->
+<div class="card-name">مجموعة ${getText(cat.arName,cat.enName)}</div>
+<div class="card-count">${cat.lenses.length} لون متاح · إجمالي المخزون: ${totalStock}</div>
 <div class="card-footer">
-<div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div>
+<div class="card-price">يبدأ من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div>
 <button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button>
 </div>
 </div>
@@ -852,7 +888,8 @@ const catProducts = grouped[targetCatId] || visibleProducts;
 if (!catProducts.length) return;
 
 const categoryName = catProducts[0].categoryName;
-document.getElementById('modalTitle').textContent = categoryName || 'تفاصيل المنتج';
+// Changed Title to reflect Category
+document.getElementById('modalTitle').textContent = `مجموعة ${categoryName || 'تفاصيل المنتج'}`;
 document.getElementById('modalBox').classList.remove('light-bg');
 document.getElementById('lensContainer').classList.add('dark-bg');
 
