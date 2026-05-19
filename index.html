@@ -5,27 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lensora — عدسات ملونة فاخرة | جودة عالمية وشحن مجاني</title>
 <meta name="description" content="اكتشفي مجموعة Lensora من العدسات الملونة الفاخرة - ألوان طبيعية، مواد آمنة معتمدة، وشحن مجاني للطلبات فوق 200 ر.س">
-<!-- SEO & Social -->
+<!-- ========== SEO & SOCIAL ========== -->
 <meta name="keywords" content="عدسات ملونة, عدسات تجميلية, عدسات عيون, Lensora, عدسات كوريا">
 <meta name="author" content="Lensora">
 <meta name="robots" content="index, follow">
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lensora.com/">
 <meta property="og:title" content="Lensora — عدسات ملونة فاخرة">
 <meta property="og:description" content="عدسات ملونة تعكس جمالك الطبيعي بأمان تام وجودة عالمية">
 <meta property="og:image" content="https://lensora.com/assets/og-image.jpg">
 <meta property="og:locale" content="ar_SA">
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lensora — عدسات ملونة فاخرة">
 <meta name="twitter:description" content="عدسات ملونة تعكس جمالك الطبيعي بأمان تام وجودة عالمية">
+<!-- Canonical & Hreflang -->
 <link rel="canonical" href="https://lensora.com/">
 <link rel="alternate" hreflang="en" href="https://lensora.com/en">
 <link rel="alternate" hreflang="ar" href="https://lensora.com/ar">
+<!-- Preconnect -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<!-- Fonts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
 <style>
+/* ========== BASE VARIABLES ========== */
 :root{
 --bg:#0a0808;--card-bg:rgba(18,14,12,.72);--gold:#c9a84c;--gold-light:#e8d5a3;
 --text:#f5ede0;--text-dim:#8a7e73;--radius:24px;--radius-sm:14px;
@@ -47,6 +53,7 @@ button{cursor:pointer;border:none;font-family:inherit;background:none;color:inhe
 button:disabled{cursor:not-allowed;opacity:.5}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* ========== AMBIENT BACKGROUND ========== */
 .ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .ambient-orb{position:absolute;border-radius:50%;filter:blur(150px);opacity:.06}
 .ambient-orb:nth-child(1){width:600px;height:600px;background:#c9a84c;top:-15%;right:-10%;animation:orb1 22s ease-in-out infinite}
@@ -56,6 +63,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @keyframes orb2{0%,100%{transform:translate(0,0)}33%{transform:translate(80px,-70px)}66%{transform:translate(-60px,40px)}}
 @keyframes orb3{0%,100%{transform:translate(-50%,-50%)}33%{transform:translate(calc(-50%+80px),calc(-50%-50px))}66%{transform:translate(calc(-50%-50px),calc(-50%+80px))}}
 #particlesCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.3}
+/* ========== NAVIGATION ========== */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(6,4,4,.15);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,.04);transition:all var(--transition-normal)}
 .nav.scrolled{background:rgba(8,6,6,.9);padding:12px 5%;border-bottom-color:rgba(201,168,76,.08);box-shadow:0 4px 30px rgba(0,0,0,.1)}
 .nav-logo{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);letter-spacing:4px;display:flex;align-items:center;gap:12px;text-decoration:none}
@@ -74,6 +82,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .admin-link{display:none;padding:12px 18px;border-radius:50px;background:rgba(201,168,76,.1);color:var(--gold);font-size:13px;font-weight:600;border:1px solid rgba(201,168,76,.2);transition:all var(--transition-normal)}
 .admin-link:hover{background:var(--gold);color:var(--bg)}
 body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
+/* ========== HERO SECTION ========== */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 5% 80px}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(201,168,76,.04) 0%,transparent 70%),radial-gradient(ellipse 35% 35% at 15% 85%,rgba(74,144,217,.03) 0%,transparent 50%),radial-gradient(ellipse 35% 35% at 85% 85%,rgba(123,94,167,.03) 0%,transparent 50%)}
 .hero-sphere-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;pointer-events:none;z-index:1}
@@ -114,6 +123,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .hero-scroll span{font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
 .scroll-line{width:1px;height:45px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
 @keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.4);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+/* ========== CATEGORIES SLIDER ========== */
 .categories-section{padding:80px 5% 140px;max-width:1500px;margin:0 auto;position:relative;z-index:2}
 .section-header{text-align:center;margin-bottom:60px}
 .section-label{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -176,6 +186,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-dot{width:12px;height:12px;border-radius:50%;background:rgba(201,168,76,.12);transition:all var(--transition-fast);cursor:pointer;border:2px solid transparent}
 .slider-dot:hover{background:rgba(201,168,76,.3)}
 .slider-dot.active{background:var(--gold);transform:scale(1.4);box-shadow:0 0 15px rgba(201,168,76,.5)}
+/* ========== MODAL ========== */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all var(--transition-normal);padding:20px;backdrop-filter:blur(12px)}
 .modal-bg.open{opacity:1;visibility:visible}
 .modal-box{background:var(--preview-dark);backdrop-filter:blur(40px);border-radius:var(--radius);width:100%;max-width:1000px;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.06);transform:scale(.92) translateY(40px);transition:transform var(--transition-slow),background-color var(--transition-slow),box-shadow var(--transition-slow);box-shadow:0 40px 100px rgba(0,0,0,.6)}
@@ -282,6 +293,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-dot-modal{width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,.1);transition:all var(--transition-fast);cursor:pointer}
 .modal-box.light-bg .slider-dot-modal{background:rgba(0,0,0,.08)}
 .slider-dot-modal.active{background:var(--gold);transform:scale(1.5);box-shadow:0 0 14px rgba(201,168,76,.5)}
+/* ========== CART ========== */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;opacity:0;visibility:hidden;transition:all var(--transition-normal)}
 .cart-overlay.open{opacity:1;visibility:visible}
 .cart-panel{position:fixed;top:0;left:0;width:460px;max-width:100vw;height:100vh;background:rgba(10,8,8,.96);backdrop-filter:blur(40px);z-index:3001;transform:translateX(-100%);transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;border-left:1px solid rgba(201,168,76,.04)}
@@ -311,6 +323,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .checkout-btn{width:100%;padding:18px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:15px;margin-top:18px;transition:all var(--transition-fast);position:relative;overflow:hidden}
 .checkout-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.3)}
 .checkout-btn:disabled{background:var(--text-dim);opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+/* ========== WISHLIST PANEL ========== */
 .wishlist-panel{position:fixed;top:0;right:0;width:460px;max-width:100vw;height:100vh;background:rgba(10,8,8,.96);backdrop-filter:blur(40px);z-index:3001;transform:translateX(100%);transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;border-right:1px solid rgba(201,168,76,.04)}
 .wishlist-panel.open{transform:translateX(0)}
 .wishlist-top{padding:28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.04)}
@@ -324,11 +337,13 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .wi-actions{display:flex;gap:8px;margin-top:12px}
 .wi-add{padding:8px 16px;border-radius:8px;background:var(--gold);color:var(--bg);font-size:11px;font-weight:600}
 .wi-remove{padding:8px 12px;border-radius:8px;background:rgba(231,76,60,.1);color:#e74c3c;font-size:11px}
+/* ========== TOAST ========== */
 .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(120px);background:rgba(14,12,12,.95);backdrop-filter:blur(20px);border:1px solid rgba(201,168,76,.12);color:var(--text);padding:18px 36px;border-radius:var(--radius-sm);font-size:14px;z-index:9999;transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:12px;white-space:nowrap;box-shadow:0 12px 50px rgba(0,0,0,.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--error)}
 .toast.warning{border-color:var(--warning)}
+/* ========== COOKIE CONSENT ========== */
 .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(18,14,12,.98);backdrop-filter:blur(20px);border-top:1px solid rgba(201,168,76,.12);padding:20px 5%;z-index:4000;transform:translateY(100%);transition:transform var(--transition-normal);display:flex;align-items:center;justify-content:space-between;gap:20px}
 .cookie-banner.show{transform:translateY(0)}
 .cookie-text{flex:1;font-size:13px;color:var(--text-dim);line-height:1.6}
@@ -339,6 +354,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .cookie-btn.accept{background:var(--gold);color:var(--bg)}
 .cookie-btn.decline{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
 .cookie-btn.settings{background:transparent;color:var(--text-dim);border:1px solid rgba(201,168,76,.2)}
+/* ========== AGE VERIFICATION ========== */
 .age-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px}
 .age-modal.hidden{display:none}
 .age-box{background:var(--preview-dark);border:1px solid rgba(201,168,76,.12);border-radius:var(--radius);padding:40px;max-width:480px;text-align:center}
@@ -350,6 +366,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .age-btn.confirm:hover{background:var(--gold-light)}
 .age-btn.exit{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.2)}
 .age-btn.exit:hover{background:rgba(231,76,60,.2)}
+/* ========== FOOTER ========== */
 .footer{text-align:center;padding:50px 5%;border-top:1px solid rgba(201,168,76,.03);color:var(--text-dim);font-size:13px;position:relative;z-index:2}
 .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap}
 .footer-links a{color:var(--text-dim);text-decoration:none;transition:color var(--transition-fast)}
@@ -357,6 +374,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .footer-social{display:flex;justify-content:center;gap:16px;margin-bottom:20px}
 .footer-social a{width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.06);display:flex;align-items:center;justify-content:center;color:var(--gold);transition:all var(--transition-fast)}
 .footer-social a:hover{background:var(--gold);color:var(--bg);transform:translateY(-2px)}
+/* ========== RESPONSIVE ========== */
 @media(max-width:1024px){.slider-card{flex:0 0 300px}}
 @media(max-width:768px){
 .hero-sphere-wrap{width:350px;height:350px}.hero-glass{padding:40px 28px;border-radius:28px}
@@ -375,9 +393,11 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 </style>
 </head>
 <body>
+<!-- Age Verification -->
 <div class="age-modal" id="ageModal" role="dialog" aria-modal="true" aria-labelledby="age-title">
 <div class="age-box"><h3 id="age-title">🔞 تأكيد العمر</h3><p>هذا الموقع يحتوي على منتجات تجميلية. يجب أن يكون عمرك 18 سنة أو أكثر للدخول.</p>
 <div class="age-btns"><button class="age-btn confirm" onclick="confirmAge()">أنا أبلغ 18+ ✓</button><button class="age-btn exit" onclick="exitSite()">خروج</button></div></div></div>
+<!-- Cookie Consent -->
 <div class="cookie-banner" id="cookieBanner" role="region" aria-label="إشعار ملفات تعريف الارتباط">
 <p class="cookie-text">نستخدم ملفات تعريف الارتباط لتحسين تجربتك. <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a> | <a href="#terms" onclick="showTerms()">الشروط</a></p>
 <div class="cookie-actions"><button class="cookie-btn accept" onclick="acceptCookies()">قبول الكل</button><button class="cookie-btn settings" onclick="showCookieSettings()">الإعدادات</button></div></div>
@@ -415,6 +435,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <button class="slider-nav-btn" id="prevBtn" aria-label="السابق" aria-controls="sliderTrack">→</button>
 <div class="slider-dots" id="sliderDots" role="tablist" aria-label="اختر فئة"></div>
 <button class="slider-nav-btn" id="nextBtn" aria-label="التالي" aria-controls="sliderTrack">←</button></div></div></section></main>
+<!-- Product Detail Modal -->
 <div class="modal-bg" id="lensModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
 <div class="modal-box" id="modalBox">
 <div class="modal-header"><h2 id="modalTitle"></h2><div class="modal-actions">
@@ -423,33 +444,49 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <div class="slider-area">
 <div class="lens-slider-container dark-bg" id="lensContainer" role="region" aria-label="معرض العدسات"><div class="lens-slider-track" id="lensTrack" role="list"></div></div>
 <div class="slider-nav-modal"><button onclick="slideLensMove(-1)" id="lensPrevBtn" aria-label="السابق">→</button><div class="slider-dots-modal" id="lensSliderDots" role="tablist" aria-label="اختر عدسة"></div><button onclick="slideLensMove(1)" id="lensNextBtn" aria-label="التالي">←</button></div></div></div></div>
+<!-- Cart Panel -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()" aria-hidden="true"></div>
 <div class="cart-panel" id="cartPanel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
 <div class="cart-top"><h2 id="cartTitle">🛒 سلة المشتريات</h2><button class="modal-close" onclick="closeCart()" aria-label="إغلاق السلة">✕</button></div>
 <div class="cart-items-list" id="cartItemsList" role="list"></div><div class="cart-bottom" id="cartBottom"></div></div>
+<!-- Wishlist Panel -->
 <div class="cart-overlay" id="wishlistOverlay" onclick="closeWishlist()" aria-hidden="true"></div>
 <div class="wishlist-panel" id="wishlistPanel" role="dialog" aria-modal="true" aria-labelledby="wishlistTitle">
 <div class="wishlist-top"><h2 id="wishlistTitle">♡ المفضلة</h2><button class="modal-close" onclick="closeWishlist()" aria-label="إغلاق المفضلة">✕</button></div>
 <div class="wishlist-items" id="wishlistItems" role="list"></div></div>
+<!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+<!-- Footer -->
 <footer class="footer" role="contentinfo">
 <div class="footer-links"><a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a><a href="#terms" onclick="showTerms()">الشروط والأحكام</a><a href="#shipping" onclick="showShipping()">سياسة الشحن</a><a href="#returns" onclick="showReturns()">الإرجاع والاستبدال</a><a href="#contact" onclick="showContact()">تواصل معنا</a></div>
 <div class="footer-social" role="social" aria-label="تابعنا على"><a href="#" aria-label="إنستغرام" onclick="trackSocial('instagram')">📷</a><a href="#" aria-label="تيك توك" onclick="trackSocial('tiktok')">🎵</a><a href="#" aria-label="سناب شات" onclick="trackSocial('snapchat')">👻</a><a href="#" aria-label="واتساب" onclick="trackSocial('whatsapp')">💬</a></div>
 <p>© 2026 LENSORA — جميع الحقوق محفوظة ✨</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">منتجات معتمدة من هيئة الغذاء والدواء | شحن آمن | دفع عند الاستلام</p></footer>
+
+<!-- زر التحديث اليدوي -->
+<button onclick="forceRefresh()" style="position:fixed;bottom:20px;right:20px;background:var(--gold);color:var(--bg);padding:12px 24px;border-radius:50px;border:none;cursor:pointer;z-index:1000;font-weight:600;box-shadow:0 4px 20px rgba(201,168,76,.3);display:flex;align-items:center;gap:8px;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">🔄 تحديث البيانات</button>
+
+<!-- ========== MAIN APP SCRIPT ========== -->
 <script>
+// ========== CONFIG ==========
 const CONFIG = {
 baseUrl: 'https://lensora.com',
 api: { baseUrl: '/api', timeout: 10000 },
 auth: { tokenKey: 'lensora_auth_token', adminRole: 'admin' },
 i18n: { defaultLang: 'ar', defaultCurrency: 'SAR', exchangeRates: { SAR: 1, USD: 0.27, AED: 0.99 } }
 };
+
+// ========== SECURE STORAGE ==========
 const SecureStorage = {
 set: (key, value, isSensitive = false) => { try { if (isSensitive) { const encrypted = btoa(encodeURIComponent(JSON.stringify(value))); localStorage.setItem(`secure_${key}`, encrypted); } else { localStorage.setItem(key, JSON.stringify(value)); } return true; } catch (e) { console.error('Storage error:', e); return false; } },
 get: (key, isSensitive = false) => { try { const data = localStorage.getItem(isSensitive ? `secure_${key}` : key); if (!data) return null; if (isSensitive) { return JSON.parse(decodeURIComponent(atob(data))); } return JSON.parse(data); } catch { return null; } },
 remove: (key, isSensitive = false) => { localStorage.removeItem(isSensitive ? `secure_${key}` : key); }
 };
+
+// ========== DATA ==========
 let state = { products: [], cart: [], wishlist: [], currentLang: 'ar', currentCurrency: 'SAR', isAdmin: false, ageVerified: false, cookiesAccepted: false };
 let currentLensIdx = 0;
+
+// ========== UTILS ==========
 function adjColor(hex, amount) {
 hex = hex.replace('#','');
 const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount));
@@ -469,72 +506,79 @@ return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[currency] || currency;
 }
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
 
-// ========== LOAD DATA ==========
-// هذا الإصلاح يضمن قراءة البيانات من الداشبورد بشكل صحيح
+// ========== LOAD DATA (FIXED CONNECTION TO DASHBOARD) ==========
 async function loadData() {
-    try {
-        // 1. قراءة البيانات من المفاتيح التي يستخدمها الداشبورد (lens_prods / lens_cats)
-        const localProductsRaw = localStorage.getItem('lens_prods');
-        const localCatsRaw = localStorage.getItem('lens_cats');
+try {
+// 🔑 FIX: Reading keys used by Dashboard (admin.html)
+const localProductsRaw = localStorage.getItem('lens_prods');
+const localCatsRaw = localStorage.getItem('lens_cats');
 
-        // Fallback للمفاتيح القديمة
-        const localProducts = localProductsRaw ? JSON.parse(localProductsRaw) : (localStorage.getItem('lensora_products') ? JSON.parse(localStorage.getItem('lensora_products')) : []);
-        const localCats = localCatsRaw ? JSON.parse(localCatsRaw) : (localStorage.getItem('lensora_categories') ? JSON.parse(localStorage.getItem('lensora_categories')) : []);
+const localProducts = localProductsRaw ? JSON.parse(localProductsRaw) : [];
+const localCats = localCatsRaw ? JSON.parse(localCatsRaw) : [];
 
-        // 2. إنشاء خريطة للفئات للبحث السريع
-        const catMap = {};
-        if (Array.isArray(localCats)) {
-            localCats.forEach(c => {
-                // دعم تنسيقات مختلفة لأسماء الفئات
-                const id = c.id;
-                const ar = c.ar || c.arName || c.name || 'غير مصنف';
-                const en = c.en || c.enName || c.id || 'Uncategorized';
-                const color = c.color || '#c9a84c';
-                catMap[id] = { ar, en, color };
-            });
-        }
+// 1. Map Categories to a lookup object
+// Dashboard format: { id: 'brown', ar: 'بني دافئ', en: 'Warm Brown' }
+const catLookup = {};
+localCats.forEach(c => {
+catLookup[c.id] = {
+ar: c.ar || c.arName || c.name_ar || 'فئة',
+en: c.en || c.enName || c.name_en || 'Category',
+color: c.color || '#c9a84c'
+};
+});
 
-        // 3. تحويل المنتجات من صيغة الداشبورد إلى صيغة المتجر
-        if (Array.isArray(localProducts)) {
-            state.products = localProducts.map(p => {
-                // التعامل مع معرف الفئة (قد يأتي باسم category أو categoryId)
-                const catId = p.category || p.categoryId || 'uncategorized';
-                const catInfo = catMap[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
-                
-                return {
-                    ...p,
-                    id: p.id || Math.random().toString(36).substr(2, 9),
-                    // توحيد الأسماء
-                    name: p.nameAr || p.name || 'منتج',
-                    enName: p.nameEn || p.enName || '',
-                    // توحيد معلومات الفئة
-                    categoryId: catId,
-                    categoryName: catInfo.ar,
-                    categoryNameEn: catInfo.en,
-                    // الشكل واللون
-                    gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
-                    visible: p.visible !== false, // افتراضي: مرئي
-                    // الأرقام
-                    price: parseFloat(p.price) || 0,
-                    stock: parseInt(p.stock) || 0,
-                    opacity: p.opacity || 0.7
-                };
-            });
-        }
+// 2. Map Products
+// Dashboard format: { nameAr, nameEn, category, price, stock, visible... }
+state.products = localProducts.map(p => {
+// Resolve category info
+const catId = p.category || p.categoryId;
+const catInfo = catLookup[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
 
-        // 4. تحميل السلة والمفضلة
-        state.cart = SecureStorage.get('lensora_cart') || [];
-        state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-    } catch (error) {
-        console.error('فشل في تحميل البيانات:', error);
-    }
+return {
+...p,
+// Normalize IDs
+categoryId: catId,
+// Normalize Names
+name: p.nameAr || p.name,
+enName: p.nameEn || p.enName || p.nameAr,
+// Inject Category Data
+categoryName: catInfo.ar,
+categoryNameEn: catInfo.en,
+categoryColor: catInfo.color,
+// Defaults
+gradient: p.gradient || generateLensGradient(p.color || '#c9a84c'),
+visible: p.visible !== undefined ? p.visible : true,
+stock: p.stock || 0,
+price: p.price || 0,
+};
+});
+
+// 3. Load Cart/Wishlist (Standard keys)
+const getSafeData = (key) => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
+state.cart = getSafeData('lensora_cart');
+state.wishlist = getSafeData('lensora_wishlist');
+
+// ✅ تحديث الواجهة بعد تحميل البيانات
+setTimeout(() => {
+if (document.getElementById('sliderTrack')) {
+initSmoothSlider();
+updateCartBadge();
 }
+}, 100);
+
+} catch (error) {
+console.error('فشل في تحميل البيانات:', error);
+}
+}
+
 function saveData() {
-    SecureStorage.set('lensora_cart', state.cart);
-    SecureStorage.set('lensora_wishlist', state.wishlist);
+SecureStorage.set('lensora_cart', state.cart);
+SecureStorage.set('lensora_wishlist', state.wishlist);
 }
+
 function getProduct(id) { return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '' }; }
 
+// ========== AGE & COOKIES ==========
 function checkAgeVerification() { if (SecureStorage.get('age_verified')) { state.ageVerified = true; document.getElementById('ageModal').classList.add('hidden'); } }
 function confirmAge() { state.ageVerified = true; SecureStorage.set('age_verified', true); document.getElementById('ageModal').classList.add('hidden'); }
 function exitSite() { window.location.href = 'https://www.google.com'; }
@@ -547,26 +591,36 @@ function showShipping() { showToast('🚚 شحن مجاني للطلبات فو�
 function showReturns() { showToast('🔄 إرجاع خلال 14 يوم', 'info'); }
 function showContact() { showToast('💬 support@lensora.com', 'info'); }
 
+// ========== SLIDER - INFINITE LOOP FIXED ==========
 function initSmoothSlider() {
 const track = document.getElementById('sliderTrack');
 if (!track) return;
+
+// Filter only visible products for the slider
+const visibleProducts = state.products.filter(p => p.visible !== false);
+
 const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
+
 const grouped = {};
-state.products.forEach(p => {
-if (!grouped[p.categoryId]) {
-grouped[p.categoryId] = {
-id: p.categoryId,
+visibleProducts.forEach(p => {
+const catId = p.categoryId;
+if (!grouped[catId]) {
+grouped[catId] = {
+id: catId,
 arName: p.categoryName,
 enName: p.categoryNameEn,
-cardBg: `linear-gradient(135deg,${adjColor(p.color||'#c9a84c',-60)} 0%,${p.color||'#c9a84c'} 50%,${adjColor(p.color||'#c9a84c',30)} 100%)`,
+cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
 lenses: []
 };
 }
-grouped[p.categoryId].lenses.push(p);
+grouped[catId].lenses.push(p);
 });
+
 const COLORS_DATA = Object.values(grouped);
 const total = COLORS_DATA.length;
+
 if (total === 0) { track.innerHTML = '<div style="color:white; text-align:center; width:100%;">لا توجد منتجات حالياً</div>'; return; }
+
 let html = '';
 for (let copy = 0; copy < 3; copy++) {
 COLORS_DATA.forEach((cat, i) => {
@@ -576,21 +630,30 @@ const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
 const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
 const inWishlist = state.wishlist.some(w => w.productId === main.id);
 const globalIdx = copy * total + i;
+
 html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
 <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
 <div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
 <div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${main.gradient||generateLensGradient(main.color)}"></div></div><div class="card-dots">${dots}</div></div>
-<div class="card-body"><div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div><div class="card-name">${getText(main.name,main.enName)}</div><div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
-<div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div></div></div>`;
+<div class="card-body">
+<div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
+<div class="card-name">${getText(cat.arName,cat.enName)} - مجموعة ألوان</div>
+<div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
+<div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div>
+</div></div>`;
 });
 }
+
 track.innerHTML = html;
 document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
+
 let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
+
 function getCenterOffset() {
 const vp = document.querySelector('.slider-viewport');
 return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
 }
+
 function snapToIndex(idx) {
 isAnimating = true;
 const normalized = ((idx % total) + total) % total;
@@ -598,6 +661,7 @@ activeCatIdx = normalized;
 const target = idx * ITEM_W;
 const centerOffset = getCenterOffset();
 const pos = target - centerOffset;
+
 cancelAnimationFrame(animFrame);
 animateTo(pos, () => {
 isAnimating = false;
@@ -612,6 +676,7 @@ track.style.transition = '';
 });
 updateDots(normalized);
 }
+
 function animateTo(targetPos, callback) {
 const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
 function step(now) {
@@ -623,6 +688,7 @@ if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) ca
 }
 animFrame = requestAnimationFrame(step);
 }
+
 function updateDots(idx) {
 const normalized = ((idx % total) + total) % total;
 document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
@@ -631,26 +697,17 @@ d.classList.toggle('active', active);
 d.setAttribute('aria-selected', active);
 });
 }
+
 const startCopy = 1;
 currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
 track.style.transform = `translateX(-${currentPos}px)`;
 updateDots(0);
+
 if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => {
-if (!isDragging && !isAnimating) {
-activeCatIdx++;
-snapToIndex(activeCatIdx);
-}
-}, 3500);
-function resetAutoplay() {
-if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => {
-if (!isDragging && !isAnimating) {
-activeCatIdx++;
-snapToIndex(activeCatIdx);
-}
-}, 3500);
-}
+autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500);
+
+function resetAutoplay() { if (autoplayInterval) clearInterval(autoplayInterval); autoplayInterval = setInterval(() => { if (!isDragging && !isAnimating) { activeCatIdx++; snapToIndex(activeCatIdx); } }, 3500); }
+
 document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
 document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
 document.getElementById('sliderDots').onclick = (e) => {
@@ -661,78 +718,60 @@ activeCatIdx = idx;
 snapToIndex(targetGlobalIdx);
 resetAutoplay();
 };
+
 track.onclick = (e) => {
 const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
 const catIdx = parseInt(card.dataset.cat);
 if (!isNaN(catIdx)) openLensModal(catIdx);
 };
-const startDrag = (x) => {
-isDragging = true; dragStartX = x; dragStartPos = currentPos;
-cancelAnimationFrame(animFrame); isAnimating = false;
-track.style.transition = 'none';
-};
-const moveDrag = (x) => {
-if (!isDragging) return;
-const diff = x - dragStartX;
-currentPos = dragStartPos - diff;
-track.style.transform = `translateX(-${currentPos}px)`;
-};
-const endDrag = () => {
-if (!isDragging) return;
-isDragging = false;
-const centerOffset = getCenterOffset();
-const rawIdx = (currentPos + centerOffset) / ITEM_W;
-let targetIdx = Math.round(rawIdx);
-if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) {
-targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx);
-}
-activeCatIdx = ((targetIdx % total) + total) % total;
-snapToIndex(targetIdx);
-resetAutoplay();
-};
+
+const startDrag = (x) => { isDragging = true; dragStartX = x; dragStartPos = currentPos; cancelAnimationFrame(animFrame); isAnimating = false; track.style.transition = 'none'; };
+const moveDrag = (x) => { if (!isDragging) return; const diff = x - dragStartX; currentPos = dragStartPos - diff; track.style.transform = `translateX(-${currentPos}px)`; };
+const endDrag = () => { if (!isDragging) return; isDragging = false; const centerOffset = getCenterOffset(); const rawIdx = (currentPos + centerOffset) / ITEM_W; let targetIdx = Math.round(rawIdx); if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) { targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx); } activeCatIdx = ((targetIdx % total) + total) % total; snapToIndex(targetIdx); resetAutoplay(); };
+
 track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
 track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
 track.addEventListener('touchend', endDrag);
 track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
 document.addEventListener('mousemove', e => moveDrag(e.clientX));
 document.addEventListener('mouseup', endDrag);
-window.addEventListener('resize', () => {
-if (!isDragging && !isAnimating) {
-const centerOffset = getCenterOffset();
-const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset;
-track.style.transition = 'none';
-track.style.transform = `translateX(-${resetPos}px)`;
-void track.offsetWidth;
-track.style.transition = '';
-currentPos = resetPos;
-}
-}, { passive: true });
+
+window.addEventListener('resize', () => { if (!isDragging && !isAnimating) { const centerOffset = getCenterOffset(); const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset; track.style.transition = 'none'; track.style.transform = `translateX(-${resetPos}px)`; void track.offsetWidth; track.style.transition = ''; currentPos = resetPos; } }, { passive: true });
 }
 
+// ========== MODAL ==========
 function toggleModalBg() {
 const box = document.getElementById('modalBox'), container = document.getElementById('lensContainer');
 const isLight = box.classList.toggle('light-bg');
 container.classList.toggle('dark-bg', !isLight); container.classList.toggle('light-bg', isLight);
 }
+
 function openLensModal(ci) {
 currentLensIdx = 0;
-const catProducts = state.products.filter(p => {
-const idx = ((ci % state.products.length) + state.products.length) % state.products.length;
-return p.categoryId === state.products[idx]?.categoryId;
-});
-if (!catProducts.length) return;
-const categoryName = catProducts[0].categoryName;
-document.getElementById('modalTitle').textContent = categoryName || 'تفاصيل المنتج';
+// Get products for this category from state
+const visibleProducts = state.products.filter(p => p.visible !== false);
+// Re-group to find the ID for index 'ci'
+const tempGrouped = {};
+visibleProducts.forEach(p => { if (!tempGrouped[p.categoryId]) tempGrouped[p.categoryId] = []; tempGrouped[p.categoryId].push(p); });
+const catIds = Object.keys(tempGrouped);
+const targetCatId = catIds[ci % catIds.length];
+const catProducts = tempGrouped[targetCatId] || visibleProducts;
+const productsToShow = catProducts.length > 0 ? catProducts : visibleProducts;
+const categoryName = productsToShow[0].categoryName || 'منتجاتنا';
+
+document.getElementById('modalTitle').textContent = categoryName;
 document.getElementById('modalBox').classList.remove('light-bg');
 document.getElementById('lensContainer').classList.add('dark-bg');
-renderLensSlider(catProducts);
+renderLensSlider(productsToShow);
 document.getElementById('lensModal').classList.add('open');
 document.body.style.overflow = 'hidden';
 }
+
 function closeLensModal() {
 document.getElementById('lensModal').classList.remove('open');
 document.body.style.overflow = '';
 }
+
 function renderLensSlider(products) {
 document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
 const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
@@ -761,6 +800,7 @@ return `<div class="lens-slide" role="tabpanel">
 document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
 updateLensSlider();
 }
+
 function updateLensSlider() {
 document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
 document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
@@ -770,12 +810,14 @@ d.classList.toggle('active', active); d.setAttribute('aria-selected', active);
 document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
 document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
 }
+
 function slideLensMove(dir) {
 const total = document.getElementById('lensTrack').children.length;
 currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
 updateLensSlider();
 }
 function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
+
 function changeModalQty(delta, li) {
 const el = document.getElementById(`mq_${li}`); if (!el) return;
 let v = parseInt(el.textContent) + delta;
@@ -783,6 +825,7 @@ v = Math.max(1, Math.min(v, 10));
 el.textContent = v;
 el.setAttribute('aria-valuenow', v);
 }
+
 function addFromSlider(lensId, li) {
 const p = getProduct(lensId);
 if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
@@ -796,6 +839,7 @@ showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
 if (el) el.textContent = '1';
 }
 
+// ========== CART ==========
 function updateCartBadge() {
 const total = state.cart.reduce((s, c) => s + c.qty, 0);
 const badge = document.getElementById('cartBadge');
@@ -804,6 +848,7 @@ badge.style.display = total > 0 ? 'flex' : 'none';
 }
 function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); }
 function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); }
+
 function renderCart() {
 const list = document.getElementById('cartItemsList'), bottom = document.getElementById('cartBottom');
 if (state.cart.length === 0) {
@@ -818,6 +863,7 @@ const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); ret
 const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
 bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
 }
+
 function changeCartQty(pid, delta) {
 const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
 if (!item || !p) return;
@@ -831,6 +877,7 @@ state.cart = state.cart.filter(c => c.productId !== pid);
 saveData(); updateCartBadge(); renderCart();
 showToast('✅ تمت الإزالة من السلة', 'success');
 }
+
 async function checkout() {
 if (state.cart.length === 0) return;
 for (const item of state.cart) {
@@ -843,7 +890,6 @@ const originalText = btn.innerHTML;
 btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
 await new Promise(resolve => setTimeout(resolve, 1500));
 state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
-const total = state.cart.reduce((s, c) => s + getProduct(c.productId).price * c.qty, 0);
 showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
 state.cart = []; saveData(); updateCartBadge(); closeCart();
 btn.disabled = false; btn.innerHTML = originalText;
@@ -853,6 +899,7 @@ console.error('Checkout error:', error);
 }
 }
 
+// ========== WISHLIST ==========
 function toggleWishlist(productId) {
 const product = getProduct(productId);
 const index = state.wishlist.findIndex(w => w.productId === productId);
@@ -864,10 +911,12 @@ state.wishlist.splice(index, 1);
 showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
 }
 saveData(); updateWishlistBadge();
+initSmoothSlider(); // Update heart icons on cards
 }
 function updateWishlistBadge() {}
 function openWishlist() { renderWishlist(); document.getElementById('wishlistOverlay').classList.add('open'); document.getElementById('wishlistPanel').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeWishlist() { document.getElementById('wishlistOverlay').classList.remove('open'); document.getElementById('wishlistPanel').classList.remove('open'); document.body.style.overflow = ''; }
+
 function renderWishlist() {
 const container = document.getElementById('wishlistItems');
 if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
@@ -879,6 +928,7 @@ return `<div class="wi"><div class="wi-color" style="background:${p.gradient||ge
 function removeFromWishlist(productId) {
 state.wishlist = state.wishlist.filter(w => w.productId !== productId);
 saveData(); updateWishlistBadge(); renderWishlist();
+initSmoothSlider();
 showToast('✅ تمت الإزالة من المفضلة', 'success');
 }
 function addToCartFromWishlist(productId) {
@@ -891,6 +941,7 @@ saveData(); updateCartBadge(); renderWishlist();
 showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
 }
 
+// ========== ADMIN & UTILS ==========
 function checkAdminAccess() {
 const token = SecureStorage.get(CONFIG.auth.tokenKey, true);
 if (token) {
@@ -903,11 +954,13 @@ document.body.classList.add('is-admin');
 } catch { /* Invalid token */ }
 }
 }
+
 function showToast(msg, type = 'info') {
 const t = document.getElementById('toast');
 t.textContent = msg; t.className = `toast ${type} show`;
 setTimeout(() => t.classList.remove('show'), 3000);
 }
+
 function setupEventListeners() {
 document.addEventListener('keydown', e => {
 if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
@@ -918,6 +971,7 @@ window.addEventListener('scroll', () => {
 document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 }
+
 function changeLanguage(lang) {
 state.currentLang = lang;
 document.documentElement.lang = lang;
@@ -930,6 +984,7 @@ if (products.length) renderLensSlider(products);
 }
 renderCart();
 }
+
 function changeCurrency(currency) {
 state.currentCurrency = currency;
 initSmoothSlider();
@@ -940,9 +995,33 @@ if (products.length) renderLensSlider(products);
 }
 renderCart();
 }
+
 function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); }
 function trackSocial(platform) { console.log(`Social click: ${platform}`); }
 
+// زر التحديث اليدوي
+function forceRefresh() {
+showToast('🔄 جاري التحديث...', 'info');
+loadData().then(() => {
+initSmoothSlider();
+updateCartBadge();
+showToast('✅ تم تحديث البيانات', 'success');
+});
+}
+
+// استماع لتغييرات التخزين المحلي للمزامنة الفورية
+window.addEventListener('storage', (e) => {
+if (e.key === 'lens_prods' || e.key === 'lens_cats' || e.key === 'lens_update_flag') {
+loadData().then(() => {
+if (document.getElementById('sliderTrack')) {
+initSmoothSlider();
+showToast('🔄 تم تحديث المنتجات', 'success');
+}
+});
+}
+});
+
+// ========== PARTICLES ==========
 const canvas = document.getElementById('particlesCanvas'), ctx = canvas.getContext('2d');
 let particles = [];
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -968,6 +1047,7 @@ ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill();
 for (let i = 0; i < 60; i++) particles.push(new Particle());
 (function anim() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); })();
 
+// ========== INIT ==========
 document.addEventListener('DOMContentLoaded', async () => {
 checkAgeVerification(); checkCookieConsent();
 await loadData();
