@@ -179,7 +179,16 @@ body.loading{overflow:hidden}
 <main class="main">
 <header class="topbar">
 <h1 class="topbar-title" id="pageTitle">نظرة عامة</h1>
-<div class="topbar-actions"><button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button></div>
+<div class="topbar-actions">
+    <!-- Added Currency Selector for Admin Preview Context -->
+    <select id="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
+        <option value="SAR">ر.س</option>
+        <option value="EGP">ج.م</option>
+        <option value="USD">$</option>
+        <option value="AED">د.إ</option>
+    </select>
+    <button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button>
+</div>
 </header>
 <!-- OVERVIEW -->
 <div class="page active" id="page-overview">
@@ -210,7 +219,7 @@ body.loading{overflow:hidden}
 <div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي" aria-required="true"></div>
 <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
 <div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" aria-required="true"><option value="">-- اختر الفئة --</option></select></div>
-<div class="fgroup"><label for="pPrice">السعر (ر.س) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85" aria-required="true"></div>
+<div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85" aria-required="true"></div>
 <div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" min="0" placeholder="30" aria-required="true"></div>
 <div class="fgroup">
 <label for="pColor">اللون (HEX)</label>
@@ -261,12 +270,11 @@ body.loading{overflow:hidden}
 <script>
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
-let state = { categories: [], products: [], settings: { showPrice:true, showStock:true }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null };
+let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, currency: 'SAR' }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null };
 
 // ==================== PERSISTENCE - ✅ FIXED KEYS ==========
 function saveState() { 
 try { 
-// 🔑 استخدام نفس المفاتيح التي يقرأها index.html
 localStorage.setItem('lens_cats', JSON.stringify(state.categories));
 localStorage.setItem('lens_prods', JSON.stringify(state.products));
 localStorage.setItem('lens_sett', JSON.stringify(state.settings));
@@ -283,6 +291,10 @@ if (c) state.categories = JSON.parse(c);
 if (p) state.products = JSON.parse(p);
 if (s) state.settings = JSON.parse(s);
 if (hc) state.hiddenColorIds = JSON.parse(hc);
+// Sync UI with loaded settings
+if(state.settings.currency) {
+    document.getElementById('adminCurrency').value = state.settings.currency;
+}
 } catch(e) { console.warn('Load error', e); } 
 }
 
@@ -347,6 +359,27 @@ function toast(msg, type='info') { const t = document.getElementById('toast'); t
 function updateStats() { const all = state.products; document.getElementById('statProducts').textContent = all.length; document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; document.getElementById('statLowStock').textContent = all.filter(p => p.stock > 0 && p.stock <= 5).length; document.getElementById('statOutOfStock').textContent = all.filter(p => p.stock === 0).length; }
 function renderHiddenOverview() { const hidden = state.products.filter(p => !p.visible); const el = document.getElementById('hiddenOverviewList'); if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; } el.innerHTML = hidden.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`; }).join(''); }
 
+// ==================== CURRENCY HELPERS ====================
+function getCurrencySymbol(curr) {
+    const symbols = { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' };
+    return symbols[curr] || curr;
+}
+
+function convertPrice(priceSAR, targetCurr) {
+    // Approximate rates for demo/admin preview purposes
+    const rates = { SAR: 1, USD: 0.27, AED: 0.99, EGP: 12.5 };
+    const rate = rates[targetCurr] || 1;
+    return Math.round(priceSAR * rate);
+}
+
+function updateAdminCurrency() {
+    const newCurr = document.getElementById('adminCurrency').value;
+    state.settings.currency = newCurr;
+    saveState();
+    renderProducts(); // Re-render table with new currency
+    toast(`تم تغيير العملة إلى ${getCurrencySymbol(newCurr)}`, 'success');
+}
+
 // ==================== CATEGORIES ====================
 function populateCatSelects() {
 ['pCategory','editCategory'].forEach(sid => {
@@ -371,6 +404,7 @@ function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاته
 // ==================== PRODUCTS TABLE ====================
 function renderProducts() {
 const filter = document.getElementById('filterCat')?.value || '';
+const currentCurr = state.settings.currency || 'SAR';
 let prods = [...state.products];
 if (filter === 'hidden') prods = prods.filter(p => !p.visible);
 else if (filter === 'visible') prods = prods.filter(p => p.visible);
@@ -380,7 +414,10 @@ tbody.innerHTML = prods.map(p => {
 const cat = state.categories.find(c => c.id === p.category);
 const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on';
 const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
-return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${p.price} ر.س</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل" aria-label="تعديل ${p.nameAr}">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}" aria-label="${p.visible?'إخفاء':'إظهار'} ${p.nameAr}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف" aria-label="حذف ${p.nameAr}">🗑️</button></div></td></tr>`;
+const displayPrice = convertPrice(p.price, currentCurr);
+const currSym = getCurrencySymbol(currentCurr);
+
+return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')" title="تعديل" aria-label="تعديل ${p.nameAr}">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')" title="${p.visible?'إخفاء':'إظهار'}" aria-label="${p.visible?'إخفاء':'إظهار'} ${p.nameAr}">${p.visible?'👁️':'👁️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')" title="حذف" aria-label="حذف ${p.nameAr}">🗑️</button></div></td></tr>`;
 }).join('');
 }
 
@@ -454,7 +491,7 @@ function deleteProduct(id) { const p = state.products.find(x => x.id === id); if
 function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️🗨️ تم إخفاء "${p.nameAr}"`, 'success'); }
 
 // ==================== VISIBILITY ====================
-function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${p.price} ر.س</div></div><label class="toggle" aria-label="تبديل ظهور ${p.nameAr}"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const currentCurr = state.settings.currency || 'SAR'; const currSym = getCurrencySymbol(currentCurr); el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const displayPrice = convertPrice(p.price, currentCurr); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${displayPrice} ${currSym}</div></div><label class="toggle" aria-label="تبديل ظهور ${p.nameAr}"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
 
 // ==================== HELPERS ====================
 function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
@@ -466,7 +503,6 @@ document.getElementById('editModal')?.addEventListener('click', e => { if(e.targ
 document.addEventListener('keydown', e => { if(e.key==='Escape'){closeEditModal();} });
 
 // ==================== OPEN STORE PREVIEW ====================
-function getCurrencySymbol() { return 'ر.س'; } // Simplified for preview
 function openStore() { 
 const storeData = { 
 categories: state.categories, 
@@ -482,11 +518,15 @@ const {categories, products, settings} = data;
 const grouped = {};
 categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; });
 let cardsHTML = '';
+const currSym = getCurrencySymbol(settings.currency || 'SAR');
+
 categories.forEach(c => {
 if (!grouped[c.id] || grouped[c.id].lenses.length === 0) return;
 const lenses = grouped[c.id].lenses;
 const main = lenses[0];
 const totalStock = lenses.reduce((s,l) => s+l.stock, 0);
+const displayPrice = convertPrice(main.price, settings.currency || 'SAR');
+
 const dots = lenses.map(l => `<div style="width:16px;height:16px;border-radius:50%;background:${l.gradient};border:2px solid rgba(255,255,255,.1)"></div>`).join('');
 cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;background:rgba(18,14,12,.85);border:1px solid rgba(201,168,76,.06);position:relative">
 <div style="position:absolute;inset:0;background:${c.color};opacity:.3"></div>
@@ -498,13 +538,13 @@ cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;back
 <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div>
 <div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات · ${totalStock} قطعة</div>
 <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)">
-<div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${main.price} ${getCurrencySymbol()}</strong></div>
+<div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${displayPrice} ${currSym}</strong></div>
 <button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button>
 </div>
 </div>
 </div>`;
 });
-return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`;
+return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Lensora Store Preview</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--card-bg:rgba(18,14,12,.85);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:20px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}.hero{min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}.hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);letter-spacing:4px}.hero-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto}.hero-sub{font-size:13px;color:var(--text-dim);max-width:400px}.slider-container{padding:20px 0 60px;overflow:hidden}.slider-track{display:flex;gap:14px;padding:16px;direction:ltr;overflow-x:auto;-webkit-overflow-scrolling:touch}.footer{text-align:center;padding:24px;font-size:11px;color:var(--text-dim);border-top:1px solid rgba(201,168,76,.06)}.empty{text-align:center;padding:60px 20px;color:var(--text-dim)}</style></head><body><div class="hero"><div class="hero-title">LENSORA</div><div class="hero-line"></div><div class="hero-sub">المنتجات المعروضة حالياً (${currSym})</div></div><div class="slider-container"><div class="slider-track">${cardsHTML || '<div class="empty">لا توجد منتجات معروضة حالياً</div>'}</div></div><div class="footer">© 2026 LENSORA — معاينة المتجر</div></body></html>`;
 }
 </script>
 </body>
