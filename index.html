@@ -798,13 +798,8 @@ function openLensModal(ci) {
 currentLensIdx = 0;
 
 // ✅ الحصول على المنتجات للفئة المحددة بشكل صحيح
-const catId = Object.keys(state.products.reduce((acc, p) => {
-if (p.visible !== false && !acc[p.categoryId]) acc[p.categoryId] = true;
-return acc;
-}, {}))[ci % Object.keys(state.products.reduce((acc, p) => {
-if (p.visible !== false && !acc[p.categoryId]) acc[p.categoryId] = true;
-return acc;
-}, {})).length];
+const visibleCategories = [...new Set(state.products.filter(p => p.visible !== false).map(p => p.categoryId))];
+const catId = visibleCategories[ci % visibleCategories.length];
 
 const catProducts = state.products.filter(p => p.visible !== false && p.categoryId === catId);
 
