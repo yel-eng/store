@@ -189,7 +189,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 /* ========== MODAL ========== */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all var(--transition-normal);padding:20px;backdrop-filter:blur(12px)}
 .modal-bg.open{opacity:1;visibility:visible}
-.modal-box{background:var(--preview-dark);backdrop-filter:blur(40px);border-radius:var(--radius);width:100%;max-width:1000px;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.06);transform:scale(.92) translateY(40px);transition:transform var(--transition-slow),background-color var(--transition-slow),box-shadow var(--transition-slow);box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.modal-box{background:var(--preview-dark);backdrop-filter:blur(40px);border-radius:var(--radius);width:100%;max-width:1000px;max-height:92vh;overflow-y:auto;border:1px solid rgba(201,168,76,.06);transform:scale(.92) translateY(40px);transition:transform var(--transition-slow),background-color var(--transition-slow),box-shadow var(--transition-slow);box-shadow:0 40px 100px rgba(0,0,0,.6); position:relative;}
 .modal-box.light-bg{background:var(--preview-light);border-color:rgba(0,0,0,.06)}
 .modal-bg.open .modal-box{transform:scale(1) translateY(0)}
 .modal-header{padding:24px 36px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.04);position:sticky;top:0;background:var(--preview-dark);z-index:2;backdrop-filter:blur(20px);border-radius:var(--radius) var(--radius) 0 0;transition:background-color var(--transition-slow)}
@@ -209,6 +209,40 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .modal-close:hover{background:var(--gold);color:var(--bg);transform:rotate(90deg)}
 .modal-box.light-bg .modal-close{background:rgba(0,0,0,.04);color:#5a4a3a}
 .modal-box.light-bg .modal-close:hover{background:#5a4a3a;color:#fff}
+
+/* NEW: Modal Side Arrows */
+.modal-nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(201, 168, 76, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+.modal-nav-arrow:hover {
+    background: var(--gold);
+    color: var(--bg);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+}
+.modal-nav-prev { right: 20px; } /* RTL: Right is Previous visually if we think of sliding, but logically Next in RTL list? Let's stick to visual direction */
+.modal-nav-next { left: 20px; }
+
+@media(max-width: 768px) {
+    .modal-nav-arrow { width: 40px; height: 40px; font-size: 18px; right: 10px; left: 10px; }
+}
+
 .slider-area{padding:40px 36px}
 .lens-slider-container{position:relative;overflow:hidden;border-radius:var(--radius);padding:44px 36px;border:1px solid rgba(201,168,76,.04);transition:background var(--transition-slow),border-color var(--transition-slow)}
 .lens-slider-container.dark-bg{background:rgba(201,168,76,.012)}
@@ -443,6 +477,10 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <!-- Product Detail Modal -->
 <div class="modal-bg" id="lensModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
 <div class="modal-box" id="modalBox">
+    <!-- NEW: Side Arrows for Navigation inside Modal -->
+    <button class="modal-nav-arrow modal-nav-prev" onclick="slideLensMove(1)" aria-label="التالي">←</button>
+    <button class="modal-nav-arrow modal-nav-next" onclick="slideLensMove(-1)" aria-label="السابق">→</button>
+
 <div class="modal-header"><h2 id="modalTitle"></h2><div class="modal-actions">
 <button class="bg-toggle" onclick="toggleModalBg()" title="تبديل الخلفية" aria-label="تبديل بين الخلفية الفاتحة والداكنة"><span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span></button>
 <button class="modal-close" onclick="closeLensModal()" aria-label="إغلاق">✕</button></div></div>
