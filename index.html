@@ -470,119 +470,188 @@ api: { baseUrl: '/api', timeout: 10000 },
 auth: { tokenKey: 'lensora_auth_token', adminRole: 'admin' },
 i18n: { defaultLang: 'ar', defaultCurrency: 'SAR', exchangeRates: { SAR: 1, USD: 0.27, AED: 0.99 } }
 };
+
 // ========== SECURE STORAGE ==========
 const SecureStorage = {
-set: (key, value, isSensitive = false) => { try { if (isSensitive) { const encrypted = btoa(encodeURIComponent(JSON.stringify(value))); localStorage.setItem(`secure_${key}`, encrypted); } else { localStorage.setItem(key, JSON.stringify(value)); } return true; } catch (e) { console.error('Storage error:', e); return false; } },
-get: (key, isSensitive = false) => { try { const data = localStorage.getItem(isSensitive ? `secure_${key}` : key); if (!data) return null; if (isSensitive) { return JSON.parse(decodeURIComponent(atob(data))); } return JSON.parse(data); } catch { return null; } },
-remove: (key, isSensitive = false) => { localStorage.removeItem(isSensitive ? `secure_${key}` : key); }
+set: (key, value, isSensitive = false) => { 
+  try { 
+    if (isSensitive) { 
+      const encrypted = btoa(encodeURIComponent(JSON.stringify(value))); 
+      localStorage.setItem(`secure_${key}`, encrypted); 
+    } else { 
+      localStorage.setItem(key, JSON.stringify(value)); 
+    } 
+    return true; 
+  } catch (e) { 
+    console.error('Storage error:', e); 
+    return false; 
+  } 
+},
+get: (key, isSensitive = false) => { 
+  try { 
+    const data = localStorage.getItem(isSensitive ? `secure_${key}` : key); 
+    if (!data) return null; 
+    if (isSensitive) { 
+      return JSON.parse(decodeURIComponent(atob(data))); 
+    } 
+    return JSON.parse(data); 
+  } catch { 
+    return null; 
+  } 
+},
+remove: (key, isSensitive = false) => { 
+  localStorage.removeItem(isSensitive ? `secure_${key}` : key); 
+}
 };
-// ========== DATA ==========
-let state = { products: [], categories: [], cart: [], wishlist: [], currentLang: 'ar', currentCurrency: 'SAR', isAdmin: false, ageVerified: false, cookiesAccepted: false };
+
+// ========== DATA STATE ==========
+let state = { 
+  products: [], 
+  categories: [], 
+  cart: [], 
+  wishlist: [], 
+  currentLang: 'ar', 
+  currentCurrency: 'SAR', 
+  isAdmin: false, 
+  ageVerified: false, 
+  cookiesAccepted: false 
+};
 let currentLensIdx = 0;
+
+// ========== DEFAULT DATA (✅ NEW: تظهر دائمًا في أي متصفح) ==========
+const DEFAULT_CATEGORIES = [
+  {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
+  {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'},
+  {id:'green',ar:'أخضر زمردي',en:'Emerald Green',color:'#2E8B57'},
+  {id:'gray',ar:'رمادي أنيق',en:'Elegant Gray',color:'#B8B8B8'},
+  {id:'hazel',ar:'عسلي مميز',en:'Special Hazel',color:'#C4A265'},
+  {id:'purple',ar:'بنفسجي ملكي',en:'Royal Purple',color:'#7B5EA7'}
+];
+
+const DEFAULT_PRODUCTS = [
+  {id:'b1',nameAr:'عسل ذهبي',nameEn:'Golden Honey',category:'brown',price:85,stock:30,color:'#D4A056',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,desc:'تدرج عسلي دافئ مع حلقة خارجية ناعمة',rating:4.8,reviews:124,visible:true},
+  {id:'b2',nameAr:'شوكولاتة',nameEn:'Chocolate',category:'brown',price:95,stock:22,color:'#5C3A1E',opacity:0.75,lensSize:85,offsetX:0,offsetY:0,desc:'بني غامق عميق يعطي نظرة ساحرة',rating:4.9,reviews:89,visible:true},
+  {id:'bl1',nameAr:'محيط',nameEn:'Ocean',category:'blue',price:110,stock:25,color:'#2E6CB5',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,desc:'أزرق محيطي عميق مع لمعة طبيعية',rating:4.9,reviews:203,visible:true},
+  {id:'bl2',nameAr:'سماء',nameEn:'Sky',category:'blue',price:100,stock:15,color:'#87CEEB',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,desc:'أزرق سماوي فاتح براقة',rating:4.7,reviews:145,visible:true},
+  {id:'g1',nameAr:'زيتون',nameEn:'Olive',category:'green',price:105,stock:20,color:'#6B8E4E',opacity:0.7,lensSize:85,offsetX:0,offsetY:0,desc:'أخضر زيتوني ناعم',rating:4.6,reviews:134,visible:true},
+  {id:'g2',nameAr:'زمردي',nameEn:'Emerald',category:'green',price:130,stock:10,color:'#2E8B57',opacity:0.75,lensSize:85,offsetX:0,offsetY:0,desc:'أخضر زمردي فاخر لامع',rating:4.9,reviews:187,visible:true},
+  {id:'gr1',nameAr:'فضي',nameEn:'Silver',category:'gray',price:100,stock:28,color:'#B8B8B8',opacity:0.6,lensSize:85,offsetX:0,offsetY:0,desc:'رمادي فضي لامع أنيق',rating:4.7,reviews:167,visible:true},
+  {id:'hz1',nameAr:'لوز',nameEn:'Almond',category:'hazel',price:95,stock:32,color:'#C4A265',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,desc:'عسلي لوزي فاتح طبيعي',rating:4.8,reviews:201,visible:true},
+  {id:'p1',nameAr:'لافندر',nameEn:'Lavender',category:'purple',price:110,stock:18,color:'#A88BC5',opacity:0.65,lensSize:85,offsetX:0,offsetY:0,desc:'بنفسجي لافندر رومانسي',rating:4.8,reviews:156,visible:true}
+];
+
 // ========== UTILS ==========
 function adjColor(hex, amount) {
-hex = hex.replace('#','');
-const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount));
-const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount));
-const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount));
-return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join('');
+  hex = hex.replace('#','');
+  const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount));
+  const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount));
+  const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount));
+  return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join('');
 }
+
 function generateLensGradient(color) {
-return `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-30)},${adjColor(color,-70)})`;
+  return `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-30)},${adjColor(color,-70)})`;
 }
+
 function getPrice(product, currency = state.currentCurrency) {
-const rate = CONFIG.i18n.exchangeRates[currency] || 1;
-return Math.round(product.price * rate);
+  const rate = CONFIG.i18n.exchangeRates[currency] || 1;
+  return Math.round(product.price * rate);
 }
+
 function getCurrencySymbol(currency = state.currentCurrency) {
-return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[currency] || currency;
+  return { SAR: 'ر.س', USD: '$', AED: 'د.إ' }[currency] || currency;
 }
+
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
 
-// ========== LOAD DATA (✅ FIXED: Connect to Dashboard keys) ==========
+// ========== LOAD DATA (✅ FIXED: مع بيانات افتراضية) ==========
 async function loadData() {
-try {
-// 🔑 قراءة البيانات من المفاتيح التي يستخدمها الداشبورد فعلياً
-const localProductsRaw = localStorage.getItem('lens_prods');
-const localCatsRaw = localStorage.getItem('lens_cats');
-
-// Fallback للمفاتيح القديمة
-const localProducts = localProductsRaw ? JSON.parse(localProductsRaw) : 
-  (localStorage.getItem('lensora_products') ? JSON.parse(localStorage.getItem('lensora_products')) : []);
-const localCats = localCatsRaw ? JSON.parse(localCatsRaw) : 
-  (localStorage.getItem('lensora_categories') ? JSON.parse(localStorage.getItem('lensora_categories')) : []);
-
-// 1. معالجة الفئات أولاً لإنشاء خريطة بحث
-const catMap = {};
-if (Array.isArray(localCats) && localCats.length > 0) {
-  localCats.forEach(c => {
-    // دعم تنسيقات متعددة لأسماء الفئات من الداشبورد
-    const id = c.id;
-    const ar = c.ar || c.arName || c.name_ar || c.name || 'غير مصنف';
-    const en = c.en || c.enName || c.name_en || c.id || 'Uncategorized';
-    const color = c.color || '#c9a84c';
-    catMap[id] = { ar, en, color };
-  });
-}
-
-// 2. معالجة المنتجات وربطها بالفئات
-if (Array.isArray(localProducts) && localProducts.length > 0) {
-  state.products = localProducts.map(p => {
-    // التعامل مع معرف الفئة (قد يأتي باسم category أو categoryId)
-    const catId = p.category || p.categoryId || 'uncategorized';
-    const catInfo = catMap[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
+  try {
+    // 🔑 قراءة البيانات من الداشبورد أولاً
+    const localProductsRaw = localStorage.getItem('lens_prods');
+    const localCatsRaw = localStorage.getItem('lens_cats');
     
-    return {
+    // Fallback للمفاتيح القديمة
+    const localProducts = localProductsRaw ? JSON.parse(localProductsRaw) : 
+      (localStorage.getItem('lensora_products') ? JSON.parse(localStorage.getItem('lensora_products')) : null);
+    const localCats = localCatsRaw ? JSON.parse(localCatsRaw) : 
+      (localStorage.getItem('lensora_categories') ? JSON.parse(localStorage.getItem('lensora_categories')) : null);
+    
+    // ✅ استخدام البيانات الافتراضية إذا لم توجد بيانات في التخزين
+    const catsToUse = (localCats && localCats.length > 0) ? localCats : DEFAULT_CATEGORIES;
+    const prodsToUse = (localProducts && localProducts.length > 0) ? localProducts : DEFAULT_PRODUCTS;
+    
+    // 1. معالجة الفئات
+    const catMap = {};
+    catsToUse.forEach(c => {
+      const id = c.id;
+      const ar = c.ar || c.arName || c.name_ar || c.name || 'غير مصنف';
+      const en = c.en || c.enName || c.name_en || c.id || 'Uncategorized';
+      const color = c.color || '#c9a84c';
+      catMap[id] = { ar, en, color };
+    });
+    
+    // 2. معالجة المنتجات وربطها بالفئات
+    state.products = prodsToUse.map(p => {
+      const catId = p.category || p.categoryId || 'uncategorized';
+      const catInfo = catMap[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
+      
+      return {
+        ...p,
+        id: p.id || ('p_' + Math.random().toString(36).substr(2, 9)),
+        name: p.nameAr || p.name || 'منتج',
+        enName: p.nameEn || p.enName || '',
+        categoryId: catId,
+        categoryName: catInfo.ar,
+        categoryNameEn: catInfo.en,
+        categoryColor: catInfo.color,
+        gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
+        visible: p.visible !== false,
+        price: parseFloat(p.price) || 0,
+        stock: parseInt(p.stock) || 0,
+        opacity: p.opacity || 0.7,
+        lensSize: p.lensSize || 85,
+        offsetX: p.offsetX || 0,
+        offsetY: p.offsetY || 0
+      };
+    });
+    
+    // 3. حفظ الفئات
+    state.categories = Object.values(catMap);
+    
+    // 4. تحميل السلة والمفضلة
+    state.cart = SecureStorage.get('lensora_cart') || [];
+    state.wishlist = SecureStorage.get('lensora_wishlist') || [];
+    
+    console.log('✅ تم تحميل البيانات:', {
+      products: state.products.length,
+      categories: state.categories.length,
+      visible: state.products.filter(p => p.visible).length,
+      source: (localProducts && localProducts.length > 0) ? 'localStorage' : 'DEFAULT'
+    });
+    
+  } catch (error) {
+    console.error('❌ فشل في تحميل البيانات:', error);
+    // ✅ فائض أمان: استخدام البيانات الافتراضية عند الخطأ
+    state.categories = DEFAULT_CATEGORIES;
+    state.products = DEFAULT_PRODUCTS.map(p => ({
       ...p,
-      // توحيد المعرف
-      id: p.id || ('p_' + Math.random().toString(36).substr(2, 9)),
-      // توحيد الأسماء
-      name: p.nameAr || p.name || 'منتج',
-      enName: p.nameEn || p.enName || '',
-      // معلومات الفئة الصحيحة ✅
-      categoryId: catId,
-      categoryName: catInfo.ar,
-      categoryNameEn: catInfo.en,
-      categoryColor: catInfo.color,
-      // الشكل واللون
-      gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
-      visible: p.visible !== false, // افتراضي: مرئي
-      // الأرقام
-      price: parseFloat(p.price) || 0,
-      stock: parseInt(p.stock) || 0,
-      opacity: p.opacity || 0.7,
-      lensSize: p.lensSize || 85,
-      offsetX: p.offsetX || 0,
-      offsetY: p.offsetY || 0
-    };
-  });
-}
-
-// 3. حفظ الفئات في الحالة
-state.categories = Object.values(catMap);
-
-// 4. تحميل السلة والمفضلة
-state.cart = SecureStorage.get('lensora_cart') || [];
-state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-
-console.log('✅ تم تحميل البيانات:', {
-  products: state.products.length,
-  categories: state.categories.length,
-  visible: state.products.filter(p => p.visible).length
-});
-
-} catch (error) {
-console.error('❌ فشل في تحميل البيانات:', error);
-}
+      categoryName: DEFAULT_CATEGORIES.find(c => c.id === p.category)?.ar || 'عام',
+      categoryNameEn: DEFAULT_CATEGORIES.find(c => c.id === p.category)?.en || 'General',
+      categoryColor: DEFAULT_CATEGORIES.find(c => c.id === p.category)?.color || '#c9a84c',
+      gradient: generateLensGradient(p.color),
+      visible: true
+    }));
+  }
 }
 
 function saveData() {
-SecureStorage.set('lensora_cart', state.cart);
-SecureStorage.set('lensora_wishlist', state.wishlist);
+  SecureStorage.set('lensora_cart', state.cart);
+  SecureStorage.set('lensora_wishlist', state.wishlist);
 }
 
 function getProduct(id) { 
-return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '', categoryName: '' }; 
+  return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '', categoryName: '' }; 
 }
 
 // ========== AGE & COOKIES ==========
@@ -598,372 +667,379 @@ function showShipping() { showToast('🚚 شحن مجاني للطلبات فو�
 function showReturns() { showToast('🔄 إرجاع خلال 14 يوم', 'info'); }
 function showContact() { showToast('💬 support@lensora.com', 'info'); }
 
-// ========== SLIDER - INFINITE LOOP FIXED ==========
+// ========== SLIDER ==========
 function initSmoothSlider() {
-const track = document.getElementById('sliderTrack');
-if (!track) return;
-
-const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
-
-// ✅ تجميع المنتجات حسب الفئة الصحيحة
-const grouped = {};
-state.products.filter(p => p.visible !== false).forEach(p => {
-const catId = p.categoryId;
-if (!grouped[catId]) {
-grouped[catId] = {
-id: catId,
-arName: p.categoryName || 'عام', // ✅ استخدام اسم الفئة وليس المنتج
-enName: p.categoryNameEn || 'General',
-color: p.categoryColor || '#c9a84c',
-cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
-lenses: []
-};
-}
-grouped[catId].lenses.push(p);
-});
-
-const COLORS_DATA = Object.values(grouped);
-const total = COLORS_DATA.length;
-
-if (total === 0) { 
-track.innerHTML = '<div style="color:white; text-align:center; width:100%; padding:40px;">✨ لا توجد منتجات معروضة حالياً</div>'; 
-return; 
-}
-
-let html = '';
-for (let copy = 0; copy < 3; copy++) {
-COLORS_DATA.forEach((cat, i) => {
-if (!cat.lenses.length) return;
-const main = cat.lenses[0];
-const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
-const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
-const inWishlist = state.wishlist.some(w => w.productId === main.id);
-const globalIdx = copy * total + i;
-
-html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
-<button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
-<div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
-<div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${main.gradient||generateLensGradient(main.color)}"></div></div><div class="card-dots">${dots}</div></div>
-<div class="card-body">
-<div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
-<div class="card-name">${getText(main.name,main.enName)}</div>
-<div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
-<div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div>
-</div></div>`;
-});
-}
-
-track.innerHTML = html;
-document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
-
-let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
-
-function getCenterOffset() {
-const vp = document.querySelector('.slider-viewport');
-return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
-}
-
-function snapToIndex(idx) {
-isAnimating = true;
-const normalized = ((idx % total) + total) % total;
-activeCatIdx = normalized;
-const target = idx * ITEM_W;
-const centerOffset = getCenterOffset();
-const pos = target - centerOffset;
-cancelAnimationFrame(animFrame);
-animateTo(pos, () => {
-isAnimating = false;
-if (idx >= total * 2 || idx < 0) {
-const resetIdx = normalized + (idx >= total * 2 ? total : 0);
-const resetPos = resetIdx * ITEM_W - centerOffset;
-track.style.transition = 'none';
-track.style.transform = `translateX(-${resetPos}px)`;
-void track.offsetWidth;
-track.style.transition = '';
-}
-});
-updateDots(normalized);
-}
-
-function animateTo(targetPos, callback) {
-const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
-function step(now) {
-const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
-const ease = 1 - Math.pow(1 - progress, 4);
-currentPos = start + diff * ease;
-track.style.transform = `translateX(-${currentPos}px)`;
-if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback();
-}
-animFrame = requestAnimationFrame(step);
-}
-
-function updateDots(idx) {
-const normalized = ((idx % total) + total) % total;
-document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
-const active = i === normalized;
-d.classList.toggle('active', active);
-d.setAttribute('aria-selected', active);
-});
-}
-
-const startCopy = 1;
-currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
-track.style.transform = `translateX(-${currentPos}px)`;
-updateDots(0);
-
-if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => {
-if (!isDragging && !isAnimating) {
-activeCatIdx++;
-snapToIndex(activeCatIdx);
-}
-}, 3500);
-
-function resetAutoplay() {
-if (autoplayInterval) clearInterval(autoplayInterval);
-autoplayInterval = setInterval(() => {
-if (!isDragging && !isAnimating) {
-activeCatIdx++;
-snapToIndex(activeCatIdx);
-}
-}, 3500);
-}
-
-document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
-document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
-document.getElementById('sliderDots').onclick = (e) => {
-const dot = e.target.closest('.slider-dot'); if (!dot) return;
-const idx = parseInt(dot.dataset.idx);
-const targetGlobalIdx = startCopy * total + idx;
-activeCatIdx = idx;
-snapToIndex(targetGlobalIdx);
-resetAutoplay();
-};
-track.onclick = (e) => {
-const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
-const catIdx = parseInt(card.dataset.cat);
-if (!isNaN(catIdx)) openLensModal(catIdx);
-};
-const startDrag = (x) => {
-isDragging = true; dragStartX = x; dragStartPos = currentPos;
-cancelAnimationFrame(animFrame); isAnimating = false;
-track.style.transition = 'none';
-};
-const moveDrag = (x) => {
-if (!isDragging) return;
-const diff = x - dragStartX;
-currentPos = dragStartPos - diff;
-track.style.transform = `translateX(-${currentPos}px)`;
-};
-const endDrag = () => {
-if (!isDragging) return;
-isDragging = false;
-const centerOffset = getCenterOffset();
-const rawIdx = (currentPos + centerOffset) / ITEM_W;
-let targetIdx = Math.round(rawIdx);
-if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) {
-targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx);
-}
-activeCatIdx = ((targetIdx % total) + total) % total;
-snapToIndex(targetIdx);
-resetAutoplay();
-};
-track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
-track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
-track.addEventListener('touchend', endDrag);
-track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
-document.addEventListener('mousemove', e => moveDrag(e.clientX));
-document.addEventListener('mouseup', endDrag);
-window.addEventListener('resize', () => {
-if (!isDragging && !isAnimating) {
-const centerOffset = getCenterOffset();
-const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset;
-track.style.transition = 'none';
-track.style.transform = `translateX(-${resetPos}px)`;
-void track.offsetWidth;
-track.style.transition = '';
-currentPos = resetPos;
-}
-}, { passive: true });
+  const track = document.getElementById('sliderTrack');
+  if (!track) return;
+  
+  const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
+  
+  // تجميع المنتجات حسب الفئة
+  const grouped = {};
+  state.products.filter(p => p.visible !== false).forEach(p => {
+    const catId = p.categoryId;
+    if (!grouped[catId]) {
+      grouped[catId] = {
+        id: catId,
+        arName: p.categoryName || 'عام',
+        enName: p.categoryNameEn || 'General',
+        color: p.categoryColor || '#c9a84c',
+        cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
+        lenses: []
+      };
+    }
+    grouped[catId].lenses.push(p);
+  });
+  
+  const COLORS_DATA = Object.values(grouped);
+  const total = COLORS_DATA.length;
+  
+  if (total === 0) { 
+    track.innerHTML = '<div style="color:white; text-align:center; width:100%; padding:40px;">✨ لا توجد منتجات معروضة حالياً</div>'; 
+    return; 
+  }
+  
+  let html = '';
+  for (let copy = 0; copy < 3; copy++) {
+    COLORS_DATA.forEach((cat, i) => {
+      if (!cat.lenses.length) return;
+      const main = cat.lenses[0];
+      const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
+      const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
+      const inWishlist = state.wishlist.some(w => w.productId === main.id);
+      const globalIdx = copy * total + i;
+      
+      html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
+        <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
+        <div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div><div class="card-border" aria-hidden="true"></div><div class="shimmer" aria-hidden="true"></div>
+        <div class="card-visual"><div class="card-lens-sphere"><div class="card-lens-inner" style="background:${main.gradient||generateLensGradient(main.color)}"></div></div><div class="card-dots">${dots}</div></div>
+        <div class="card-body">
+          <div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
+          <div class="card-name">${getText(main.name,main.enName)}</div>
+          <div class="card-count">${cat.lenses.length} تدرجات · ${totalStock} قطعة</div>
+          <div class="card-footer"><div class="card-price">من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div><button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button></div>
+        </div></div>`;
+    });
+  }
+  
+  track.innerHTML = html;
+  document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="false"></div>`).join('');
+  
+  let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
+  
+  function getCenterOffset() {
+    const vp = document.querySelector('.slider-viewport');
+    return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
+  }
+  
+  function snapToIndex(idx) {
+    isAnimating = true;
+    const normalized = ((idx % total) + total) % total;
+    activeCatIdx = normalized;
+    const target = idx * ITEM_W;
+    const centerOffset = getCenterOffset();
+    const pos = target - centerOffset;
+    cancelAnimationFrame(animFrame);
+    animateTo(pos, () => {
+      isAnimating = false;
+      if (idx >= total * 2 || idx < 0) {
+        const resetIdx = normalized + (idx >= total * 2 ? total : 0);
+        const resetPos = resetIdx * ITEM_W - centerOffset;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${resetPos}px)`;
+        void track.offsetWidth;
+        track.style.transition = '';
+      }
+    });
+    updateDots(normalized);
+  }
+  
+  function animateTo(targetPos, callback) {
+    const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
+    function step(now) {
+      const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 4);
+      currentPos = start + diff * ease;
+      track.style.transform = `translateX(-${currentPos}px)`;
+      if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback();
+    }
+    animFrame = requestAnimationFrame(step);
+  }
+  
+  function updateDots(idx) {
+    const normalized = ((idx % total) + total) % total;
+    document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => {
+      const active = i === normalized;
+      d.classList.toggle('active', active);
+      d.setAttribute('aria-selected', active);
+    });
+  }
+  
+  const startCopy = 1;
+  currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
+  track.style.transform = `translateX(-${currentPos}px)`;
+  updateDots(0);
+  
+  if (autoplayInterval) clearInterval(autoplayInterval);
+  autoplayInterval = setInterval(() => {
+    if (!isDragging && !isAnimating) {
+      activeCatIdx++;
+      snapToIndex(activeCatIdx);
+    }
+  }, 3500);
+  
+  function resetAutoplay() {
+    if (autoplayInterval) clearInterval(autoplayInterval);
+    autoplayInterval = setInterval(() => {
+      if (!isDragging && !isAnimating) {
+        activeCatIdx++;
+        snapToIndex(activeCatIdx);
+      }
+    }, 3500);
+  }
+  
+  document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
+  document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
+  document.getElementById('sliderDots').onclick = (e) => {
+    const dot = e.target.closest('.slider-dot'); if (!dot) return;
+    const idx = parseInt(dot.dataset.idx);
+    const targetGlobalIdx = startCopy * total + idx;
+    activeCatIdx = idx;
+    snapToIndex(targetGlobalIdx);
+    resetAutoplay();
+  };
+  track.onclick = (e) => {
+    const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
+    const catIdx = parseInt(card.dataset.cat);
+    if (!isNaN(catIdx)) openLensModal(catIdx);
+  };
+  
+  const startDrag = (x) => {
+    isDragging = true; dragStartX = x; dragStartPos = currentPos;
+    cancelAnimationFrame(animFrame); isAnimating = false;
+    track.style.transition = 'none';
+  };
+  const moveDrag = (x) => {
+    if (!isDragging) return;
+    const diff = x - dragStartX;
+    currentPos = dragStartPos - diff;
+    track.style.transform = `translateX(-${currentPos}px)`;
+  };
+  const endDrag = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    const centerOffset = getCenterOffset();
+    const rawIdx = (currentPos + centerOffset) / ITEM_W;
+    let targetIdx = Math.round(rawIdx);
+    if (Math.abs(currentPos - dragStartPos) > CARD_W * 0.3) {
+      targetIdx = currentPos < dragStartPos ? Math.ceil(rawIdx) : Math.floor(rawIdx);
+    }
+    activeCatIdx = ((targetIdx % total) + total) % total;
+    snapToIndex(targetIdx);
+    resetAutoplay();
+  };
+  
+  track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
+  track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
+  track.addEventListener('touchend', endDrag);
+  track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
+  document.addEventListener('mousemove', e => moveDrag(e.clientX));
+  document.addEventListener('mouseup', endDrag);
+  window.addEventListener('resize', () => {
+    if (!isDragging && !isAnimating) {
+      const centerOffset = getCenterOffset();
+      const resetPos = ((startCopy * total) + activeCatIdx) * ITEM_W - centerOffset;
+      track.style.transition = 'none';
+      track.style.transform = `translateX(-${resetPos}px)`;
+      void track.offsetWidth;
+      track.style.transition = '';
+      currentPos = resetPos;
+    }
+  }, { passive: true });
 }
 
 // ========== MODAL ==========
 function toggleModalBg() {
-const box = document.getElementById('modalBox'), container = document.getElementById('lensContainer');
-const isLight = box.classList.toggle('light-bg');
-container.classList.toggle('dark-bg', !isLight); container.classList.toggle('light-bg', isLight);
+  const box = document.getElementById('modalBox'), container = document.getElementById('lensContainer');
+  const isLight = box.classList.toggle('light-bg');
+  container.classList.toggle('dark-bg', !isLight); 
+  container.classList.toggle('light-bg', isLight);
 }
 
 function openLensModal(ci) {
-currentLensIdx = 0;
-
-// ✅ الحصول على المنتجات للفئة المحددة بشكل صحيح
-const visibleCategories = [...new Set(state.products.filter(p => p.visible !== false).map(p => p.categoryId))];
-const catId = visibleCategories[ci % visibleCategories.length];
-
-const catProducts = state.products.filter(p => p.visible !== false && p.categoryId === catId);
-
-if (!catProducts.length) return;
-
-const categoryName = catProducts[0].categoryName;
-document.getElementById('modalTitle').textContent = categoryName || 'تفاصيل المنتج';
-document.getElementById('modalBox').classList.remove('light-bg');
-document.getElementById('lensContainer').classList.add('dark-bg');
-renderLensSlider(catProducts);
-document.getElementById('lensModal').classList.add('open');
-document.body.style.overflow = 'hidden';
+  currentLensIdx = 0;
+  
+  const visibleCategories = [...new Set(state.products.filter(p => p.visible !== false).map(p => p.categoryId))];
+  const catId = visibleCategories[ci % visibleCategories.length];
+  const catProducts = state.products.filter(p => p.visible !== false && p.categoryId === catId);
+  
+  if (!catProducts.length) return;
+  
+  const categoryName = catProducts[0].categoryName;
+  document.getElementById('modalTitle').textContent = categoryName || 'تفاصيل المنتج';
+  document.getElementById('modalBox').classList.remove('light-bg');
+  document.getElementById('lensContainer').classList.add('dark-bg');
+  renderLensSlider(catProducts);
+  document.getElementById('lensModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeLensModal() {
-document.getElementById('lensModal').classList.remove('open');
-document.body.style.overflow = '';
+  document.getElementById('lensModal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function renderLensSlider(products) {
-document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
-const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
-const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
-const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
-
-return `<div class="lens-slide" role="tabpanel">
-<div class="lens-visual dark-bg">
-<div class="lens-visual-ring" aria-hidden="true"></div>
-<div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${p.gradient||generateLensGradient(p.color)}"></div></div>
-<div class="color-label"><span class="dot-real" style="background:${p.color}"></span>اللون الفعلي</div>
-</div>
-<div class="lens-details"><h3>${getText(p.name,p.enName)}</h3><p class="lens-desc">${p.desc||'وصف المنتج'}</p>
-<div class="lens-reviews"><div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${p.reviews||0} مراجعة)</span></div></div>
-<div class="lens-meta"><div class="meta-item"><div class="label">السعر</div><div class="value">${getPrice(p)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div></div>
-<div class="qty-selector">
-<label for="mq_${li}">الكمية:</label>
-<div class="qty-ctrl">
-<button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
-<div class="qty-display" id="mq_${li}" role="spinbutton" aria-valuenow="1" aria-valuemin="1" aria-valuemax="10">1</div>
-<button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
-</div>
-</div>
-<button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
-</div></div>`;
-}).join('');
-
-document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
-updateLensSlider();
+  document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
+    const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
+    const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
+    const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
+    
+    return `<div class="lens-slide" role="tabpanel">
+      <div class="lens-visual dark-bg">
+        <div class="lens-visual-ring" aria-hidden="true"></div>
+        <div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${p.gradient||generateLensGradient(p.color)}"></div></div>
+        <div class="color-label"><span class="dot-real" style="background:${p.color}"></span>اللون الفعلي</div>
+      </div>
+      <div class="lens-details"><h3>${getText(p.name,p.enName)}</h3><p class="lens-desc">${p.desc||'وصف المنتج'}</p>
+        <div class="lens-reviews"><div class="review-header"><span class="review-stars">${stars}</span><span class="review-count">(${p.reviews||0} مراجعة)</span></div></div>
+        <div class="lens-meta"><div class="meta-item"><div class="label">السعر</div><div class="value">${getPrice(p)} ${getCurrencySymbol()}</div></div><div class="meta-item"><div class="label">المتاح</div><div class="value ${sc}">${st}</div></div></div>
+        <div class="qty-selector">
+          <label for="mq_${li}">الكمية:</label>
+          <div class="qty-ctrl">
+            <button onclick="changeModalQty(-1,${li})" aria-label="تقليل الكمية">−</button>
+            <div class="qty-display" id="mq_${li}" role="spinbutton" aria-valuenow="1" aria-valuemin="1" aria-valuemax="10">1</div>
+            <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
+          </div>
+        </div>
+        <button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
+      </div></div>`;
+  }).join('');
+  
+  document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`).join('');
+  updateLensSlider();
 }
 
 function updateLensSlider() {
-document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
-document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
-const active = i === currentLensIdx;
-d.classList.toggle('active', active); d.setAttribute('aria-selected', active);
-});
-document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
-document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
+  document.getElementById('lensTrack').style.transform = `translateX(${currentLensIdx * 100}%)`;
+  document.querySelectorAll('.slider-dot-modal').forEach((d, i) => {
+    const active = i === currentLensIdx;
+    d.classList.toggle('active', active); 
+    d.setAttribute('aria-selected', active);
+  });
+  document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
+  document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
 }
 
 function slideLensMove(dir) {
-const total = document.getElementById('lensTrack').children.length;
-currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
-updateLensSlider();
+  const total = document.getElementById('lensTrack').children.length;
+  currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
+  updateLensSlider();
 }
 
 function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
 
 function changeModalQty(delta, li) {
-const el = document.getElementById(`mq_${li}`); if (!el) return;
-let v = parseInt(el.textContent) + delta;
-v = Math.max(1, Math.min(v, 10));
-el.textContent = v;
-el.setAttribute('aria-valuenow', v);
+  const el = document.getElementById(`mq_${li}`); if (!el) return;
+  let v = parseInt(el.textContent) + delta;
+  v = Math.max(1, Math.min(v, 10));
+  el.textContent = v;
+  el.setAttribute('aria-valuenow', v);
 }
 
 function addFromSlider(lensId, li) {
-const p = getProduct(lensId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const el = document.getElementById(`mq_${li}`);
-const qty = el ? parseInt(el.textContent) : 1;
-const existing = state.cart.find(c => c.productId === lensId);
-if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; }
-else { if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); }
-saveData(); updateCartBadge();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
-if (el) el.textContent = '1';
+  const p = getProduct(lensId);
+  if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
+  const el = document.getElementById(`mq_${li}`);
+  const qty = el ? parseInt(el.textContent) : 1;
+  const existing = state.cart.find(c => c.productId === lensId);
+  if (existing) { 
+    if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } 
+    existing.qty += qty; 
+  } else { 
+    if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } 
+    state.cart.push({ productId: lensId, qty }); 
+  }
+  saveData(); updateCartBadge();
+  showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+  if (el) el.textContent = '1';
 }
 
 // ========== CART ==========
 function updateCartBadge() {
-const total = state.cart.reduce((s, c) => s + c.qty, 0);
-const badge = document.getElementById('cartBadge');
-badge.textContent = total;
-badge.style.display = total > 0 ? 'flex' : 'none';
+  const total = state.cart.reduce((s, c) => s + c.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
 }
 
 function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartPanel').classList.add('open'); }
 function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartPanel').classList.remove('open'); }
 
 function renderCart() {
-const list = document.getElementById('cartItemsList'), bottom = document.getElementById('cartBottom');
-if (state.cart.length === 0) {
-list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>';
-bottom.innerHTML = ''; return;
-}
-list.innerHTML = state.cart.map(c => {
-const p = getProduct(c.productId); if (!p) return '';
-return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
-}).join('');
-const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
-bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
+  const list = document.getElementById('cartItemsList'), bottom = document.getElementById('cartBottom');
+  if (state.cart.length === 0) {
+    list.innerHTML = '<div class="cart-empty"><div class="ce-icon">👁️</div><p>السلة فارغة</p><button class="cta-primary" onclick="closeCart();scrollToProducts()" style="margin-top:20px">تسوّقي الآن</button></div>';
+    bottom.innerHTML = ''; return;
+  }
+  list.innerHTML = state.cart.map(c => {
+    const p = getProduct(c.productId); if (!p) return '';
+    return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
+  }).join('');
+  const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
+  const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
+  bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
 }
 
 function changeCartQty(pid, delta) {
-const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
-if (!item || !p) return;
-item.qty += delta;
-if (item.qty <= 0) { removeFromCart(pid); return; }
-if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); }
-saveData(); updateCartBadge(); renderCart();
+  const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
+  if (!item || !p) return;
+  item.qty += delta;
+  if (item.qty <= 0) { removeFromCart(pid); return; }
+  if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); }
+  saveData(); updateCartBadge(); renderCart();
 }
 
 function removeFromCart(pid) {
-state.cart = state.cart.filter(c => c.productId !== pid);
-saveData(); updateCartBadge(); renderCart();
-showToast('✅ تمت الإزالة من السلة', 'success');
+  state.cart = state.cart.filter(c => c.productId !== pid);
+  saveData(); updateCartBadge(); renderCart();
+  showToast('✅ تمت الإزالة من السلة', 'success');
 }
 
 async function checkout() {
-if (state.cart.length === 0) return;
-for (const item of state.cart) {
-const p = getProduct(item.productId);
-if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name,p.enName)}" الكمية غير متاحة`, 'error'); return; }
-}
-try {
-const btn = document.querySelector('.checkout-btn');
-const originalText = btn.innerHTML;
-btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
-await new Promise(resolve => setTimeout(resolve, 1500));
-state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
-showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
-state.cart = []; saveData(); updateCartBadge(); closeCart();
-btn.disabled = false; btn.innerHTML = originalText;
-} catch (error) {
-showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
-console.error('Checkout error:', error);
-}
+  if (state.cart.length === 0) return;
+  for (const item of state.cart) {
+    const p = getProduct(item.productId);
+    if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name,p.enName)}" الكمية غير متاحة`, 'error'); return; }
+  }
+  try {
+    const btn = document.querySelector('.checkout-btn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
+    showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
+    state.cart = []; saveData(); updateCartBadge(); closeCart();
+    btn.disabled = false; btn.innerHTML = originalText;
+  } catch (error) {
+    showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
+    console.error('Checkout error:', error);
+  }
 }
 
 // ========== WISHLIST ==========
 function toggleWishlist(productId) {
-const product = getProduct(productId);
-const index = state.wishlist.findIndex(w => w.productId === productId);
-if (index === -1) {
-state.wishlist.push({ productId, addedAt: Date.now() });
-showToast(`✅ "${getText(product.name,product.enName)}" أضيفت للمفضلة`, 'success');
-} else {
-state.wishlist.splice(index, 1);
-showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
-}
-saveData(); updateWishlistBadge();
-initSmoothSlider(); // تحديث أيقونات القلب
+  const product = getProduct(productId);
+  const index = state.wishlist.findIndex(w => w.productId === productId);
+  if (index === -1) {
+    state.wishlist.push({ productId, addedAt: Date.now() });
+    showToast(`✅ "${getText(product.name,product.enName)}" أضيفت للمفضلة`, 'success');
+  } else {
+    state.wishlist.splice(index, 1);
+    showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
+  }
+  saveData(); updateWishlistBadge();
+  initSmoothSlider();
 }
 
 function updateWishlistBadge() {}
@@ -972,84 +1048,84 @@ function openWishlist() { renderWishlist(); document.getElementById('wishlistOve
 function closeWishlist() { document.getElementById('wishlistOverlay').classList.remove('open'); document.getElementById('wishlistPanel').classList.remove('open'); document.body.style.overflow = ''; }
 
 function renderWishlist() {
-const container = document.getElementById('wishlistItems');
-if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
-container.innerHTML = state.wishlist.map(w => {
-const p = getProduct(w.productId); if (!p) return '';
-return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')" aria-label="أضف ${getText(p.name,p.enName)} للسلة">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')" aria-label="أزل ${getText(p.name,p.enName)} من المفضلة">إزالة</button></div></div></div>`;
-}).join('');
+  const container = document.getElementById('wishlistItems');
+  if (state.wishlist.length === 0) { container.innerHTML = '<div class="cart-empty"><div class="ce-icon">♡</div><p>المفضلة فارغة</p></div>'; return; }
+  container.innerHTML = state.wishlist.map(w => {
+    const p = getProduct(w.productId); if (!p) return '';
+    return `<div class="wi"><div class="wi-color" style="background:${p.gradient||generateLensGradient(p.color)}"></div><div class="wi-info"><div class="wi-name">${getText(p.name,p.enName)}</div><div class="wi-price">${getPrice(p)} ${getCurrencySymbol()}</div><div class="wi-actions"><button class="wi-add" onclick="addToCartFromWishlist('${p.id}')" aria-label="أضف ${getText(p.name,p.enName)} للسلة">أضف للسلة</button><button class="wi-remove" onclick="removeFromWishlist('${p.id}')" aria-label="أزل ${getText(p.name,p.enName)} من المفضلة">إزالة</button></div></div></div>`;
+  }).join('');
 }
 
 function removeFromWishlist(productId) {
-state.wishlist = state.wishlist.filter(w => w.productId !== productId);
-saveData(); updateWishlistBadge(); renderWishlist();
-initSmoothSlider();
-showToast('✅ تمت الإزالة من المفضلة', 'success');
+  state.wishlist = state.wishlist.filter(w => w.productId !== productId);
+  saveData(); updateWishlistBadge(); renderWishlist();
+  initSmoothSlider();
+  showToast('✅ تمت الإزالة من المفضلة', 'success');
 }
 
 function addToCartFromWishlist(productId) {
-const p = getProduct(productId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const existing = state.cart.find(c => c.productId === productId);
-if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
-else { state.cart.push({ productId, qty: 1 }); }
-saveData(); updateCartBadge(); renderWishlist();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+  const p = getProduct(productId);
+  if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
+  const existing = state.cart.find(c => c.productId === productId);
+  if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
+  else { state.cart.push({ productId, qty: 1 }); }
+  saveData(); updateCartBadge(); renderWishlist();
+  showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
 }
 
 // ========== ADMIN & UTILS ==========
 function checkAdminAccess() {
-const token = SecureStorage.get(CONFIG.auth.tokenKey, true);
-if (token) {
-try {
-const payload = JSON.parse(atob(token.split('.')[1]));
-if (payload.role === CONFIG.auth.adminRole) {
-state.isAdmin = true;
-document.body.classList.add('is-admin');
-}
-} catch { /* Invalid token */ }
-}
+  const token = SecureStorage.get(CONFIG.auth.tokenKey, true);
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.role === CONFIG.auth.adminRole) {
+        state.isAdmin = true;
+        document.body.classList.add('is-admin');
+      }
+    } catch { /* Invalid token */ }
+  }
 }
 
 function showToast(msg, type = 'info') {
-const t = document.getElementById('toast');
-t.textContent = msg; t.className = `toast ${type} show`;
-setTimeout(() => t.classList.remove('show'), 3000);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function setupEventListeners() {
-document.addEventListener('keydown', e => {
-if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
-if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
-if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
-});
-window.addEventListener('scroll', () => {
-document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
+    if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
+    if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
+  });
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
 }
 
 function changeLanguage(lang) {
-state.currentLang = lang;
-document.documentElement.lang = lang;
-document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-initSmoothSlider();
-if (document.getElementById('lensModal').classList.contains('open')) {
-const catName = document.getElementById('modalTitle').textContent;
-const products = state.products.filter(p => p.categoryName === catName && p.visible !== false);
-if (products.length) renderLensSlider(products);
-}
-renderCart();
+  state.currentLang = lang;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  initSmoothSlider();
+  if (document.getElementById('lensModal').classList.contains('open')) {
+    const catName = document.getElementById('modalTitle').textContent;
+    const products = state.products.filter(p => p.categoryName === catName && p.visible !== false);
+    if (products.length) renderLensSlider(products);
+  }
+  renderCart();
 }
 
 function changeCurrency(currency) {
-state.currentCurrency = currency;
-initSmoothSlider();
-if (document.getElementById('lensModal').classList.contains('open')) {
-const catName = document.getElementById('modalTitle').textContent;
-const products = state.products.filter(p => p.categoryName === catName && p.visible !== false);
-if (products.length) renderLensSlider(products);
-}
-renderCart();
+  state.currentCurrency = currency;
+  initSmoothSlider();
+  if (document.getElementById('lensModal').classList.contains('open')) {
+    const catName = document.getElementById('modalTitle').textContent;
+    const products = state.products.filter(p => p.categoryName === catName && p.visible !== false);
+    if (products.length) renderLensSlider(products);
+  }
+  renderCart();
 }
 
 function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); }
@@ -1062,22 +1138,22 @@ function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = wind
 resizeCanvas(); window.addEventListener('resize', resizeCanvas, { passive: true });
 
 class Particle {
-constructor() { this.reset(); }
-reset() {
-this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-this.size = Math.random() * 1.5 + 0.5;
-this.sx = (Math.random() - 0.5) * 0.25; this.sy = (Math.random() - 0.5) * 0.15;
-this.op = Math.random() * 0.35 + 0.08; this.pulse = Math.random() * Math.PI * 2; this.ps = Math.random() * 0.02 + 0.005;
-}
-update() {
-this.x += this.sx; this.y += this.sy; this.pulse += this.ps;
-if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-}
-draw() {
-const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse));
-ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill();
-}
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.5;
+    this.sx = (Math.random() - 0.5) * 0.25; this.sy = (Math.random() - 0.5) * 0.15;
+    this.op = Math.random() * 0.35 + 0.08; this.pulse = Math.random() * Math.PI * 2; this.ps = Math.random() * 0.02 + 0.005;
+  }
+  update() {
+    this.x += this.sx; this.y += this.sy; this.pulse += this.ps;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    const a = this.op * (0.5 + 0.5 * Math.sin(this.pulse));
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${a})`; ctx.fill();
+  }
 }
 
 for (let i = 0; i < 60; i++) particles.push(new Particle());
@@ -1085,15 +1161,15 @@ for (let i = 0; i < 60; i++) particles.push(new Particle());
 
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', async () => {
-checkAgeVerification(); 
-checkCookieConsent();
-await loadData(); // ✅ هذا هو الإصلاح الرئيسي
-initSmoothSlider(); 
-updateCartBadge(); 
-updateWishlistBadge();
-setupEventListeners(); 
-checkAdminAccess();
-document.body.classList.remove('loading');
+  checkAgeVerification(); 
+  checkCookieConsent();
+  await loadData(); // ✅ الآن يحمل البيانات الافتراضية إذا لم توجد
+  initSmoothSlider(); 
+  updateCartBadge(); 
+  updateWishlistBadge();
+  setupEventListeners(); 
+  checkAdminAccess();
+  document.body.classList.remove('loading');
 });
 </script>
 </body>
