@@ -1010,6 +1010,37 @@ saveData(); updateCartBadge(); renderCart();
 showToast('✅ تمت الإزالة من السلة', 'success');
 }
 
+// ========== ✅ INVOICE SYSTEM FOR INDEX.HTML ==========
+function generateInvoiceId() {
+    return 'INV-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+}
+
+function saveInvoice(customerName, customerPhone, items, total, currency) {
+    const invoice = {
+        id: generateInvoiceId(),
+        date: new Date().toISOString(),
+        customerName: customerName || 'عميل زائر',
+        customerPhone: customerPhone || 'غير محدد',
+        items: items,
+        total: total,
+        currency: currency || 'SAR',
+        status: 'completed'
+    };
+    // ✅ Load existing invoices from localStorage
+    let invoices = [];
+    try {
+        const stored = localStorage.getItem('lens_invoices');
+        if (stored) invoices = JSON.parse(stored);
+    } catch(e) { invoices = []; }
+    
+    // ✅ Add new invoice and save
+    invoices.unshift(invoice);
+    localStorage.setItem('lens_invoices', JSON.stringify(invoices));
+    
+    console.log('✅ تم حفظ الفاتورة:', invoice.id);
+    return invoice;
+}
+
 async function checkout() {
 if (state.cart.length === 0) return;
 for (const item of state.cart) {
@@ -1021,7 +1052,19 @@ const btn = document.querySelector('.checkout-btn');
 const originalText = btn.innerHTML;
 btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
 await new Promise(resolve => setTimeout(resolve, 1500));
+
+// ✅ Update stock
 state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
+
+// ✅ Create and save invoice
+const items = state.cart.map(c => ({ productId: c.productId, qty: c.qty }));
+const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
+const shipping = sub >= 200 ? 0 : 15;
+const total = sub + shipping;
+
+// ✅ Save invoice to localStorage (shared with admin.html)
+saveInvoice('عميل زائر', 'غير محدد', items, total, state.currentCurrency);
+
 showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
 state.cart = []; saveData(); updateCartBadge(); closeCart();
 btn.disabled = false; btn.innerHTML = originalText;
