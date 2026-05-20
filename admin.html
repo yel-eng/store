@@ -8,6 +8,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+<!-- ✅ Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
 --bg:#0a0808;--card-bg:rgba(26,22,20,.85);--gold:#c9a84c;--gold-light:#e8d5a3;
@@ -474,6 +476,13 @@ body.loading{overflow:hidden}
 </div>
 
 <script>
+// ==================== ✅ SUPABASE CONFIGURATION ====================
+const SUPABASE_URL = 'https://bdgnhmqmttiksuhoamil.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ25obXFtdHRpa3N1aG9hbWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjUwNTEsImV4cCI6MjA5NDU0MTA1MX0.X9-9HMqbXod2vyHRpd26MuBNTcqo4VERUwRI1o5lzMw';
+
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
 let state = { 
@@ -844,38 +853,132 @@ return `<div class="vis-item">
 }).join(''); 
 }
 
-// ==================== ✅ INVOICES SYSTEM ====================
+// ==================== ✅ SUPABASE INVOICES SYSTEM ====================
+
+// ✅ Generate unique invoice ID
 function generateInvoiceId() {
     return 'INV-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
 }
 
-function saveInvoice(customerName, customerPhone, items, total, currency) {
+// ✅ Save invoice to Supabase
+async function saveInvoice(customerName, customerPhone, items, total, currency) {
+    const invoiceId = generateInvoiceId();
     const invoice = {
-        id: generateInvoiceId(),
-        date: new Date().toISOString(),
-        customerName: customerName || 'عميل زائر',
-        customerPhone: customerPhone || 'غير محدد',
+        id: invoiceId,
+        customer_name: customerName || 'عميل زائر',
+        customer_phone: customerPhone || 'غير محدد',
         items: items,
         total: total,
         currency: currency || 'SAR',
         status: 'completed'
     };
-    state.invoices.unshift(invoice);
-    saveState();
-    return invoice;
+    
+    try {
+        const { data, error } = await supabase
+            .from('invoices')
+            .insert([invoice])
+            .select();
+            
+        if (error) throw error;
+        
+        console.log('✅ تم حفظ الفاتورة في Supabase:', invoiceId);
+        
+        // ✅ Also save locally for faster display
+        state.invoices.unshift(invoice);
+        localStorage.setItem('lens_invoices', JSON.stringify(state.invoices));
+        
+        return data[0];
+    } catch (err) {
+        console.error('❌ خطأ في حفظ الفاتورة:', err);
+        toast('⚠️ فشل حفظ الفاتورة في السيرفر', 'error');
+        // ✅ Fallback: save locally if network fails
+        state.invoices.unshift(invoice);
+        localStorage.setItem('lens_invoices', JSON.stringify(state.invoices));
+        return invoice;
+    }
 }
 
-function renderInvoices(filter = '') {
+// ✅ Fetch and display invoices from Supabase
+async function renderInvoices(filter = '') {
     const tbody = document.getElementById('invoicesBody');
     if (!tbody) return;
     
-    let invoices = [...state.invoices];
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px">⏳ جاري التحميل...</td></tr>';
+    
+    try {
+        let query = supabase
+            .from('invoices')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(50); // Limit for performance
+            
+        // ✅ Apply filter if exists
+        if (filter) {
+            if (/^\d/.test(filter)) {
+                query = query.ilike('customer_phone', `%${filter}%`);
+            } else {
+                query = query.ilike('id', `%${filter}%`);
+            }
+        }
+        
+        const { data: invoices, error } = await query;
+        
+        if (error) throw error;
+        
+        // ✅ Update local state
+        state.invoices = invoices || [];
+        localStorage.setItem('lens_invoices', JSON.stringify(state.invoices));
+        
+        if (!invoices || invoices.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-dim)">لا توجد فواتير ${filter ? 'تطابق البحث' : 'حتى الآن'}</td></tr>`;
+            return;
+        }
+        
+        // ✅ Display invoices
+        tbody.innerHTML = invoices.map(inv => {
+            const date = new Date(inv.created_at).toLocaleDateString('ar-SA', { 
+                year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' 
+            });
+            const itemsCount = Array.isArray(inv.items) ? inv.items.reduce((sum, item) => sum + (item.qty||1), 0) : 0;
+            const currSym = getCurrencySymbol(inv.currency);
+            const displayTotal = convertPrice(inv.total, state.settings.currency);
+            
+            return `<tr>
+                <td><span class="invoice-id">${inv.id}</span></td>
+                <td><span class="invoice-date">${date}</span></td>
+                <td>${inv.customer_name}</td>
+                <td>${inv.customer_phone}</td>
+                <td>${itemsCount} منتج</td>
+                <td><span class="invoice-total">${displayTotal} ${currSym}</span></td>
+                <td><span class="badge on">مكتملة</span></td>
+                <td class="invoice-actions">
+                    <button class="btn btn-ghost btn-sm" onclick="printInvoice('${inv.id}')" title="طباعة">🖨️</button>
+                    <button class="btn btn-ghost btn-sm" onclick="viewInvoice('${inv.id}')" title="عرض">👁️</button>
+                </td>
+            </tr>`;
+        }).join('');
+        
+    } catch (err) {
+        console.error('❌ خطأ في جلب الفواتير:', err);
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--error)">⚠️ فشل تحميل الفواتير</td></tr>';
+        
+        // ✅ Fallback: load from localStorage
+        renderInvoicesFromLocal(filter);
+    }
+}
+
+// ✅ Helper: Display invoices from localStorage (fallback)
+function renderInvoicesFromLocal(filter = '') {
+    const tbody = document.getElementById('invoicesBody');
+    if (!tbody) return;
+    
+    let invoices = [...(state.invoices || [])];
     
     if (filter) {
         const searchTerm = filter.toLowerCase();
         invoices = invoices.filter(inv => 
-            inv.id.toLowerCase().includes(searchTerm) || 
-            inv.customerPhone.includes(searchTerm)
+            inv.id?.toLowerCase().includes(searchTerm) || 
+            inv.customer_phone?.includes(searchTerm)
         );
     }
     
@@ -885,17 +988,17 @@ function renderInvoices(filter = '') {
     }
     
     tbody.innerHTML = invoices.map(inv => {
-        const date = new Date(inv.date).toLocaleDateString('ar-SA', { 
+        const date = new Date(inv.created_at || inv.date).toLocaleDateString('ar-SA', { 
             year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' 
         });
-        const itemsCount = inv.items.reduce((sum, item) => sum + item.qty, 0);
+        const itemsCount = Array.isArray(inv.items) ? inv.items.reduce((sum, item) => sum + (item.qty||1), 0) : 0;
         const currSym = getCurrencySymbol(inv.currency);
         
         return `<tr>
             <td><span class="invoice-id">${inv.id}</span></td>
             <td><span class="invoice-date">${date}</span></td>
-            <td>${inv.customerName}</td>
-            <td>${inv.customerPhone}</td>
+            <td>${inv.customer_name || inv.customerName}</td>
+            <td>${inv.customer_phone || inv.customerPhone}</td>
             <td>${itemsCount} منتج</td>
             <td><span class="invoice-total">${convertPrice(inv.total, state.settings.currency)} ${currSym}</span></td>
             <td><span class="badge on">مكتملة</span></td>
@@ -907,18 +1010,42 @@ function renderInvoices(filter = '') {
     }).join('');
 }
 
+// ✅ Search invoices
 function searchInvoices() {
     const query = document.getElementById('invoiceSearch').value.trim();
     renderInvoices(query);
 }
 
+// ✅ View invoice details
 function viewInvoice(id) {
-    const inv = state.invoices.find(i => i.id === id);
-    if (!inv) return;
+    // ✅ Try to get from state first (faster)
+    let inv = state.invoices.find(i => i.id === id);
     
-    const itemsHTML = inv.items.map(item => {
+    // ✅ If not found, fetch from Supabase
+    if (!inv) {
+        supabase
+            .from('invoices')
+            .select('*')
+            .eq('id', id)
+            .single()
+            .then(({ data, error }) => {
+                if (error || !data) {
+                    toast('❌ الفاتورة غير موجودة', 'error');
+                    return;
+                }
+                inv = data;
+                showInvoiceModal(inv);
+            });
+    } else {
+        showInvoiceModal(inv);
+    }
+}
+
+// ✅ Helper: Show invoice modal
+function showInvoiceModal(inv) {
+    const itemsHTML = (inv.items || []).map(item => {
         const p = getProduct(item.productId);
-        return `<tr><td>${p?.nameAr || 'منتج'}</td><td>${item.qty}</td><td>${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`;
+        return `<tr><td>${p?.nameAr || 'منتج'}</td><td>${item.qty || 1}</td><td>${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`;
     }).join('');
     
     const modal = document.createElement('div');
@@ -930,9 +1057,9 @@ function viewInvoice(id) {
                 <button class="modal-close" onclick="this.closest('.overlay').remove()">✕</button>
             </div>
             <div class="modal-body">
-                <p><strong>العميل:</strong> ${inv.customerName}</p>
-                <p><strong>الهاتف:</strong> ${inv.customerPhone}</p>
-                <p><strong>التاريخ:</strong> ${new Date(inv.date).toLocaleString('ar-SA')}</p>
+                <p><strong>العميل:</strong> ${inv.customer_name || inv.customerName}</p>
+                <p><strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}</p>
+                <p><strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}</p>
                 <hr style="border-color:var(--border);margin:12px 0">
                 <table style="width:100%;font-size:11px">
                     <thead><tr><th style="text-align:right">المنتج</th><th>الكمية</th><th>السعر</th></tr></thead>
@@ -953,13 +1080,32 @@ function viewInvoice(id) {
     modal.querySelector('.modal-close').onclick = () => modal.remove();
 }
 
+// ✅ Print invoice
 function printInvoice(id) {
     const inv = state.invoices.find(i => i.id === id);
-    if (!inv) return;
-    
-    const itemsHTML = inv.items.map(item => {
+    if (!inv) {
+        // ✅ If not in local state, fetch from Supabase
+        supabase
+            .from('invoices')
+            .select('*')
+            .eq('id', id)
+            .single()
+            .then(({ data, error }) => {
+                if (error || !data) {
+                    toast('❌ الفاتورة غير موجودة', 'error');
+                    return;
+                }
+                doPrintInvoice(data);
+            });
+        return;
+    }
+    doPrintInvoice(inv);
+}
+
+function doPrintInvoice(inv) {
+    const itemsHTML = (inv.items || []).map(item => {
         const p = getProduct(item.productId);
-        return `<tr><td>${p?.nameAr || 'منتج'}</td><td style="text-align:center">${item.qty}</td><td style="text-align:left">${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`;
+        return `<tr><td>${p?.nameAr || 'منتج'}</td><td style="text-align:center">${item.qty || 1}</td><td style="text-align:left">${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`;
     }).join('');
     
     const printWindow = window.open('', '_blank');
@@ -991,11 +1137,11 @@ function printInvoice(id) {
                 <div class="info">
                     <div>
                         <strong>رقم الفاتورة:</strong> #${inv.id}<br>
-                        <strong>التاريخ:</strong> ${new Date(inv.date).toLocaleString('ar-SA')}
+                        <strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}
                     </div>
                     <div style="text-align:left">
-                        <strong>العميل:</strong> ${inv.customerName}<br>
-                        <strong>الهاتف:</strong> ${inv.customerPhone}
+                        <strong>العميل:</strong> ${inv.customer_name || inv.customerName}<br>
+                        <strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}
                     </div>
                 </div>
                 <table>
