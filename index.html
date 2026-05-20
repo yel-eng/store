@@ -37,7 +37,10 @@
 --text:#f5ede0;--text-dim:#8a7e73;--radius:24px;--radius-sm:14px;
 --preview-dark:#121010;--preview-light:#f4f1ed;
 --success:#2ecc71;--warning:#f39c12;--error:#e74c3c;
---transition-fast:.2s;--transition-normal:.4s;--transition-slow:.6s;
+/* ✅ Fixed: Slower, smoother transitions */
+--transition-fast:.25s cubic-bezier(.22,1,.36,1);
+--transition-normal:.6s cubic-bezier(.22,1,.36,1);
+--transition-slow:.9s cubic-bezier(.22,1,.36,1);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -236,7 +239,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
 }
-.modal-nav-prev { right: 20px; } /* RTL: Right is Previous visually if we think of sliding, but logically Next in RTL list? Let's stick to visual direction */
+.modal-nav-prev { right: 20px; }
 .modal-nav-next { left: 20px; }
 
 @media(max-width: 768px) {
@@ -247,7 +250,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .lens-slider-container{position:relative;overflow:hidden;border-radius:var(--radius);padding:44px 36px;border:1px solid rgba(201,168,76,.04);transition:background var(--transition-slow),border-color var(--transition-slow)}
 .lens-slider-container.dark-bg{background:rgba(201,168,76,.012)}
 .lens-slider-container.light-bg{background:rgba(0,0,0,.015);border-color:rgba(0,0,0,.04)}
-.lens-slider-track{display:flex;transition:transform var(--transition-slow) cubic-bezier(.4,0,.2,1)}
+.lens-slider-track{display:flex;transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1)}
 .lens-slide{min-width:100%;display:flex;gap:48px;align-items:center;padding:0 10px}
 .lens-visual{width:260px;height:260px;border-radius:50%;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:box-shadow var(--transition-slow)}
 .lens-visual.dark-bg{animation:lensGlow 4s ease-in-out infinite}
@@ -448,7 +451,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
     <option value="SAR">ر.س</option>
     <option value="USD">$</option>
     <option value="AED">د.إ</option>
-    <option value="EGP">ج.م</option> <!-- Added EGP -->
+    <option value="EGP">ج.م</option>
 </select></div>
 <button class="cart-btn" onclick="openCart()" aria-label="فتح سلة المشتريات">🛒 <span class="sr-only">السلة</span><span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite"></span></button>
 <a href="admin.html" class="admin-link" id="adminLink" aria-label="لوحة التحكم">⚙️ <span>الداشبورد</span></a></div></nav>
@@ -518,7 +521,7 @@ i18n: {
         SAR: 1, 
         USD: 0.27, 
         AED: 0.99,
-        EGP: 12.5 // Added EGP Rate (Approximate)
+        EGP: 12.5
     } 
 }
 };
@@ -551,18 +554,13 @@ return { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' }[currency] || curre
 }
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
 
-// ========== LOAD DATA - ✅ FIXED: Read from Dashboard Keys ==========
+// ========== LOAD DATA ==========
 async function loadData() {
 try {
 console.log('🔄 جاري تحميل البيانات...');
-
-// 🔑 قراءة البيانات من المفاتيح التي يستخدمها الداشبورد
 const productKeys = ['lens_prods', 'lensora_products', 'products'];
 const categoryKeys = ['lens_cats', 'lensora_categories', 'categories'];
-
 let localProducts = [], localCats = [];
-
-// البحث عن المنتجات في المفاتيح المختلفة
 for (const key of productKeys) {
 const data = localStorage.getItem(key);
 if (data) {
@@ -573,8 +571,6 @@ break;
 } catch(e) { console.warn(`❌ فشل في قراءة ${key}`); }
 }
 }
-
-// البحث عن الفئات في المفاتيح المختلفة
 for (const key of categoryKeys) {
 const data = localStorage.getItem(key);
 if (data) {
@@ -585,8 +581,6 @@ break;
 } catch(e) { console.warn(`❌ فشل في قراءة ${key}`); }
 }
 }
-
-// 1. إنشاء خريطة للفئات
 const catMap = {};
 if (Array.isArray(localCats) && localCats.length > 0) {
 localCats.forEach(c => {
@@ -598,28 +592,21 @@ color: c.color || '#c9a84c'
 };
 });
 }
-
-// 2. تحويل المنتجات
 if (Array.isArray(localProducts) && localProducts.length > 0) {
 state.products = localProducts.map(p => {
 const catId = p.category || p.categoryId || 'uncategorized';
 const catInfo = catMap[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
-
 return {
 ...p,
 id: p.id || ('p_' + Math.random().toString(36).substr(2, 9)),
-// توحيد الأسماء
 name: p.nameAr || p.name || 'منتج',
 enName: p.nameEn || p.enName || '',
-// معلومات الفئة
 categoryId: catId,
 categoryName: catInfo.ar,
 categoryNameEn: catInfo.en,
 categoryColor: catInfo.color,
-// الشكل واللون
 gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
 visible: p.visible !== false,
-// الأرقام
 price: parseFloat(p.price) || 0,
 stock: parseInt(p.stock) || 0,
 opacity: p.opacity || 0.7,
@@ -630,7 +617,6 @@ offsetY: p.offsetY || 0
 });
 console.log(`✅ تم معالجة ${state.products.length} منتج`);
 } else {
-    // Demo Data if empty (First Run)
     console.log('ℹ️ لا توجد بيانات محلية، تحميل بيانات تجريبية...');
     const demoCats = [
         {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
@@ -641,20 +627,13 @@ console.log(`✅ تم معالجة ${state.products.length} منتج`);
         {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', category:'brown', price:85, stock:30, color:'#8B4513', visible:true},
         {id:'p3', nameAr:'محيط', nameEn:'Ocean', category:'blue', price:90, stock:20, color:'#2E6CB5', visible:true}
     ];
-    
-    // Save Demo Data to LocalStorage so Admin can see it too
     localStorage.setItem('lens_cats', JSON.stringify(demoCats));
     localStorage.setItem('lens_prods', JSON.stringify(demoProds));
-    
-    // Reload logic recursively once to process demo data
     await loadData();
     return;
 }
-
-// 3. تحميل السلة والمفضلة
 state.cart = SecureStorage.get('lensora_cart') || [];
 state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-
 console.log('✅ تم تحميل البيانات بنجاح');
 } catch (error) {
 console.error('❌ فشل في تحميل البيانات:', error);
@@ -681,17 +660,12 @@ function showShipping() { showToast('🚚 شحن مجاني للطلبات فو�
 function showReturns() { showToast('🔄 إرجاع خلال 14 يوم', 'info'); }
 function showContact() { showToast('💬 support@lensora.com', 'info'); }
 
-// ========== SLIDER - INFINITE LOOP ==========
+// ========== SLIDER - INFINITE LOOP (SMOOTH VERSION) ==========
 function initSmoothSlider() {
 const track = document.getElementById('sliderTrack');
 if (!track) return;
-
-// فلترة المنتجات المرئية فقط
 const visibleProducts = state.products.filter(p => p.visible !== false);
-
 const GAP = 28, CARD_W = 340, ITEM_W = CARD_W + GAP;
-
-// تجميع المنتجات حسب الفئة
 const grouped = {};
 visibleProducts.forEach(p => {
 const catId = p.categoryId;
@@ -700,22 +674,19 @@ grouped[catId] = {
 id: catId,
 arName: p.categoryName,
 enName: p.categoryNameEn,
-color: p.categoryColor || '#c9a84c', // Get category color
+color: p.categoryColor || '#c9a84c',
 cardBg: `linear-gradient(135deg,${adjColor(p.categoryColor||'#c9a84c',-60)} 0%,${p.categoryColor||'#c9a84c'} 50%,${adjColor(p.categoryColor||'#c9a84c',30)} 100%)`,
 lenses: []
 };
 }
 grouped[catId].lenses.push(p);
 });
-
 const COLORS_DATA = Object.values(grouped);
 const total = COLORS_DATA.length;
-
 if (total === 0) { 
 track.innerHTML = '<div style="color:white; text-align:center; width:100%;">لا توجد منتجات معروضة حالياً</div>'; 
 return; 
 }
-
 let html = '';
 for (let copy = 0; copy < 3; copy++) {
 COLORS_DATA.forEach((cat, i) => {
@@ -725,7 +696,6 @@ const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
 const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
 const inWishlist = state.wishlist.some(w => w.productId === main.id);
 const globalIdx = copy * total + i;
-
 html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="listitem" tabindex="0">
 <button class="card-wishlist ${inWishlist?'active':''}" onclick="event.stopPropagation();toggleWishlist('${main.id}')" aria-label="${inWishlist?'إزالة':'إضافة'}">${inWishlist?'❤️':'♡'}</button>
 <div class="card-bg" style="background:${cat.cardBg}" aria-hidden="true"></div>
@@ -739,7 +709,6 @@ html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="
 </div>
 <div class="card-body">
 <div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
-<!-- Changed Name to Category Name -->
 <div class="card-name">مجموعة ${getText(cat.arName,cat.enName)}</div>
 <div class="card-count">${cat.lenses.length} لون متاح · إجمالي المخزون: ${totalStock}</div>
 <div class="card-footer">
@@ -750,15 +719,10 @@ html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="
 </div>`;
 });
 }
-
 track.innerHTML = html;
-
-// إنشاء النقاط
 document.getElementById('sliderDots').innerHTML = COLORS_DATA.map((_, i) => 
 `<div class="slider-dot" data-idx="${i}" role="tab" aria-selected="${i===0?'true':'false'}"></div>`
 ).join('');
-
-// متغيرات السلايدر
 let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
 
 function getCenterOffset() {
@@ -766,6 +730,7 @@ const vp = document.querySelector('.slider-viewport');
 return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
 }
 
+// ✅ Fixed: Smoother animation with better easing and longer duration
 function snapToIndex(idx) {
 isAnimating = true;
 const normalized = ((idx % total) + total) % total;
@@ -773,9 +738,9 @@ activeCatIdx = normalized;
 const target = idx * ITEM_W;
 const centerOffset = getCenterOffset();
 const pos = target - centerOffset;
-
 cancelAnimationFrame(animFrame);
-animateTo(pos, () => {
+// ✅ Increased duration to 850ms for smoother motion
+animateTo(pos, 850, () => {
 isAnimating = false;
 if (idx >= total * 2 || idx < 0) {
 const resetIdx = normalized + (idx >= total * 2 ? total : 0);
@@ -789,11 +754,14 @@ track.style.transition = '';
 updateDots(normalized);
 }
 
-function animateTo(targetPos, callback) {
-const start = currentPos, diff = targetPos - start, duration = 500, startTime = performance.now();
+// ✅ Fixed: Added custom easing function for natural feel
+function animateTo(targetPos, duration = 850, callback) {
+const start = currentPos, diff = targetPos - start, startTime = performance.now();
+// ✅ Smoother easing: cubic-bezier(.22,1,.36,1)
+function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 function step(now) {
 const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
-const ease = 1 - Math.pow(1 - progress, 4);
+const ease = easeOutQuart(progress);
 currentPos = start + diff * ease;
 track.style.transform = `translateX(-${currentPos}px)`;
 if (progress < 1) animFrame = requestAnimationFrame(step); else if (callback) callback();
@@ -809,21 +777,18 @@ d.classList.toggle('active', active);
 d.setAttribute('aria-selected', active);
 });
 }
-
-// التهيئة الأولية
 const startCopy = 1;
 currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
 track.style.transform = `translateX(-${currentPos}px)`;
 updateDots(0);
-
-// التشغيل التلقائي
+// ✅ Fixed: Slower autoplay interval (5 seconds instead of 3.5)
 if (autoplayInterval) clearInterval(autoplayInterval);
 autoplayInterval = setInterval(() => {
 if (!isDragging && !isAnimating) {
 activeCatIdx++;
 snapToIndex(activeCatIdx);
 }
-}, 3500);
+}, 5000);
 
 function resetAutoplay() {
 if (autoplayInterval) clearInterval(autoplayInterval);
@@ -832,14 +797,10 @@ if (!isDragging && !isAnimating) {
 activeCatIdx++;
 snapToIndex(activeCatIdx);
 }
-}, 3500);
+}, 5000);
 }
-
-// أزرار التنقل
 document.getElementById('prevBtn').onclick = () => { activeCatIdx--; snapToIndex(activeCatIdx); resetAutoplay(); };
 document.getElementById('nextBtn').onclick = () => { activeCatIdx++; snapToIndex(activeCatIdx); resetAutoplay(); };
-
-// النقاط
 document.getElementById('sliderDots').onclick = (e) => {
 const dot = e.target.closest('.slider-dot'); if (!dot) return;
 const idx = parseInt(dot.dataset.idx);
@@ -848,15 +809,12 @@ activeCatIdx = idx;
 snapToIndex(targetGlobalIdx);
 resetAutoplay();
 };
-
-// النقر على الكارت
 track.onclick = (e) => {
 const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
 const catIdx = parseInt(card.dataset.cat);
 if (!isNaN(catIdx)) openLensModal(catIdx);
 };
-
-// السحب باللمس/الماوس
+// ✅ Fixed: Improved drag resistance for smoother touch/mouse interaction
 const startDrag = (x) => {
 isDragging = true; dragStartX = x; dragStartPos = currentPos;
 cancelAnimationFrame(animFrame); isAnimating = false;
@@ -865,7 +823,8 @@ track.style.transition = 'none';
 const moveDrag = (x) => {
 if (!isDragging) return;
 const diff = x - dragStartX;
-currentPos = dragStartPos - diff;
+// ✅ Added slight resistance factor (0.85) for more controlled dragging
+currentPos = dragStartPos - (diff * 0.85);
 track.style.transform = `translateX(-${currentPos}px)`;
 };
 const endDrag = () => {
@@ -881,14 +840,12 @@ activeCatIdx = ((targetIdx % total) + total) % total;
 snapToIndex(targetIdx);
 resetAutoplay();
 };
-
 track.addEventListener('touchstart', e => startDrag(e.touches[0].clientX), {passive:true});
 track.addEventListener('touchmove', e => moveDrag(e.touches[0].clientX), {passive:true});
 track.addEventListener('touchend', endDrag);
 track.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
 document.addEventListener('mousemove', e => moveDrag(e.clientX));
 document.addEventListener('mouseup', endDrag);
-
 window.addEventListener('resize', () => {
 if (!isDragging && !isAnimating) {
 const centerOffset = getCenterOffset();
@@ -911,8 +868,6 @@ container.classList.toggle('dark-bg', !isLight); container.classList.toggle('lig
 
 function openLensModal(ci) {
 currentLensIdx = 0;
-
-// الحصول على منتجات الفئة المحددة
 const visibleProducts = state.products.filter(p => p.visible !== false);
 const grouped = {};
 visibleProducts.forEach(p => {
@@ -922,15 +877,11 @@ grouped[p.categoryId].push(p);
 const catIds = Object.keys(grouped);
 const targetCatId = catIds[ci % catIds.length];
 const catProducts = grouped[targetCatId] || visibleProducts;
-
 if (!catProducts.length) return;
-
 const categoryName = catProducts[0].categoryName;
-// Changed Title to reflect Category
 document.getElementById('modalTitle').textContent = `مجموعة ${categoryName || 'تفاصيل المنتج'}`;
 document.getElementById('modalBox').classList.remove('light-bg');
 document.getElementById('lensContainer').classList.add('dark-bg');
-
 renderLensSlider(catProducts);
 document.getElementById('lensModal').classList.add('open');
 document.body.style.overflow = 'hidden';
@@ -946,7 +897,6 @@ document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
 const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
 const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
 const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
-
 return `<div class="lens-slide" role="tabpanel">
 <div class="lens-visual dark-bg">
 <div class="lens-visual-ring" aria-hidden="true"></div>
@@ -967,11 +917,9 @@ return `<div class="lens-slide" role="tabpanel">
 <button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
 </div></div>`;
 }).join('');
-
 document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => 
 `<div class="slider-dot-modal ${li===0?'active':''}" onclick="goToLensSlide(${li})"></div>`
 ).join('');
-
 updateLensSlider();
 }
 
@@ -985,10 +933,17 @@ document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
 document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
 }
 
+// ✅ Fixed: Smoother modal slide with better easing
 function slideLensMove(dir) {
 const total = document.getElementById('lensTrack').children.length;
 currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
+// ✅ Added smooth transition for modal slider
+document.getElementById('lensTrack').style.transition = 'transform 0.85s cubic-bezier(.22,1,.36,1)';
 updateLensSlider();
+// ✅ Reset transition after animation completes
+setTimeout(() => {
+document.getElementById('lensTrack').style.transition = '';
+}, 900);
 }
 
 function goToLensSlide(i) { currentLensIdx = i; updateLensSlider(); }
@@ -1088,7 +1043,7 @@ state.wishlist.splice(index, 1);
 showToast(`🗑️ "${getText(product.name,product.enName)}" أزيلت من المفضلة`, 'info');
 }
 saveData(); updateWishlistBadge();
-initSmoothSlider(); // تحديث أيقونات القلب
+initSmoothSlider();
 }
 
 function updateWishlistBadge() {}
@@ -1209,7 +1164,7 @@ for (let i = 0; i < 60; i++) particles.push(new Particle());
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', async () => {
 checkAgeVerification(); checkCookieConsent();
-await loadData(); // ✅ الآن يقرأ من مفاتيح الداشبورد الصحيحة
+await loadData();
 initSmoothSlider(); updateCartBadge(); updateWishlistBadge();
 setupEventListeners(); checkAdminAccess();
 document.body.classList.remove('loading');
