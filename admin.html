@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LENSORA — لوحة التحكم الكاملة</title>
-<!-- ✅ Fixed Favicon (Emoji Eye) to prevent 404 error -->
+<!-- ✅ Fixed Favicon -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
@@ -20,6 +20,13 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-tap-highlight-color:transparent}
 body.loading{overflow:hidden}
+
+/* ✅ Helper class for Screen Reader only labels (Fixes accessibility warnings) */
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 /* LOGIN */
 .login-screen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-screen.hidden{display:none}
@@ -32,6 +39,7 @@ body.loading{overflow:hidden}
 .login-form button{padding:14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:14px;min-height:48px;margin-top:6px;cursor:pointer;border:none}
 .login-form button:active{transform:scale(.98)}
 .login-hint{font-size:10px;color:var(--text-dim);margin-top:12px}
+
 /* DASHBOARD LAYOUT */
 .dashboard{display:none}.dashboard.active{display:flex;min-height:100vh}
 @media(max-width:900px){.dashboard.active{flex-direction:column}}
@@ -52,20 +60,30 @@ body.loading{overflow:hidden}
 .side-logout{margin-right:auto;width:28px;height:28px;border-radius:6px;background:rgba(231,76,60,.1);color:#e74c3c;display:flex;align-items:center;justify-content:center;font-size:12px;min-width:28px;min-height:28px;cursor:pointer;border:none}
 .main{flex:1;padding:16px;padding-top:calc(var(--nav-h) + 16px);width:100%;overflow-x:hidden}
 @media(max-width:900px){.main{padding-right:12px;padding-left:12px}}
+
+/* TOPBAR */
 .topbar{position:fixed;top:0;right:0;left:0;height:var(--nav-h);background:rgba(8,6,6,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:999}
 .topbar-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
 .topbar-actions{display:flex;align-items:center;gap:6px}
 .store-btn{padding:8px 14px;border-radius:20px;background:rgba(201,168,76,.08);color:var(--gold);font-size:11px;font-weight:600;border:1px solid var(--border);min-height:38px;cursor:pointer;display:flex;align-items:center;gap:4px}
 .store-btn:active{transform:scale(.96)}
+
+/* PAGES */
 .page{display:none}.page.active{display:block;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:10px}
 .stat-icon{width:40px;height:40px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .stat-val{font-size:20px;font-weight:700;color:var(--gold)}
 .stat-lbl{font-size:10px;color:var(--text-dim)}
+
+/* CARDS */
 .fcard{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
 .ftitle{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);margin-bottom:12px}
+
+/* TABLE */
 .p-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .p-table{width:100%;border-collapse:collapse;min-width:600px}
 .p-table th{text-align:right;padding:10px 10px;font-size:10px;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
@@ -76,6 +94,8 @@ body.loading{overflow:hidden}
 .p-name{font-weight:600}
 .p-cat{font-size:9px;color:var(--text-dim)}
 .p-price{font-weight:600;color:var(--gold)}
+
+/* BADGES & BUTTONS */
 .badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;display:inline-block;white-space:nowrap}
 .badge.on{background:rgba(46,204,113,.15);color:var(--success)}
 .badge.off{background:rgba(231,76,60,.15);color:var(--error)}
@@ -87,24 +107,31 @@ body.loading{overflow:hidden}
 .btn:active{transform:scale(.96)}
 .btn-sm{padding:4px 8px;font-size:10px;min-height:28px;border-radius:6px}
 .btn-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;padding:0}
+
+/* TOGGLE */
 .toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
 .toggle input{display:none}
 .toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:11px;transition:.3s}
 .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;right:3px;transition:.3s}
 .toggle input:checked+.toggle-slider{background:var(--gold)}
 .toggle input:checked+.toggle-slider::before{transform:translateX(-18px)}
+
+/* FORMS */
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .fgroup{display:flex;flex-direction:column;gap:4px}
 .fgroup label{font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px}
 .fgroup input,.fgroup select,.fgroup textarea{background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;color:var(--text);font-size:12px;min-height:38px;font-family:inherit}
 .fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{outline:2px solid var(--gold);border-color:transparent}
 .fgroup textarea{min-height:60px;resize:vertical}
+
 .img-upload{width:80px;height:80px;border-radius:50%;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;background:rgba(201,168,76,.03)}
 .img-upload:hover{border-color:var(--gold)}
 .img-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .img-upload span{font-size:8px;color:var(--text-dim);text-align:center;margin-top:2px}
 .upload-icon{font-size:18px;color:var(--text-dim)}
 .img-upload.rect{border-radius:var(--radius-sm)}
+
+/* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:flex;align-items:center;justify-content:center;padding:12px;opacity:0;visibility:hidden;transition:all .25s}
 .overlay.show{opacity:1;visibility:visible}
 .modal{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -113,163 +140,269 @@ body.loading{overflow:hidden}
 .modal-close{width:30px;height:30px;border-radius:8px;background:rgba(201,168,76,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;min-width:30px;min-height:30px;cursor:pointer;border:none}
 .modal-body{padding:18px}
 .modal-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border-bottom:none}
-.setting-lbl{font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
-.setting-desc{font-size:10px;color:var(--text-dim);margin-top:1px}
+
+/* CATEGORIES */
 .cat-vis{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(201,168,76,.03);border-radius:var(--radius-sm);margin-bottom:4px}
 .cat-color{width:14px;height:14px;border-radius:4px;flex-shrink:0}
 .cat-name{font-size:12px;font-weight:600;flex:1;margin:0 8px}
 .cat-count{font-size:10px;color:var(--text-dim);margin-left:6px}
-.colors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-.color-card{background:rgba(201,168,76,.04);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
-.color-swatch-grid{width:100%;height:50px;position:relative;cursor:pointer;overflow:hidden}
-.color-swatch-grid img{width:100%;height:100%;object-fit:cover}
-.color-swatch-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);color:#fff;font-size:10px;opacity:0;transition:opacity .2s}
-.color-swatch-grid:hover .color-swatch-overlay{opacity:1}
-.color-info{padding:8px;display:flex;align-items:center;justify-content:space-between;gap:4px}
-.color-name{font-size:10px;font-weight:600;flex:1}
-.color-actions{display:flex;gap:2px}
+
+/* VISIBILITY */
+.vis-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.vis-item:last-child{border-bottom:none}
+.hidden-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.05)}
+
+/* TOAST */
 .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(14,12,12,.95);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:var(--radius-sm);font-size:11px;z-index:9999;transition:transform .3s;max-width:90vw;text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--error)}
-.vis-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.vis-item:last-child{border-bottom:none}
-.hidden-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.05)}
+
 @media(max-width:600px){
 .stats{grid-template-columns:repeat(2,1fr)}
 .fgrid{grid-template-columns:1fr}
-.colors-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
 .topbar-title{font-size:14px}
 }
 </style>
 </head>
 <body class="loading">
+
 <!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
-<div class="login-card">
-<div class="login-logo">LENSORA</div>
-<div class="login-sub">لوحة التحكم الكاملة</div>
-<form class="login-form" onsubmit="doLogin(event)">
-<div class="fgroup"><label for="loginEmail">البريد الإلكتروني</label><input type="email" id="loginEmail" name="loginEmail" placeholder="admin@lensora.com" required autocomplete="username"></div>
-<div class="fgroup"><label for="loginPass">كلمة المرور</label><input type="password" id="loginPass" name="loginPass" placeholder="••••••••" required autocomplete="current-password"></div>
-<button type="submit">تسجيل الدخول</button>
-</form>
-<div class="login-hint">admin@lensora.com / admin123</div>
+    <div class="login-card">
+        <div class="login-logo">LENSORA</div>
+        <div class="login-sub">لوحة التحكم الكاملة</div>
+        <form class="login-form" onsubmit="doLogin(event)">
+            <div class="fgroup">
+                <label for="loginEmail">البريد الإلكتروني</label>
+                <input type="email" id="loginEmail" name="loginEmail" placeholder="admin@lensora.com" required autocomplete="username">
+            </div>
+            <div class="fgroup">
+                <label for="loginPass">كلمة المرور</label>
+                <input type="password" id="loginPass" name="loginPass" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+        <div class="login-hint">admin@lensora.com / admin123</div>
+    </div>
 </div>
-</div>
+
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
-<aside class="sidebar" id="sidebar">
-<div class="side-head"><div class="side-logo">LENSORA</div></div>
-<nav class="side-menu">
-<div class="side-item active" data-page="overview"><span class="side-icon">📊</span>نظرة عامة</div>
-<div class="side-item" data-page="allproducts"><span class="side-icon">👁️</span>جميع المنتجات</div>
-<div class="side-item" data-page="addproduct"><span class="side-icon">➕</span>إضافة منتج</div>
-<div class="side-item" data-page="categories"><span class="side-icon">🎨</span>الفئات</div>
-<div class="side-item" data-page="visibility"><span class="side-icon">👁️‍🗨️</span>إخفاء/إظهار</div>
-</nav>
-<div class="side-foot">
-<div class="side-user">
-<div class="side-avatar">م</div>
-<div><div class="side-name">مدير المتجر</div><div class="side-role">مسؤول</div></div>
-<button class="side-logout" onclick="doLogout()" aria-label="تسجيل الخروج">🚪</button>
+    <aside class="sidebar" id="sidebar">
+        <div class="side-head"><div class="side-logo">LENSORA</div></div>
+        <nav class="side-menu">
+            <div class="side-item active" data-page="overview"><span class="side-icon">📊</span>نظرة عامة</div>
+            <div class="side-item" data-page="allproducts"><span class="side-icon">👁️</span>جميع المنتجات</div>
+            <div class="side-item" data-page="addproduct"><span class="side-icon">➕</span>إضافة منتج</div>
+            <div class="side-item" data-page="categories"><span class="side-icon">🎨</span>الفئات</div>
+            <div class="side-item" data-page="visibility"><span class="side-icon">👁️‍🗨️</span>إخفاء/إظهار</div>
+        </nav>
+        <div class="side-foot">
+            <div class="side-user">
+                <div class="side-avatar">م</div>
+                <div><div class="side-name">مدير المتجر</div><div class="side-role">مسؤول</div></div>
+                <button class="side-logout" onclick="doLogout()" aria-label="تسجيل الخروج">🚪</button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h1 class="topbar-title" id="pageTitle">نظرة عامة</h1>
+            <div class="topbar-actions">
+                <!-- ✅ Fixed: Added Label with sr-only and correct 'for'/'id' match -->
+                <label for="adminCurrency" class="sr-only">اختر العملة</label>
+                <select id="adminCurrency" name="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
+                    <option value="SAR">ر.س</option>
+                    <option value="EGP">ج.م</option>
+                    <option value="USD">$</option>
+                    <option value="AED">د.إ</option>
+                </select>
+                <button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button>
+            </div>
+        </header>
+
+        <!-- OVERVIEW -->
+        <div class="page active" id="page-overview">
+            <div class="stats">
+                <div class="stat"><div class="stat-icon" aria-hidden="true">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
+                <div class="stat"><div class="stat-icon" aria-hidden="true">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
+                <div class="stat"><div class="stat-icon" aria-hidden="true">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
+                <div class="stat"><div class="stat-icon" aria-hidden="true">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
+            </div>
+            <div class="fcard"><h3 class="ftitle">المنتجات المخفية</h3><div id="hiddenOverviewList" style="color:var(--text-dim);font-size:12px"></div></div>
+        </div>
+
+        <!-- ALL PRODUCTS -->
+        <div class="page" id="page-allproducts">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+                <h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                    <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
+                    <!-- ✅ Fixed: Added Label with sr-only and correct 'for'/'id' match -->
+                    <label for="filterCat" class="sr-only">تصفية حسب الفئة</label>
+                    <select id="filterCat" name="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
+                        <option value="">كل الفئات</option>
+                        <option value="hidden">المخفية فقط</option>
+                        <option value="visible">المرئية فقط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="fcard" style="padding:0;overflow:hidden">
+                <div class="p-table-wrap">
+                    <table class="p-table">
+                        <thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead>
+                        <tbody id="productsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD PRODUCT -->
+        <div class="page" id="page-addproduct">
+            <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
+            <div class="fcard">
+                <div class="fgrid">
+                    <div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" name="pNameAr" placeholder="مثال: عسل ذهبي" required></div>
+                    <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" name="pNameEn" placeholder="Golden Honey"></div>
+                    <div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" name="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
+                    <div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" name="pPrice" min="0" step="1" placeholder="85" required></div>
+                    <div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" name="pStock" min="0" placeholder="30" required></div>
+                    
+                    <div class="fgroup">
+                        <label for="pColor">اللون (HEX)</label>
+                        <div style="display:flex;gap:6px;align-items:center">
+                            <input type="color" id="pColor" name="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+                            <input type="text" id="pColorHex" name="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+                        </div>
+                    </div>
+
+                    <div class="fgroup">
+                        <label for="pOpacity">شفافية اللون (%)</label>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <input type="range" id="pOpacity" name="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
+                            <span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
+                        </div>
+                    </div>
+
+                    <div class="fgroup">
+                        <label for="pLensSize">حجم العدسة (%)</label>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <input type="range" id="pLensSize" name="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'">
+                            <span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fgroup" style="margin-top:12px">
+                    <label for="pDesc">وصف المنتج</label>
+                    <textarea id="pDesc" name="pDesc" placeholder="وصف المنتج..."></textarea>
+                </div>
+
+                <div style="margin-top:14px">
+                    <!-- ✅ Fixed: 'for' matches 'id' of input below -->
+                    <label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label>
+                    <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+                        <div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0">
+                            <span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span>
+                        </div>
+                        <!-- ✅ Fixed: Added explicit ID -->
+                        <input type="file" id="lensImgInput" name="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
+                    <!-- ✅ Fixed: Toggle structure -->
+                    <label for="pVisible" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
+                        <input type="checkbox" id="pVisible" name="pVisible" checked style="display:none;">
+                        <span class="toggle" style="width:32px;height:18px;margin-left:5px">
+                            <input type="checkbox" id="pVisibleToggle" checked onchange="document.getElementById('pVisible').checked=this.checked">
+                            <span class="toggle-slider" style="top:2px;right:2px;width:14px;height:14px;"></span>
+                        </span>
+                        <span>معروض في المتجر</span>
+                    </label>
+                    <button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="page" id="page-categories">
+            <h2 class="ftitle mb-2">إدارة الفئات</h2>
+            <div class="fcard">
+                <div id="categoriesList"></div>
+                <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" name="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
+                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" name="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
+                    <div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" name="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div>
+                    <button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISIBILITY -->
+        <div class="page" id="page-visibility">
+            <h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2>
+            <div class="fcard">
+                <p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p>
+                <div id="visibilityList"></div>
+            </div>
+        </div>
+
+        <!-- EDIT MODAL -->
+        <div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+            <div class="modal">
+                <div class="modal-head">
+                    <h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3>
+                    <button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId">
+                    <div class="fgrid">
+                        <div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr" name="editNameAr"></div>
+                        <div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn" name="editNameEn"></div>
+                        <div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory" name="editCategory"></select></div>
+                        <div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" name="editPrice" min="0"></div>
+                        <div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" name="editStock" min="0"></div>
+                        
+                        <div class="fgroup">
+                            <label for="editColor">اللون</label>
+                            <div style="display:flex;gap:6px;align-items:center">
+                                <input type="color" id="editColor" name="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
+                                <input type="text" id="editColorHex" name="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
+                            </div>
+                        </div>
+                        
+                        <div class="fgroup">
+                            <label for="editOpacity">شفافية اللون (%)</label>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <input type="range" id="editOpacity" name="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'">
+                                <span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="fgroup">
+                            <label for="editLensSize">حجم العدسة (%)</label>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <input type="range" id="editLensSize" name="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'">
+                                <span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" name="editDesc"></textarea></div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button>
+                    <button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
 </div>
-</div>
-</aside>
-<main class="main">
-<header class="topbar">
-<h1 class="topbar-title" id="pageTitle">نظرة عامة</h1>
-<div class="topbar-actions">
-    <label for="adminCurrency" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">اختر العملة</label>
-    <select id="adminCurrency" name="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
-        <option value="SAR">ر.س</option>
-        <option value="EGP">ج.م</option>
-        <option value="USD">$</option>
-        <option value="AED">د.إ</option>
-    </select>
-    <button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button>
-</div>
-</header>
-<!-- OVERVIEW -->
-<div class="page active" id="page-overview">
-<div class="stats">
-<div class="stat"><div class="stat-icon" aria-hidden="true">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
-<div class="stat"><div class="stat-icon" aria-hidden="true">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
-<div class="stat"><div class="stat-icon" aria-hidden="true">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
-<div class="stat"><div class="stat-icon" aria-hidden="true">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
-</div>
-<div class="fcard"><h3 class="ftitle">المنتجات المخفية</h3><div id="hiddenOverviewList" style="color:var(--text-dim);font-size:12px"></div></div>
-</div>
-<!-- ALL PRODUCTS -->
-<div class="page" id="page-allproducts">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-<h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
-<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-<button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
-<label for="filterCat" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">تصفية حسب الفئة</label>
-<select id="filterCat" name="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px"><option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option></select>
-</div>
-</div>
-<div class="fcard" style="padding:0;overflow:hidden"><div class="p-table-wrap"><table class="p-table"><thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
-</div>
-<!-- ADD PRODUCT -->
-<div class="page" id="page-addproduct">
-<h2 class="ftitle mb-2">إضافة منتج جديد</h2>
-<div class="fcard">
-<div class="fgrid">
-<div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" name="pNameAr" placeholder="مثال: عسل ذهبي" required></div>
-<div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" name="pNameEn" placeholder="Golden Honey"></div>
-<div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" name="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
-<div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" name="pPrice" min="0" step="1" placeholder="85" required></div>
-<div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" name="pStock" min="0" placeholder="30" required></div>
-<div class="fgroup">
-<label for="pColor">اللون (HEX)</label>
-<div style="display:flex;gap:6px;align-items:center">
-<input type="color" id="pColor" name="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer">
-<input type="text" id="pColorHex" name="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px">
-</div>
-</div>
-<div class="fgroup">
-<label for="pOpacity">شفافية اللون (%)</label>
-<div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="pOpacity" name="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'">
-<span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span>
-</div>
-</div>
-<div class="fgroup">
-<label for="pLensSize">حجم العدسة (%)</label>
-<div style="display:flex;align-items:center;gap:8px">
-<input type="range" id="pLensSize" name="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'">
-<span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span>
-</div>
-</div>
-</div>
-<div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" name="pDesc" placeholder="وصف المنتج..."></textarea></div>
-<div style="margin-top:14px">
-<label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label>
-<div style="display:flex;align-items:center;gap:12px;margin-top:6px">
-<div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0"><span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span></div>
-<input type="file" id="lensImgInput" name="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')">
-</div>
-</div>
-<div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
-<label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px">
-<input type="checkbox" id="pVisible" name="pVisible" checked>
-<span>معروض في المتجر</span>
-</label>
-<button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button>
-</div>
-</div>
-</div>
-<!-- CATEGORIES -->
-<div class="page" id="page-categories"><h2 class="ftitle mb-2">إدارة الفئات</h2><div class="fcard"><div id="categoriesList"></div><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" name="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" name="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div><div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" name="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div><button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button></div></div></div>
-<!-- VISIBILITY -->
-<div class="page" id="page-visibility"><h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2><div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div></div>
-<!-- EDIT MODAL -->
-<div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle"><div class="modal"><div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="fgrid"><div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr" name="editNameAr"></div><div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn" name="editNameEn"></div><div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory" name="editCategory"></select></div><div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" name="editPrice" min="0"></div><div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" name="editStock" min="0"></div><div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" name="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" name="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div><div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" name="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div><div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" name="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div></div><div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" name="editDesc"></textarea></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
@@ -438,11 +571,13 @@ const opacity = parseFloat(document.getElementById('pOpacity').value) / 100;
 const lensSize = parseInt(document.getElementById('pLensSize').value);
 const desc = document.getElementById('pDesc').value.trim();
 const visible = document.getElementById('pVisible').checked;
+
 if (!nameAr) { toast('❌ أدخل اسم المنتج', 'error'); return; }
 if (!category) { toast('❌ اختر فئة', 'error'); return; }
 if (isNaN(price) || price < 0) { toast('❌ أدخل سعراً صحيحاً', 'error'); return; }
 if (isNaN(stock) || stock < 0) { toast('❌ أدخل كمية صحيحة', 'error'); return; }
 if (!color || !/^#[0-9a-fA-F]{6}$/.test(color)) { toast('❌ اختر لوناً صحيحاً', 'error'); return; }
+
 state.products.push({
 id: 'p_' + Date.now(), nameAr, nameEn, category, price, stock, color, opacity, lensSize,
 gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`,
@@ -458,6 +593,7 @@ document.getElementById('pLensSize').value='85'; document.getElementById('pLensS
 state.currentLensImg=null; state.currentCardImg=null;
 document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
 }
+
 function editProduct(id) { 
 const p = state.products.find(x => x.id === id); if (!p) return; 
 populateCatSelects(); 
@@ -493,10 +629,36 @@ p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-4
 saveState(); renderProducts(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); 
 }
 function deleteProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; if (!confirm(`حذف "${p.nameAr}"؟`)) return; state.products = state.products.filter(x => x.id !== id); saveState(); renderProducts(); updateStats(); toast('✅ تم حذف المنتج', 'success'); }
-function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `👁️️ تم إخفاء "${p.nameAr}"`, 'success'); }
+
+function toggleVis(id) { 
+const p = state.products.find(x => x.id === id); if (!p) return; 
+p.visible = !p.visible; 
+saveState(); 
+renderProducts(); 
+renderVisibility(); 
+renderHiddenOverview(); 
+updateStats(); 
+toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `️ تم إخفاء "${p.nameAr}"`, 'success'); 
+}
 
 // ==================== VISIBILITY ====================
-function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const currentCurr = state.settings.currency || 'SAR'; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div></div><label class="toggle"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderVisibility() { 
+const el = document.getElementById('visibilityList'); 
+if (!el) return; 
+const currentCurr = state.settings.currency || 'SAR'; 
+el.innerHTML = state.products.map(p => { 
+const cat = state.categories.find(c => c.id === p.category); 
+return `<div class="vis-item">
+    <div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div>
+    <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div></div>
+    <label class="toggle" aria-label="تبديل عرض ${p.nameAr}">
+        <input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')">
+        <span class="toggle-slider"></span>
+    </label>
+    <span class="badge ${p.visible?'on':'off'}" style="min-width:42px;text-align:center">${p.visible?'مرئي':'مخفي'}</span>
+</div>`; 
+}).join(''); 
+}
 
 // ==================== HELPERS ====================
 function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
