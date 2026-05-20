@@ -554,6 +554,28 @@ return { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' }[currency] || curre
 }
 function getText(ar, en) { return state.currentLang === 'ar' ? ar : (en || ar); }
 
+// ========== ✅ ADVANCED STOCK MANAGEMENT ==========
+function getAvailableStock(product) {
+    const real = product.stockReal || product.stock || 0;
+    const reserved = product.stockReserved || 0;
+    return Math.max(0, real - reserved);
+}
+
+function updateStock(productId, changeReal = 0, changeReserved = 0, note = '') {
+    const product = state.products.find(p => p.id === productId);
+    if (!product) return false;
+    
+    const oldReal = product.stockReal || product.stock || 0;
+    const oldReserved = product.stockReserved || 0;
+    
+    product.stockReal = Math.max(0, (product.stockReal || product.stock || 0) + changeReal);
+    product.stockReserved = Math.max(0, (product.stockReserved || 0) + changeReserved);
+    
+    // ✅ Save to localStorage to sync with admin panel
+    saveData();
+    return true;
+}
+
 // ========== LOAD DATA ==========
 async function loadData() {
 try {
@@ -608,7 +630,9 @@ categoryColor: catInfo.color,
 gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
 visible: p.visible !== false,
 price: parseFloat(p.price) || 0,
-stock: parseInt(p.stock) || 0,
+// ✅ Handle both old and new stock format
+stockReal: p.stockReal || p.stock || 0,
+stockReserved: p.stockReserved || 0,
 opacity: p.opacity || 0.7,
 lensSize: p.lensSize || 85,
 offsetX: p.offsetX || 0,
@@ -623,9 +647,9 @@ console.log(`✅ تم معالجة ${state.products.length} منتج`);
         {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'}
     ];
     const demoProds = [
-        {id:'p1', nameAr:'عسل ذهبي', nameEn:'Golden Honey', category:'brown', price:85, stock:50, color:'#D4A056', visible:true},
-        {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', category:'brown', price:85, stock:30, color:'#8B4513', visible:true},
-        {id:'p3', nameAr:'محيط', nameEn:'Ocean', category:'blue', price:90, stock:20, color:'#2E6CB5', visible:true}
+        {id:'p1', nameAr:'عسل ذهبي', nameEn:'Golden Honey', category:'brown', price:85, stockReal:50, stockReserved:0, color:'#D4A056', visible:true},
+        {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', category:'brown', price:85, stockReal:30, stockReserved:0, color:'#8B4513', visible:true},
+        {id:'p3', nameAr:'محيط', nameEn:'Ocean', category:'blue', price:90, stockReal:20, stockReserved:0, color:'#2E6CB5', visible:true}
     ];
     localStorage.setItem('lens_cats', JSON.stringify(demoCats));
     localStorage.setItem('lens_prods', JSON.stringify(demoProds));
@@ -643,9 +667,19 @@ console.error('❌ فشل في تحميل البيانات:', error);
 function saveData() {
 SecureStorage.set('lensora_cart', state.cart);
 SecureStorage.set('lensora_wishlist', state.wishlist);
+// ✅ Also save products to sync stock changes with admin panel
+localStorage.setItem('lens_prods', JSON.stringify(state.products));
 }
 
-function getProduct(id) { return state.products.find(p => p.id === id) || { stock: 0, price: 0, name: '', gradient: '' }; }
+function getProduct(id) { 
+    const p = state.products.find(p => p.id === id);
+    if (!p) return { stockReal: 0, stockReserved: 0, price: 0, name: '', gradient: '' };
+    return {
+        ...p,
+        stockReal: p.stockReal || p.stock || 0,
+        stockReserved: p.stockReserved || 0
+    };
+}
 
 // ========== AGE & COOKIES ==========
 function checkAgeVerification() { if (SecureStorage.get('age_verified')) { state.ageVerified = true; document.getElementById('ageModal').classList.add('hidden'); } }
@@ -692,7 +726,9 @@ for (let copy = 0; copy < 3; copy++) {
 COLORS_DATA.forEach((cat, i) => {
 if (!cat.lenses.length) return;
 const main = cat.lenses[0];
-const totalStock = cat.lenses.reduce((s,l) => s + (l.stock||0), 0);
+// ✅ Use available stock for display
+const availableStock = getAvailableStock(main);
+const totalStock = cat.lenses.reduce((s,l) => s + getAvailableStock(l), 0);
 const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
 const inWishlist = state.wishlist.some(w => w.productId === main.id);
 const globalIdx = copy * total + i;
@@ -710,7 +746,7 @@ html += `<div class="slider-card" data-idx="${globalIdx}" data-cat="${i}" role="
 <div class="card-body">
 <div class="card-badge"><span class="dot"></span>${getText(cat.arName,cat.enName)}</div>
 <div class="card-name">مجموعة ${getText(cat.arName,cat.enName)}</div>
-<div class="card-count">${cat.lenses.length} لون متاح · إجمالي المخزون: ${totalStock}</div>
+<div class="card-count">${cat.lenses.length} لون متاح · إجمالي المتاح: ${totalStock}</div>
 <div class="card-footer">
 <div class="card-price">يبدأ من <strong>${getPrice(main)} ${getCurrencySymbol()}</strong></div>
 <button class="card-btn" onclick="event.stopPropagation();openLensModal(${i})"><span>اكتشفي ✦</span></button>
@@ -894,10 +930,12 @@ document.body.style.overflow = '';
 
 function renderLensSlider(products) {
 document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
-const sc = p.stock === 0 ? 'stock-out' : p.stock <= 5 ? 'stock-low' : '';
-const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? `باقي ${p.stock}` : `${p.stock} قطعة`;
-const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
-return `<div class="lens-slide" role="tabpanel">
+    // ✅ Use advanced stock system
+    const available = getAvailableStock(p);
+    const sc = available === 0 ? 'stock-out' : available <= 5 ? 'stock-low' : '';
+    const st = available === 0 ? 'نفذ' : available <= 5 ? `باقي ${available}` : `${available} قطعة`;
+    const stars = '★'.repeat(Math.floor(p.rating||4.5)) + '☆'.repeat(5 - Math.ceil(p.rating||4.5));
+    return `<div class="lens-slide" role="tabpanel">
 <div class="lens-visual dark-bg">
 <div class="lens-visual-ring" aria-hidden="true"></div>
 <div class="lens-visual-inner dark-bg"><div class="lens-circle dark-bg" style="background:${p.gradient||generateLensGradient(p.color)}"></div></div>
@@ -914,7 +952,7 @@ return `<div class="lens-slide" role="tabpanel">
 <button onclick="changeModalQty(1,${li})" aria-label="زيادة الكمية">+</button>
 </div>
 </div>
-<button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${p.stock===0?'disabled':''}><span>${p.stock===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
+<button class="add-lens-btn" onclick="addFromSlider('${p.id}',${li})" ${available===0?'disabled':''}><span>${available===0?'غير متوفر':'🛒 أضف للسلة'}</span></button>
 </div></div>`;
 }).join('');
 document.getElementById('lensSliderDots').innerHTML = products.map((_, li) => 
@@ -956,17 +994,42 @@ el.textContent = v;
 el.setAttribute('aria-valuenow', v);
 }
 
+// ✅ UPDATED: Add to cart with stock reservation
 function addFromSlider(lensId, li) {
-const p = getProduct(lensId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const el = document.getElementById(`mq_${li}`);
-const qty = el ? parseInt(el.textContent) : 1;
-const existing = state.cart.find(c => c.productId === lensId);
-if (existing) { if (existing.qty + qty > p.stock) { showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); return; } existing.qty += qty; }
-else { if (qty > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } state.cart.push({ productId: lensId, qty }); }
-saveData(); updateCartBadge();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
-if (el) el.textContent = '1';
+    const p = getProduct(lensId);
+    const available = getAvailableStock(p);
+    
+    if (!p || available <= 0) { 
+        showToast('⚠️ المنتج غير متاح حالياً', 'error'); 
+        return; 
+    }
+    
+    const el = document.getElementById(`mq_${li}`);
+    const qty = el ? parseInt(el.textContent) : 1;
+    
+    // ✅ Check if requested quantity is available
+    if (available < qty) { 
+        showToast(`⚠️ الكمية المتاحة فقط: ${available}`, 'warning'); 
+        return; 
+    }
+    
+    const existing = state.cart.find(c => c.productId === lensId);
+    if (existing) { 
+        if (available < existing.qty + qty) { 
+            showToast('⚠️ الكمية تتجاوز المتاح', 'warning'); 
+            return; 
+        } 
+        existing.qty += qty; 
+    } else { 
+        state.cart.push({ productId: lensId, qty }); 
+    }
+    
+    // ✅ Reserve the stock when added to cart
+    updateStock(lensId, 0, qty, `إضافة للسلة - ${getText(p.name, p.enName)}`);
+    
+    saveData(); updateCartBadge();
+    showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+    if (el) el.textContent = '1';
 }
 
 // ========== CART ==========
@@ -988,26 +1051,93 @@ bottom.innerHTML = ''; return;
 }
 list.innerHTML = state.cart.map(c => {
 const p = getProduct(c.productId); if (!p) return '';
+const available = getAvailableStock(p);
 return `<div class="ci" role="listitem"><div class="ci-color" style="background:${p.gradient||generateLensGradient(p.color)}" aria-hidden="true"></div><div class="ci-info"><div class="ci-name">${getText(p.name,p.enName)}</div><div class="ci-cat">${p.categoryName||''}</div><div class="ci-bottom"><span class="ci-price">${getPrice(p) * c.qty} ${getCurrencySymbol()}</span><div class="ci-qty"><button onclick="changeCartQty('${c.productId}',-1)" aria-label="تقليل الكمية">−</button><span aria-live="polite">${c.qty}</span><button onclick="changeCartQty('${c.productId}',1)" aria-label="زيادة الكمية">+</button></div></div></div><button class="ci-remove" onclick="removeFromCart('${c.productId}')" aria-label="إزالة من السلة">🗑</button></div>`;
 }).join('');
 const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
 const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
-bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getProduct(c.productId).stock < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
+bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getAvailableStock(getProduct(c.productId)) < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
 }
 
 function changeCartQty(pid, delta) {
 const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
 if (!item || !p) return;
+const available = getAvailableStock(p);
+
+// ✅ If increasing, check availability
+if (delta > 0 && available < item.qty + delta) {
+    showToast('⚠️ الكمية غير متاحة', 'warning');
+    return;
+}
+
 item.qty += delta;
-if (item.qty <= 0) { removeFromCart(pid); return; }
-if (item.qty > p.stock) { item.qty = p.stock; showToast('⚠️ الحد الأقصى المتاح', 'warning'); }
+if (item.qty <= 0) { 
+    // ✅ Return reserved stock when removing from cart
+    updateStock(pid, 0, -item.qty, `إزالة من السلة`);
+    removeFromCart(pid); 
+    return; 
+}
+
 saveData(); updateCartBadge(); renderCart();
 }
 
+// ✅ UPDATED: Return reserved stock when removing from cart
 function removeFromCart(pid) {
-state.cart = state.cart.filter(c => c.productId !== pid);
-saveData(); updateCartBadge(); renderCart();
-showToast('✅ تمت الإزالة من السلة', 'success');
+    const item = state.cart.find(c => c.productId === pid);
+    if (item) {
+        // ✅ Return the reserved quantity
+        updateStock(pid, 0, -item.qty, `إزالة من السلة`);
+    }
+    state.cart = state.cart.filter(c => c.productId !== pid);
+    saveData(); updateCartBadge(); renderCart();
+    showToast('✅ تمت الإزالة من السلة', 'success');
+}
+
+// ✅ UPDATED: Checkout with advanced stock management
+async function checkout() {
+if (state.cart.length === 0) return;
+
+// ✅ Final availability check before checkout
+for (const item of state.cart) {
+    const p = getProduct(item.productId);
+    const available = getAvailableStock(p);
+    if (!p || available < item.qty) { 
+        showToast(`⚠️ "${getText(p?.name,p?.enName)}" الكمية غير متاحة`, 'error'); 
+        return; 
+    }
+}
+
+try {
+const btn = document.querySelector('.checkout-btn');
+const originalText = btn.innerHTML;
+btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
+await new Promise(resolve => setTimeout(resolve, 1500));
+
+// ✅ Deduct from both real and reserved stock on successful purchase
+state.cart.forEach(c => { 
+    const p = getProduct(c.productId); 
+    if (p) {
+        // Deduct the quantity from both real and reserved stock
+        updateStock(c.productId, -c.qty, -c.qty, `شراء مكتمل - فاتورة`);
+    }
+});
+
+// ✅ Create and save invoice
+const items = state.cart.map(c => ({ productId: c.productId, qty: c.qty }));
+const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
+const shipping = sub >= 200 ? 0 : 15;
+const total = sub + shipping;
+
+// ✅ Save invoice to localStorage (shared with admin.html)
+saveInvoice('عميل زائر', 'غير محدد', items, total, state.currentCurrency);
+
+showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
+state.cart = []; saveData(); updateCartBadge(); closeCart();
+btn.disabled = false; btn.innerHTML = originalText;
+} catch (error) {
+showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
+console.error('Checkout error:', error);
+}
 }
 
 // ========== ✅ INVOICE SYSTEM FOR INDEX.HTML ==========
@@ -1039,39 +1169,6 @@ function saveInvoice(customerName, customerPhone, items, total, currency) {
     
     console.log('✅ تم حفظ الفاتورة:', invoice.id);
     return invoice;
-}
-
-async function checkout() {
-if (state.cart.length === 0) return;
-for (const item of state.cart) {
-const p = getProduct(item.productId);
-if (p.stock < item.qty) { showToast(`⚠️ "${getText(p.name,p.enName)}" الكمية غير متاحة`, 'error'); return; }
-}
-try {
-const btn = document.querySelector('.checkout-btn');
-const originalText = btn.innerHTML;
-btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
-await new Promise(resolve => setTimeout(resolve, 1500));
-
-// ✅ Update stock
-state.cart.forEach(c => { const p = getProduct(c.productId); if (p) p.stock = Math.max(0, p.stock - c.qty); });
-
-// ✅ Create and save invoice
-const items = state.cart.map(c => ({ productId: c.productId, qty: c.qty }));
-const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-const shipping = sub >= 200 ? 0 : 15;
-const total = sub + shipping;
-
-// ✅ Save invoice to localStorage (shared with admin.html)
-saveInvoice('عميل زائر', 'غير محدد', items, total, state.currentCurrency);
-
-showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
-state.cart = []; saveData(); updateCartBadge(); closeCart();
-btn.disabled = false; btn.innerHTML = originalText;
-} catch (error) {
-showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
-console.error('Checkout error:', error);
-}
 }
 
 // ========== WISHLIST ==========
@@ -1110,14 +1207,32 @@ initSmoothSlider();
 showToast('✅ تمت الإزالة من المفضلة', 'success');
 }
 
+// ✅ UPDATED: Add from wishlist with stock reservation
 function addToCartFromWishlist(productId) {
-const p = getProduct(productId);
-if (!p || p.stock <= 0) { showToast('⚠️ المنتج غير متاح', 'error'); return; }
-const existing = state.cart.find(c => c.productId === productId);
-if (existing) { if (existing.qty + 1 > p.stock) { showToast('⚠️ الكمية غير متاحة', 'warning'); return; } existing.qty++; }
-else { state.cart.push({ productId, qty: 1 }); }
-saveData(); updateCartBadge(); renderWishlist();
-showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
+    const p = getProduct(productId);
+    const available = getAvailableStock(p);
+    
+    if (!p || available <= 0) { 
+        showToast('⚠️ المنتج غير متاح حالياً', 'error'); 
+        return; 
+    }
+    
+    const existing = state.cart.find(c => c.productId === productId);
+    if (existing) { 
+        if (available < existing.qty + 1) { 
+            showToast('⚠️ الكمية غير متاحة', 'warning'); 
+            return; 
+        } 
+        existing.qty++; 
+    } else { 
+        state.cart.push({ productId, qty: 1 }); 
+    }
+    
+    // ✅ Reserve the stock when added to cart
+    updateStock(productId, 0, 1, `إضافة من المفضلة - ${getText(p.name, p.enName)}`);
+    
+    saveData(); updateCartBadge(); renderWishlist();
+    showToast(`✅ "${getText(p.name,p.enName)}" أضيف للسلة`, 'success');
 }
 
 // ========== ADMIN & UTILS ==========
