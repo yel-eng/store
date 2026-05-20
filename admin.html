@@ -85,15 +85,28 @@ body.loading{overflow:hidden}
 
 /* TABLE */
 .p-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.p-table{width:100%;border-collapse:collapse;min-width:600px}
-.p-table th{text-align:right;padding:10px 10px;font-size:10px;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
-.p-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px}
+.p-table{width:100%;border-collapse:collapse;min-width:800px}
+.p-table th{text-align:right;padding:10px;font-size:10px;color:var(--text-dim);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:600}
+.p-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:11px}
 .p-table tr:hover td{background:rgba(201,168,76,.03)}
 .p-thumb{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--bg);font-weight:700;overflow:hidden;flex-shrink:0;position:relative}
 .p-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .p-name{font-weight:600}
 .p-cat{font-size:9px;color:var(--text-dim)}
 .p-price{font-weight:600;color:var(--gold)}
+
+/* ✅ INVENTORY BADGES */
+.stock-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:9px;font-weight:600}
+.stock-badge.real{background:rgba(46,204,113,.15);color:var(--success)}
+.stock-badge.reserved{background:rgba(243,156,18,.15);color:var(--warning)}
+.stock-badge.available{background:rgba(201,168,76,.15);color:var(--gold)}
+.stock-badge.low{background:rgba(231,76,60,.15);color:var(--error)}
+
+/* PROGRESS BAR FOR STOCK */
+.stock-bar{width:100%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin:4px 0}
+.stock-bar-fill{height:100%;background:var(--gold);transition:width .3s ease}
+.stock-bar-fill.low{background:var(--error)}
+.stock-bar-fill.warning{background:var(--warning)}
 
 /* BADGES & BUTTONS */
 .badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;display:inline-block;white-space:nowrap}
@@ -177,6 +190,7 @@ body.loading{overflow:hidden}
 .fgrid{grid-template-columns:1fr}
 .topbar-title{font-size:14px}
 .invoice-search{flex-direction:column}
+.p-table{min-width:600px}
 }
 </style>
 </head>
@@ -267,7 +281,17 @@ body.loading{overflow:hidden}
             <div class="fcard" style="padding:0;overflow:hidden">
                 <div class="p-table-wrap">
                     <table class="p-table">
-                        <thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th scope="col">الصورة</th>
+                                <th scope="col">الاسم</th>
+                                <th scope="col">الفئة</th>
+                                <th scope="col">السعر</th>
+                                <th scope="col">المخزون</th>
+                                <th scope="col">الحالة</th>
+                                <th scope="col">إجراءات</th>
+                            </tr>
+                        </thead>
                         <tbody id="productsBody"></tbody>
                     </table>
                 </div>
@@ -283,7 +307,10 @@ body.loading{overflow:hidden}
                     <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" name="pNameEn" placeholder="Golden Honey"></div>
                     <div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" name="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
                     <div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" name="pPrice" min="0" step="1" placeholder="85" required></div>
-                    <div class="fgroup"><label for="pStock">الكمية المتاحة *</label><input type="number" id="pStock" name="pStock" min="0" placeholder="30" required></div>
+                    
+                    <!-- ✅ NEW: Advanced Stock Management -->
+                    <div class="fgroup"><label for="pStockReal">المخزون الفعلي في المستودع *</label><input type="number" id="pStockReal" name="pStockReal" min="0" placeholder="50" required></div>
+                    <div class="fgroup"><label for="pStockReserved">الكمية المحجوزة حالياً</label><input type="number" id="pStockReserved" name="pStockReserved" min="0" value="0" placeholder="0"></div>
                     
                     <div class="fgroup">
                         <label for="pColor">اللون (HEX)</label>
@@ -404,7 +431,10 @@ body.loading{overflow:hidden}
                         <div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn" name="editNameEn"></div>
                         <div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory" name="editCategory"></select></div>
                         <div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" name="editPrice" min="0"></div>
-                        <div class="fgroup"><label for="editStock">المخزون</label><input type="number" id="editStock" name="editStock" min="0"></div>
+                        
+                        <!-- ✅ NEW: Stock fields in edit modal -->
+                        <div class="fgroup"><label for="editStockReal">المخزون الفعلي</label><input type="number" id="editStockReal" name="editStockReal" min="0"></div>
+                        <div class="fgroup"><label for="editStockReserved">المحجوز</label><input type="number" id="editStockReserved" name="editStockReserved" min="0"></div>
                         
                         <div class="fgroup">
                             <label for="editColor">اللون</label>
@@ -454,7 +484,8 @@ let state = {
     currentLensImg: null, 
     currentCardImg: null, 
     editingProductId: null,
-    invoices: [] // ✅ NEW: Invoices array
+    invoices: [],
+    inventoryLog: [] // ✅ NEW: Track inventory changes
 };
 
 // ==================== PERSISTENCE ====================
@@ -464,7 +495,8 @@ localStorage.setItem('lens_cats', JSON.stringify(state.categories));
 localStorage.setItem('lens_prods', JSON.stringify(state.products));
 localStorage.setItem('lens_sett', JSON.stringify(state.settings));
 localStorage.setItem('lens_hid_colors', JSON.stringify(state.hiddenColorIds));
-localStorage.setItem('lens_invoices', JSON.stringify(state.invoices)); // ✅ Save invoices
+localStorage.setItem('lens_invoices', JSON.stringify(state.invoices));
+localStorage.setItem('lens_inv_log', JSON.stringify(state.inventoryLog)); // ✅ Save inventory log
 } catch(e) { console.warn('Save error', e); } 
 }
 function loadState() { 
@@ -473,12 +505,14 @@ const c = localStorage.getItem('lens_cats');
 const p = localStorage.getItem('lens_prods');
 const s = localStorage.getItem('lens_sett');
 const hc = localStorage.getItem('lens_hid_colors');
-const inv = localStorage.getItem('lens_invoices'); // ✅ Load invoices
+const inv = localStorage.getItem('lens_invoices');
+const log = localStorage.getItem('lens_inv_log');
 if (c) state.categories = JSON.parse(c);
 if (p) state.products = JSON.parse(p);
 if (s) state.settings = JSON.parse(s);
 if (hc) state.hiddenColorIds = JSON.parse(hc);
 if (inv) state.invoices = JSON.parse(inv);
+if (log) state.inventoryLog = JSON.parse(log);
 if(state.settings.currency) document.getElementById('adminCurrency').value = state.settings.currency;
 } catch(e) { console.warn('Load error', e); } 
 }
@@ -536,21 +570,76 @@ const titles = {
     addproduct:'إضافة منتج', 
     categories:'الفئات', 
     visibility:'إخفاء/إظهار',
-    invoices:'الفواتير' // ✅ NEW
+    invoices:'الفواتير'
 };
 document.getElementById('pageTitle').textContent = titles[pageId] || '';
 if (pageId === 'addproduct' || pageId === 'allproducts') { populateCatSelects(); renderProducts(); }
 if (pageId === 'visibility') renderVisibility();
 if (pageId === 'categories') renderCategories();
 if (pageId === 'overview') { updateStats(); renderHiddenOverview(); }
-if (pageId === 'invoices') renderInvoices(); // ✅ Render invoices page
+if (pageId === 'invoices') renderInvoices();
 }
 document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', function(e) { e.preventDefault(); goToPage(this.dataset.page); }); });
 
 // ==================== TOAST & STATS ====================
 function toast(msg, type='info') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(() => t.classList.remove('show'), 3000); }
-function updateStats() { const all = state.products; document.getElementById('statProducts').textContent = all.length; document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; document.getElementById('statLowStock').textContent = all.filter(p => p.stock > 0 && p.stock <= 5).length; document.getElementById('statOutOfStock').textContent = all.filter(p => p.stock === 0).length; }
+function updateStats() { 
+    const all = state.products; 
+    document.getElementById('statProducts').textContent = all.length; 
+    document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; 
+    document.getElementById('statLowStock').textContent = all.filter(p => getAvailableStock(p) > 0 && getAvailableStock(p) <= 5).length; 
+    document.getElementById('statOutOfStock').textContent = all.filter(p => getAvailableStock(p) === 0).length; 
+}
 function renderHiddenOverview() { const hidden = state.products.filter(p => !p.visible); const el = document.getElementById('hiddenOverviewList'); if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; } el.innerHTML = hidden.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`; }).join(''); }
+
+// ==================== ✅ ADVANCED STOCK MANAGEMENT ====================
+function getAvailableStock(product) {
+    const real = product.stockReal || product.stock || 0;
+    const reserved = product.stockReserved || 0;
+    return Math.max(0, real - reserved);
+}
+
+function getStockStatus(product) {
+    const available = getAvailableStock(product);
+    if (available === 0) return { label: 'نفذ', class: 'off', color: 'var(--error)' };
+    if (available <= 5) return { label: `منخفض (${available})`, class: 'low', color: 'var(--warning)' };
+    return { label: `متوفر (${available})`, class: 'on', color: 'var(--success)' };
+}
+
+function updateStock(productId, changeReal = 0, changeReserved = 0, note = '') {
+    const product = state.products.find(p => p.id === productId);
+    if (!product) return false;
+    
+    const oldReal = product.stockReal || product.stock || 0;
+    const oldReserved = product.stockReserved || 0;
+    
+    product.stockReal = Math.max(0, (product.stockReal || product.stock || 0) + changeReal);
+    product.stockReserved = Math.max(0, (product.stockReserved || 0) + changeReserved);
+    
+    // ✅ Log the change
+    logInventoryAction(productId, changeReal !== 0 ? 'real' : 'reserved', 
+        changeReal !== 0 ? changeReal : changeReserved, note);
+    
+    saveState();
+    return true;
+}
+
+function logInventoryAction(productId, type, qty, note) {
+    const product = state.products.find(p => p.id === productId);
+    state.inventoryLog.unshift({
+        id: 'LOG-' + Date.now(),
+        productId: productId,
+        productName: product?.nameAr || 'منتج',
+        type: type, // 'real' or 'reserved'
+        qty: qty,
+        note: note || '',
+        timestamp: new Date().toISOString(),
+        before: { real: product?.stockReal, reserved: product?.stockReserved },
+        after: { real: product?.stockReal + (type==='real'?qty:0), reserved: product?.stockReserved + (type==='reserved'?qty:0) }
+    });
+    // Keep only last 100 logs
+    if (state.inventoryLog.length > 100) state.inventoryLog.pop();
+}
 
 // ==================== CURRENCY HELPERS ====================
 function getCurrencySymbol(curr) {
@@ -601,11 +690,28 @@ const tbody = document.getElementById('productsBody');
 if (!tbody) return;
 tbody.innerHTML = prods.map(p => {
 const cat = state.categories.find(c => c.id === p.category);
-const sc = p.stock === 0 ? 'off' : p.stock <= 5 ? 'low' : 'on';
-const st = p.stock === 0 ? 'نفذ' : p.stock <= 5 ? 'منخفض' : 'متوفر';
+const available = getAvailableStock(p);
+const status = getStockStatus(p);
 const displayPrice = convertPrice(p.price, currentCurr);
 const currSym = getCurrencySymbol(currentCurr);
-return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td><td><span class="badge ${sc}">${st} (${p.stock})</span></td><td><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')">${p.visible?'👁️':'️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button></div></td></tr>`;
+
+// ✅ Stock progress bar
+const real = p.stockReal || p.stock || 0;
+const reserved = p.stockReserved || 0;
+const percent = real > 0 ? Math.min(100, (reserved / real) * 100) : 0;
+const barClass = percent >= 90 ? 'low' : percent >= 70 ? 'warning' : '';
+
+return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td>
+<td style="min-width:140px">
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">
+        <span class="stock-badge real">📦 ${real}</span>
+        <span class="stock-badge reserved">🔒 ${reserved}</span>
+        <span class="stock-badge available">✅ ${available}</span>
+    </div>
+    <div class="stock-bar"><div class="stock-bar-fill ${barClass}" style="width:${percent}%"></div></div>
+</td>
+<td><span class="badge ${status.class}" style="background:${status.color}20;color:${status.color}">${status.label}</span></td>
+<td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')">${p.visible?'👁️':'️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button></div></td></tr>`;
 }).join('');
 }
 
@@ -625,7 +731,8 @@ const nameAr = document.getElementById('pNameAr').value.trim();
 const nameEn = document.getElementById('pNameEn').value.trim();
 const category = document.getElementById('pCategory').value;
 const price = parseFloat(document.getElementById('pPrice').value);
-const stock = parseInt(document.getElementById('pStock').value);
+const stockReal = parseInt(document.getElementById('pStockReal').value) || 0;
+const stockReserved = parseInt(document.getElementById('pStockReserved').value) || 0;
 const color = document.getElementById('pColor').value;
 const opacity = parseFloat(document.getElementById('pOpacity').value) / 100;
 const lensSize = parseInt(document.getElementById('pLensSize').value);
@@ -635,18 +742,20 @@ const visible = document.getElementById('pVisible').checked;
 if (!nameAr) { toast('❌ أدخل اسم المنتج', 'error'); return; }
 if (!category) { toast('❌ اختر فئة', 'error'); return; }
 if (isNaN(price) || price < 0) { toast('❌ أدخل سعراً صحيحاً', 'error'); return; }
-if (isNaN(stock) || stock < 0) { toast('❌ أدخل كمية صحيحة', 'error'); return; }
+if (isNaN(stockReal) || stockReal < 0) { toast('❌ أدخل مخزوناً صحيحاً', 'error'); return; }
 if (!color || !/^#[0-9a-fA-F]{6}$/.test(color)) { toast('❌ اختر لوناً صحيحاً', 'error'); return; }
 
 state.products.push({
-id: 'p_' + Date.now(), nameAr, nameEn, category, price, stock, color, opacity, lensSize,
+id: 'p_' + Date.now(), nameAr, nameEn, category, price, 
+stockReal, stockReserved, // ✅ New stock fields
+color, opacity, lensSize,
 gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`,
 desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10,
 visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE
 });
 saveState(); updateStats(); renderProducts();
 toast('✅ تمت إضافة المنتج', 'success');
-['pNameAr','pNameEn','pPrice','pStock','pDesc','pCategory'].forEach(id => document.getElementById(id).value='');
+['pNameAr','pNameEn','pPrice','pStockReal','pStockReserved','pDesc','pCategory'].forEach(id => document.getElementById(id).value='');
 document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056';
 document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%';
 document.getElementById('pLensSize').value='85'; document.getElementById('pLensSizeVal').textContent='85%';
@@ -662,7 +771,9 @@ document.getElementById('editNameAr').value = p.nameAr;
 document.getElementById('editNameEn').value = p.nameEn || ''; 
 document.getElementById('editCategory').value = p.category; 
 document.getElementById('editPrice').value = p.price; 
-document.getElementById('editStock').value = p.stock; 
+// ✅ Load stock values
+document.getElementById('editStockReal').value = p.stockReal || p.stock || 0;
+document.getElementById('editStockReserved').value = p.stockReserved || 0;
 document.getElementById('editColor').value = p.color; 
 document.getElementById('editColorHex').value = p.color; 
 document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); 
@@ -680,7 +791,18 @@ p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr;
 p.nameEn = document.getElementById('editNameEn').value.trim(); 
 p.category = document.getElementById('editCategory').value || p.category; 
 p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; 
-p.stock = parseInt(document.getElementById('editStock').value) ?? p.stock; 
+// ✅ Update stock values
+const newReal = parseInt(document.getElementById('editStockReal').value) ?? (p.stockReal || p.stock || 0);
+const newReserved = parseInt(document.getElementById('editStockReserved').value) ?? (p.stockReserved || 0);
+// Log changes if any
+if (newReal !== (p.stockReal || p.stock || 0)) {
+    logInventoryAction(id, 'real', newReal - (p.stockReal || p.stock || 0), 'تعديل يدوي من لوحة التحكم');
+}
+if (newReserved !== (p.stockReserved || 0)) {
+    logInventoryAction(id, 'reserved', newReserved - (p.stockReserved || 0), 'تعديل يدوي من لوحة التحكم');
+}
+p.stockReal = newReal;
+p.stockReserved = newReserved;
 p.color = document.getElementById('editColor').value; 
 p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; 
 p.lensSize = parseInt(document.getElementById('editLensSize').value); 
@@ -708,9 +830,11 @@ if (!el) return;
 const currentCurr = state.settings.currency || 'SAR'; 
 el.innerHTML = state.products.map(p => { 
 const cat = state.categories.find(c => c.id === p.category); 
+const available = getAvailableStock(p);
+const status = getStockStatus(p);
 return `<div class="vis-item">
     <div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div>
-    <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div></div>
+    <div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div><div style="font-size:9px;color:${status.color}">${status.label}</div></div>
     <label class="toggle" aria-label="تبديل عرض ${p.nameAr}">
         <input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')">
         <span class="toggle-slider"></span>
@@ -736,7 +860,7 @@ function saveInvoice(customerName, customerPhone, items, total, currency) {
         currency: currency || 'SAR',
         status: 'completed'
     };
-    state.invoices.unshift(invoice); // Add to beginning
+    state.invoices.unshift(invoice);
     saveState();
     return invoice;
 }
@@ -747,7 +871,6 @@ function renderInvoices(filter = '') {
     
     let invoices = [...state.invoices];
     
-    // ✅ Search functionality
     if (filter) {
         const searchTerm = filter.toLowerCase();
         invoices = invoices.filter(inv => 
