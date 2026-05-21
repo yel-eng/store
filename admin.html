@@ -202,7 +202,7 @@ body.loading{overflow:hidden}
           <div class="fgroup"><label>حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pLensSize" min="50" max="100" value="85" style="flex:1" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'"><span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px">85%</span></div></div>
         </div>
         <div class="fgroup" style="margin-top:12px"><label>الوصف</label><textarea id="pDesc"></textarea></div>
-        <div style="margin-top:14px"><label style="font-size:10px;color:var(--dim)">صورة (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span>📷</span><span style="font-size:8px;margin-top:2px">ارفع</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"></div></div>
+        <div style="margin-top:14px"><label style="font-size:10px;color:var(--dim)">صورة (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span>📷</span><span style="font-size:8px;margin-top:2px">ارفع</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentImg')"></div></div>
         <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;align-items:center">
           <label style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer"><input type="checkbox" id="pVisible" checked style="display:none"><span class="toggle" style="width:32px;height:18px;margin-left:5px"><input type="checkbox" id="pVisibleToggle" checked onchange="document.getElementById('pVisible').checked=this.checked"><span class="toggle-slider"></span></span><span>معروض</span></label>
           <button class="btn btn-gold" onclick="saveProduct()">💾 حفظ</button>
@@ -302,8 +302,45 @@ function saveState() { try { localStorage.setItem('lens_cats', JSON.stringify(st
 function loadState() { try { const c = localStorage.getItem('lens_cats'), p = localStorage.getItem('lens_prods'), s = localStorage.getItem('lens_sett'), h = localStorage.getItem('lens_hid'), inv = localStorage.getItem('lens_inv'), log = localStorage.getItem('lens_log'); if (c) state.categories = JSON.parse(c); if (p) state.products = JSON.parse(p); if (s) state.settings = JSON.parse(s); if (h) state.hiddenIds = JSON.parse(h); if (inv) state.invoices = JSON.parse(inv); if (log) state.invLog = JSON.parse(log); if (state.settings.currency) document.getElementById('adminCurrency').value = state.settings.currency; } catch(e) { console.warn('Load error', e); } }
 
 // ==================== AUTH ====================
-function doLogin(e) { e.preventDefault(); const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value.trim(); if (em === 'admin@lensora.com' && pw === 'admin123') { localStorage.setItem('lens_auth', 'true'); document.getElementById('loginScreen').style.display = 'none'; document.getElementById('dashboard').classList.add('active'); initDefaults(); loadState(); initDashboard(); toast('✅ مرحباً', 'success'); } else { toast('❌ بيانات خاطئة', 'error'); } }
-function doLogout() { localStorage.removeItem('lens_auth'); location.reload(); }
+async function doLogin(e) { 
+  e.preventDefault(); 
+  const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value.trim(); 
+  
+  // ✅ Try Supabase Auth first
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email: em, password: pw });
+      if (error) throw error;
+      localStorage.setItem('lens_auth', 'true');
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').classList.add('active');
+      initDefaults(); loadState(); initDashboard();
+      toast('✅ مرحباً بك', 'success');
+      return;
+    } catch (err) {
+      console.warn('⚠️ Supabase auth failed, using local auth');
+    }
+  }
+  
+  // ✅ Fallback to local auth
+  if (em === 'admin@lensora.com' && pw === 'admin123') { 
+    localStorage.setItem('lens_auth', 'true'); 
+    document.getElementById('loginScreen').style.display = 'none'; 
+    document.getElementById('dashboard').classList.add('active'); 
+    initDefaults(); loadState(); initDashboard(); 
+    toast('✅ مرحباً', 'success'); 
+  } else { 
+    toast('❌ بيانات خاطئة', 'error'); 
+  } 
+}
+
+async function doLogout() { 
+  if (supabase) {
+    try { await supabase.auth.signOut(); } catch(e) {}
+  }
+  localStorage.removeItem('lens_auth'); 
+  location.reload(); 
+}
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
