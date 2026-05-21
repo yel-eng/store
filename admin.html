@@ -7,6 +7,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+<!-- ✅ Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#0a0808;--card-bg:rgba(26,22,20,.85);--gold:#c9a84c;--gold-light:#e8d5a3;--text:#f5ede0;--text-dim:#8a7e73;--border:rgba(201,168,76,.1);--success:#2ecc71;--warning:#f39c12;--error:#e74c3c;--radius:16px;--radius-sm:10px;--nav-h:60px;--side-w:260px;--transition:.25s ease}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -137,6 +139,7 @@ body.loading{overflow:hidden}
 .invoice-date{color:var(--text-dim)}
 .invoice-total{font-weight:700;color:var(--gold)}
 .invoice-actions{display:flex;gap:4px;white-space:nowrap}
+.status-select{padding:4px 8px;border-radius:6px;background:rgba(201,168,76,.06);border:1px solid var(--border);color:var(--text);font-size:10px;min-height:28px}
 @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.fgrid{grid-template-columns:1fr}.topbar-title{font-size:14px}.invoice-search{flex-direction:column}.p-table{min-width:600px}}
 </style>
 </head>
@@ -148,14 +151,8 @@ body.loading{overflow:hidden}
         <div class="login-logo">LENSORA</div>
         <div class="login-sub">لوحة التحكم الكاملة</div>
         <form class="login-form" id="loginForm">
-            <div class="fgroup">
-                <label for="loginEmail">البريد الإلكتروني</label>
-                <input type="email" id="loginEmail" name="loginEmail" placeholder="admin@lensora.com" required autocomplete="username">
-            </div>
-            <div class="fgroup">
-                <label for="loginPass">كلمة المرور</label>
-                <input type="password" id="loginPass" name="loginPass" placeholder="••••••••" required autocomplete="current-password">
-            </div>
+            <div class="fgroup"><label for="loginEmail">البريد الإلكتروني</label><input type="email" id="loginEmail" placeholder="admin@lensora.com" required></div>
+            <div class="fgroup"><label for="loginPass">كلمة المرور</label><input type="password" id="loginPass" placeholder="admin123" required></div>
             <button type="submit">تسجيل الدخول</button>
         </form>
         <div class="login-hint">admin@lensora.com / admin123</div>
@@ -173,6 +170,7 @@ body.loading{overflow:hidden}
             <div class="side-item" data-page="categories"><span class="side-icon">🎨</span>الفئات</div>
             <div class="side-item" data-page="visibility"><span class="side-icon">👁️‍🗨️</span>إخفاء/إظهار</div>
             <div class="side-item" data-page="invoices"><span class="side-icon">🧾</span>الفواتير</div>
+            <div class="side-item" data-page="inventory"><span class="side-icon">📦</span>تقرير المخزون</div>
         </nav>
         <div class="side-foot">
             <div class="side-user">
@@ -188,23 +186,24 @@ body.loading{overflow:hidden}
             <div class="topbar-actions">
                 <label for="adminCurrency" class="sr-only">اختر العملة</label>
                 <select id="adminCurrency" name="adminCurrency" onchange="updateAdminCurrency()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:38px;margin-left:10px;">
-                    <option value="SAR">ر.س</option>
-                    <option value="EGP">ج.م</option>
-                    <option value="USD">$</option>
-                    <option value="AED">د.إ</option>
+                    <option value="SAR">ر.س</option><option value="EGP">ج.م</option><option value="USD">$</option><option value="AED">د.إ</option>
                 </select>
                 <button class="store-btn" onclick="openStore()">🌐 معاينة المتجر</button>
             </div>
         </header>
+
+        <!-- OVERVIEW -->
         <div class="page active" id="page-overview">
             <div class="stats">
-                <div class="stat"><div class="stat-icon" aria-hidden="true">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
-                <div class="stat"><div class="stat-icon" aria-hidden="true">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
-                <div class="stat"><div class="stat-icon" aria-hidden="true">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
-                <div class="stat"><div class="stat-icon" aria-hidden="true">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
+                <div class="stat"><div class="stat-icon">👁️</div><div><div class="stat-val" id="statProducts">0</div><div class="stat-lbl">إجمالي المنتجات</div></div></div>
+                <div class="stat"><div class="stat-icon">✅</div><div><div class="stat-val" id="statVisible">0</div><div class="stat-lbl">معروضة</div></div></div>
+                <div class="stat"><div class="stat-icon">⚠️</div><div><div class="stat-val" id="statLowStock">0</div><div class="stat-lbl">مخزون منخفض</div></div></div>
+                <div class="stat"><div class="stat-icon">❌</div><div><div class="stat-val" id="statOutOfStock">0</div><div class="stat-lbl">نفذ</div></div></div>
             </div>
             <div class="fcard"><h3 class="ftitle">المنتجات المخفية</h3><div id="hiddenOverviewList" style="color:var(--text-dim);font-size:12px"></div></div>
         </div>
+
+        <!-- ALL PRODUCTS -->
         <div class="page" id="page-allproducts">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
                 <h2 class="ftitle" style="margin-bottom:0">إدارة المنتجات</h2>
@@ -212,56 +211,57 @@ body.loading{overflow:hidden}
                     <button class="btn btn-gold" onclick="goToPage('addproduct')">➕ إضافة</button>
                     <label for="filterCat" class="sr-only">تصفية حسب الفئة</label>
                     <select id="filterCat" name="filterCat" onchange="renderProducts()" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;min-height:36px">
-                        <option value="">كل الفئات</option>
-                        <option value="hidden">المخفية فقط</option>
-                        <option value="visible">المرئية فقط</option>
+                        <option value="">كل الفئات</option><option value="hidden">المخفية فقط</option><option value="visible">المرئية فقط</option>
                     </select>
                 </div>
             </div>
             <div class="fcard" style="padding:0;overflow:hidden">
-                <div class="p-table-wrap">
-                    <table class="p-table">
-                        <thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead>
-                        <tbody id="productsBody"></tbody>
-                    </table>
-                </div>
+                <div class="p-table-wrap"><table class="p-table"><thead><tr><th scope="col">الصورة</th><th scope="col">الاسم</th><th scope="col">الفئة</th><th scope="col">السعر</th><th scope="col">المخزون</th><th scope="col">الحالة</th><th scope="col">إجراءات</th></tr></thead><tbody id="productsBody"></tbody></table></div>
             </div>
         </div>
+
+        <!-- ADD PRODUCT -->
         <div class="page" id="page-addproduct">
             <h2 class="ftitle mb-2">إضافة منتج جديد</h2>
             <div class="fcard">
                 <div class="fgrid">
-                    <div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" name="pNameAr" placeholder="مثال: عسل ذهبي" required></div>
-                    <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" name="pNameEn" placeholder="Golden Honey"></div>
-                    <div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" name="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
-                    <div class="fgroup"><label for="pPrice">السعر (بالعملة الأساسية) *</label><input type="number" id="pPrice" name="pPrice" min="0" step="1" placeholder="85" required></div>
-                    <div class="fgroup"><label for="pStockReal">المخزون الفعلي في المستودع *</label><input type="number" id="pStockReal" name="pStockReal" min="0" placeholder="50" required></div>
-                    <div class="fgroup"><label for="pStockReserved">الكمية المحجوزة حالياً</label><input type="number" id="pStockReserved" name="pStockReserved" min="0" value="0" placeholder="0"></div>
-                    <div class="fgroup"><label for="pColor">اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" name="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" name="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
-                    <div class="fgroup"><label for="pOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pOpacity" name="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'"><span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
-                    <div class="fgroup"><label for="pLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pLensSize" name="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'"><span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div>
+                    <div class="fgroup"><label for="pNameAr">اسم المنتج (عربي) *</label><input type="text" id="pNameAr" placeholder="مثال: عسل ذهبي" required></div>
+                    <div class="fgroup"><label for="pNameEn">اسم المنتج (إنجليزي)</label><input type="text" id="pNameEn" placeholder="Golden Honey"></div>
+                    <div class="fgroup"><label for="pCategory">الفئة *</label><select id="pCategory" required><option value="">-- اختر الفئة --</option></select></div>
+                    <div class="fgroup"><label for="pPrice">السعر *</label><input type="number" id="pPrice" min="0" step="1" placeholder="85" required></div>
+                    <div class="fgroup"><label for="pStockReal">المخزون الفعلي *</label><input type="number" id="pStockReal" min="0" placeholder="50" required></div>
+                    <div class="fgroup"><label for="pStockReserved">المحجوز حالياً</label><input type="number" id="pStockReserved" min="0" value="0" placeholder="0"></div>
+                    <div class="fgroup"><label for="pColor">اللون (HEX)</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="pColor" value="#D4A056" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="pColorHex" value="#D4A056" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+                    <div class="fgroup"><label for="pOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pOpacity" min="0" max="100" value="70" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pOpacityVal').textContent=this.value+'%'"><span id="pOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
+                    <div class="fgroup"><label for="pLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="pLensSize" min="50" max="100" value="85" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('pLensSizeVal').textContent=this.value+'%'"><span id="pLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div>
                 </div>
-                <div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" name="pDesc" placeholder="وصف المنتج..."></textarea></div>
-                <div style="margin-top:14px"><label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة النهائية (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()" role="button" tabindex="0"><span class="upload-icon" aria-hidden="true">📷</span><span>ارفع صورة</span></div><input type="file" id="lensImgInput" name="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"></div></div>
-                <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center"><label for="pVisible" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" name="pVisible" checked style="display:none;"><span class="toggle" style="width:32px;height:18px;margin-left:5px"><input type="checkbox" id="pVisibleToggle" checked onchange="document.getElementById('pVisible').checked=this.checked"><span class="toggle-slider" style="top:2px;right:2px;width:14px;height:14px;"></span></span><span>معروض في المتجر</span></label><button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button></div>
+                <div class="fgroup" style="margin-top:12px"><label for="pDesc">وصف المنتج</label><textarea id="pDesc" placeholder="وصف المنتج..."></textarea></div>
+                <div style="margin-top:14px"><label for="lensImgInput" style="font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;cursor:pointer">صورة العدسة (اختياري)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div class="img-upload" id="lensImgUpload" onclick="document.getElementById('lensImgInput').click()"><span class="upload-icon">📷</span><span>ارفع صورة</span></div><input type="file" id="lensImgInput" accept="image/*" style="display:none" onchange="previewImg(this,'lensImgUpload','currentLensImg')"></div></div>
+                <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;align-items:center"><label for="pVisible" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;min-height:38px"><input type="checkbox" id="pVisible" checked style="display:none;"><span class="toggle" style="width:32px;height:18px;margin-left:5px"><input type="checkbox" id="pVisibleToggle" checked onchange="document.getElementById('pVisible').checked=this.checked"><span class="toggle-slider"></span></span><span>معروض في المتجر</span></label><button class="btn btn-gold" onclick="saveProduct()">💾 حفظ المنتج</button></div>
             </div>
         </div>
+
+        <!-- CATEGORIES -->
         <div class="page" id="page-categories">
             <h2 class="ftitle mb-2">إدارة الفئات</h2>
             <div class="fcard">
                 <div id="categoriesList"></div>
                 <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" name="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
-                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" name="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
-                    <div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" name="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div>
+                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameAr">اسم الفئة (عربي)</label><input type="text" id="newCatNameAr" placeholder="اسم الفئة" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
+                    <div class="fgroup" style="flex:1;min-width:120px"><label for="newCatNameEn">Category (EN)</label><input type="text" id="newCatNameEn" placeholder="Category Name" style="background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:11px;min-height:36px"></div>
+                    <div class="fgroup"><label for="newCatColor">اللون</label><input type="color" id="newCatColor" value="#c9a84c" style="width:40px;height:36px;border:none;border-radius:6px;cursor:pointer"></div>
                     <button class="btn btn-gold btn-sm" onclick="addCategory()">➕ إضافة</button>
                 </div>
             </div>
         </div>
+
+        <!-- VISIBILITY -->
         <div class="page" id="page-visibility">
             <h2 class="ftitle mb-2">إخفاء وإظهار المنتجات</h2>
             <div class="fcard"><p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">تحكم في ظهور كل منتج في المتجر</p><div id="visibilityList"></div></div>
         </div>
+
+        <!-- INVOICES -->
         <div class="page" id="page-invoices">
             <h2 class="ftitle mb-2">إدارة الفواتير</h2>
             <div class="fcard">
@@ -269,32 +269,66 @@ body.loading{overflow:hidden}
                 <div class="invoice-table-wrap"><table class="invoice-table"><thead><tr><th>رقم الفاتورة</th><th>التاريخ</th><th>العميل</th><th>الهاتف</th><th>المنتجات</th><th>الإجمالي</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="invoicesBody"></tbody></table></div>
             </div>
         </div>
+
+        <!-- ✅ NEW: INVENTORY REPORT PAGE -->
+        <div class="page" id="page-inventory">
+            <h2 class="ftitle mb-2">📊 تقرير المخزون الحي</h2>
+            <div class="fcard">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px">
+                    <div class="stat"><div class="stat-icon">📦</div><div><div class="stat-val" id="totalReal">0</div><div class="stat-lbl">إجمالي المخزون الفعلي</div></div></div>
+                    <div class="stat"><div class="stat-icon">🔒</div><div><div class="stat-val" id="totalReserved">0</div><div class="stat-lbl">إجمالي المحجوز</div></div></div>
+                    <div class="stat"><div class="stat-icon">✅</div><div><div class="stat-val" id="totalAvailable">0</div><div class="stat-lbl">إجمالي المتاح</div></div></div>
+                    <div class="stat"><div class="stat-icon">🟡</div><div><div class="stat-val" id="totalPending">0</div><div class="stat-lbl">فواتير معلقة</div></div></div>
+                </div>
+                <div class="p-table-wrap">
+                    <table class="p-table">
+                        <thead><tr><th>المنتج</th><th>الفئة</th><th>الفعلي</th><th>المحجوز</th><th>المتاح</th><th>حالة المخزون</th></tr></thead>
+                        <tbody id="inventoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT MODAL -->
         <div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
             <div class="modal">
                 <div class="modal-head"><h3 class="modal-title" id="editModalTitle">تعديل المنتج</h3><button class="modal-close" onclick="closeEditModal()" aria-label="إغلاق">✕</button></div>
                 <div class="modal-body">
                     <input type="hidden" id="editId">
                     <div class="fgrid">
-                        <div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr" name="editNameAr"></div>
-                        <div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn" name="editNameEn"></div>
-                        <div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory" name="editCategory"></select></div>
-                        <div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" name="editPrice" min="0"></div>
-                        <div class="fgroup"><label for="editStockReal">المخزون الفعلي</label><input type="number" id="editStockReal" name="editStockReal" min="0"></div>
-                        <div class="fgroup"><label for="editStockReserved">المحجوز</label><input type="number" id="editStockReserved" name="editStockReserved" min="0"></div>
-                        <div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" name="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" name="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
-                        <div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" name="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
-                        <div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" name="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div>
+                        <div class="fgroup"><label for="editNameAr">الاسم (عربي)</label><input type="text" id="editNameAr"></div>
+                        <div class="fgroup"><label for="editNameEn">الاسم (إنجليزي)</label><input type="text" id="editNameEn"></div>
+                        <div class="fgroup"><label for="editCategory">الفئة</label><select id="editCategory"></select></div>
+                        <div class="fgroup"><label for="editPrice">السعر</label><input type="number" id="editPrice" min="0"></div>
+                        <div class="fgroup"><label for="editStockReal">المخزون الفعلي</label><input type="number" id="editStockReal" min="0"></div>
+                        <div class="fgroup"><label for="editStockReserved">المحجوز</label><input type="number" id="editStockReserved" min="0"></div>
+                        <div class="fgroup"><label for="editColor">اللون</label><div style="display:flex;gap:6px;align-items:center"><input type="color" id="editColor" style="width:44px;height:38px;border:none;border-radius:6px;cursor:pointer"><input type="text" id="editColorHex" style="flex:1;background:rgba(201,168,76,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:11px;min-height:38px"></div></div>
+                        <div class="fgroup"><label for="editOpacity">شفافية اللون (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editOpacity" min="0" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editOpacityVal').textContent=this.value+'%'"><span id="editOpacityVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">70%</span></div></div>
+                        <div class="fgroup"><label for="editLensSize">حجم العدسة (%)</label><div style="display:flex;align-items:center;gap:8px"><input type="range" id="editLensSize" min="50" max="100" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('editLensSizeVal').textContent=this.value+'%'"><span id="editLensSizeVal" style="font-size:11px;color:var(--gold);min-width:40px;text-align:center">85%</span></div></div>
                     </div>
-                    <div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc" name="editDesc"></textarea></div>
+                    <div class="fgroup" style="margin-top:10px"><label for="editDesc">الوصف</label><textarea id="editDesc"></textarea></div>
                 </div>
                 <div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">إلغاء</button><button class="btn btn-gold" onclick="updateProduct()">💾 حفظ</button></div>
             </div>
         </div>
+
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </main>
 </div>
 
 <script>
+// ==================== ✅ SUPABASE CONFIG ====================
+const SUPABASE_URL = 'https://bdgnhmqmttiksuhoamil.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ25obXFtdHRpa3N1aG9hbWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjUwNTEsImV4cCI6MjA5NDU0MTA1MX0.X9-9HMqbXod2vyHRpd26MuBNTcqo4VERUwRI1o5lzMw';
+let supabase = null;
+function initSupabase() {
+    if (typeof window.supabase !== 'undefined' && window.supabase.createClient && !supabase) {
+        try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); console.log('✅ Supabase initialized'); return true; }
+        catch (e) { console.warn('⚠️ Supabase init error:', e); return false; }
+    }
+    return false;
+}
+
 // ==================== STATE ====================
 const BASE_LENS_TEMPLATE = 'https://raw.githubusercontent.com/yel-eng/store/main/arcus.png?v=' + Date.now();
 let state = { categories: [], products: [], settings: { showPrice:true, showStock:true, currency: 'SAR' }, hiddenColorIds: [], currentLensImg: null, currentCardImg: null, editingProductId: null, invoices: [], inventoryLog: [] };
@@ -303,133 +337,249 @@ let state = { categories: [], products: [], settings: { showPrice:true, showStoc
 function saveState() { try { localStorage.setItem('lens_cats', JSON.stringify(state.categories)); localStorage.setItem('lens_prods', JSON.stringify(state.products)); localStorage.setItem('lens_sett', JSON.stringify(state.settings)); localStorage.setItem('lens_hid_colors', JSON.stringify(state.hiddenColorIds)); localStorage.setItem('lens_invoices', JSON.stringify(state.invoices)); localStorage.setItem('lens_inv_log', JSON.stringify(state.inventoryLog)); } catch(e) { console.warn('Save error', e); } }
 function loadState() { try { const c = localStorage.getItem('lens_cats'), p = localStorage.getItem('lens_prods'), s = localStorage.getItem('lens_sett'), hc = localStorage.getItem('lens_hid_colors'), inv = localStorage.getItem('lens_invoices'), log = localStorage.getItem('lens_inv_log'); if (c) state.categories = JSON.parse(c); if (p) state.products = JSON.parse(p); if (s) state.settings = JSON.parse(s); if (hc) state.hiddenColorIds = JSON.parse(hc); if (inv) state.invoices = JSON.parse(inv); if (log) state.inventoryLog = JSON.parse(log); if(state.settings.currency) document.getElementById('adminCurrency').value = state.settings.currency; } catch(e) { console.warn('Load error', e); } }
 
-// ==================== ✅ FIXED AUTH ====================
-function doLogin(e) {
-    console.log('🔐 doLogin called');
-    if (e) { e.preventDefault(); console.log('✅ preventDefault called'); }
-    
-    const emailEl = document.getElementById('loginEmail');
-    const passEl = document.getElementById('loginPass');
-    
-    if (!emailEl || !passEl) {
-        console.error('❌ Login elements not found');
-        alert('خطأ: حقول الدخول غير موجودة');
-        return;
-    }
-    
-    const em = emailEl.value.trim();
-    const pw = passEl.value.trim();
-    
-    console.log('🔐 Attempting login:', { email: em, passwordLength: pw.length });
-    
-    if (em === 'admin@lensora.com' && pw === 'admin123') {
-        console.log('✅ Login successful');
-        try {
-            localStorage.setItem('lens_auth', 'true');
-        } catch(err) {
-            console.warn('⚠️ localStorage error:', err);
-        }
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('dashboard').classList.add('active');
-        initDefaults();
-        loadState();
-        initDashboard();
-        toast('✅ مرحباً بك', 'success');
-    } else {
-        console.warn('❌ Login failed - wrong credentials');
-        toast('❌ بيانات خاطئة - تأكد من: admin@lensora.com / admin123', 'error');
-    }
-}
+// ==================== AUTH ====================
+function doLogin(e) { e.preventDefault(); const em = document.getElementById('loginEmail').value.trim(), pw = document.getElementById('loginPass').value.trim(); if (em === 'admin@lensora.com' && pw === 'admin123') { localStorage.setItem('lens_auth', 'true'); document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashboard').classList.add('active'); initDefaults(); loadState(); initDashboard(); toast('✅ مرحباً بك', 'success'); } else { toast('❌ بيانات خاطئة', 'error'); } }
+function doLogout() { localStorage.removeItem('lens_auth'); location.reload(); }
 
-function doLogout() { 
-    localStorage.removeItem('lens_auth'); 
-    location.reload(); 
-}
-
-// ✅ Setup login form listener AFTER DOM is ready
+// ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DOMContentLoaded');
-    
-    // ✅ Setup form submit listener (alternative to onsubmit)
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', doLogin);
-        console.log('✅ Login form listener attached');
-    } else {
-        console.error('❌ Login form not found');
-    }
-    
-    // ✅ Check if already logged in
-    let isAuthenticated = false;
-    try {
-        isAuthenticated = localStorage.getItem('lens_auth') === 'true';
-    } catch(e) { console.warn('⚠️ localStorage read error:', e); }
-    
-    if (isAuthenticated) {
-        console.log('✅ User already authenticated');
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('dashboard').classList.add('active');
-        initDefaults();
-        loadState();
-        initDashboard();
-    }
-    
+    initSupabase();
+    const form = document.getElementById('loginForm'); if (form) form.addEventListener('submit', doLogin);
+    if (localStorage.getItem('lens_auth') === 'true') { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashboard').classList.add('active'); initDefaults(); loadState(); initDashboard(); }
+    document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', function(e) { e.preventDefault(); goToPage(this.dataset.page); }); });
     document.body.classList.remove('loading');
-    console.log('✅ App initialized');
 });
 
-// ==================== INIT & NAV ====================
+// ==================== NAV & UTILS ====================
 function initDefaults() { if (state.categories.length > 0) return; state.categories = [{id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},{id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'},{id:'green',ar:'أخضر زمردي',en:'Emerald Green',color:'#2E8B57'},{id:'gray',ar:'رمادي أنيق',en:'Elegant Gray',color:'#B8B8B8'},{id:'hazel',ar:'عسلي مميز',en:'Special Hazel',color:'#C4A265'},{id:'purple',ar:'بنفسجي ملكي',en:'Royal Purple',color:'#7B5EA7'}]; }
 function initDashboard() { populateCatSelects(); updateStats(); renderProducts(); renderCategories(); renderVisibility(); }
-function goToPage(pageId) { if (state.categories.length === 0) { initDefaults(); loadState(); } document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId)); document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); const el = document.getElementById('page-' + pageId); if (el) el.classList.add('active'); const titles = { overview:'نظرة عامة', allproducts:'جميع المنتجات', addproduct:'إضافة منتج', categories:'الفئات', visibility:'إخفاء/إظهار', invoices:'الفواتير' }; document.getElementById('pageTitle').textContent = titles[pageId] || ''; if (pageId === 'addproduct' || pageId === 'allproducts') { populateCatSelects(); renderProducts(); } if (pageId === 'visibility') renderVisibility(); if (pageId === 'categories') renderCategories(); if (pageId === 'overview') { updateStats(); renderHiddenOverview(); } if (pageId === 'invoices') renderInvoices(); }
-document.querySelectorAll('.side-item').forEach(it => { it.addEventListener('click', function(e) { e.preventDefault(); goToPage(this.dataset.page); }); });
-
-// ==================== TOAST & STATS ====================
+function goToPage(pageId) {
+    if (state.categories.length === 0) { initDefaults(); loadState(); }
+    document.querySelectorAll('.side-item').forEach(it => it.classList.toggle('active', it.dataset.page === pageId));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('page-' + pageId); if (el) el.classList.add('active');
+    const titles = { overview:'نظرة عامة', allproducts:'جميع المنتجات', addproduct:'إضافة منتج', categories:'الفئات', visibility:'إخفاء/إظهار', invoices:'الفواتير', inventory:'تقرير المخزون' };
+    document.getElementById('pageTitle').textContent = titles[pageId] || '';
+    if (pageId === 'addproduct' || pageId === 'allproducts') { populateCatSelects(); renderProducts(); }
+    if (pageId === 'visibility') renderVisibility();
+    if (pageId === 'categories') renderCategories();
+    if (pageId === 'overview') { updateStats(); renderHiddenOverview(); }
+    if (pageId === 'invoices') renderInvoices();
+    if (pageId === 'inventory') renderInventoryPage();
+}
 function toast(msg, type='info') { const t = document.getElementById('toast'); if(!t) return; t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(() => t.classList.remove('show'), 3000); }
-function updateStats() { const all = state.products; document.getElementById('statProducts').textContent = all.length; document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; document.getElementById('statLowStock').textContent = all.filter(p => getAvailableStock(p) > 0 && getAvailableStock(p) <= 5).length; document.getElementById('statOutOfStock').textContent = all.filter(p => getAvailableStock(p) === 0).length; }
-function renderHiddenOverview() { const hidden = state.products.filter(p => !p.visible); const el = document.getElementById('hiddenOverviewList'); if (!el) return; if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; } el.innerHTML = hidden.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`; }).join(''); }
 
 // ==================== STOCK MANAGEMENT ====================
-function getAvailableStock(product) { const real = product.stockReal || product.stock || 0; const reserved = product.stockReserved || 0; return Math.max(0, real - reserved); }
-function getStockStatus(product) { const available = getAvailableStock(product); if (available === 0) return { label: 'نفذ', class: 'off', color: 'var(--error)' }; if (available <= 5) return { label: `منخفض (${available})`, class: 'low', color: 'var(--warning)' }; return { label: `متوفر (${available})`, class: 'on', color: 'var(--success)' }; }
-function updateStock(productId, changeReal = 0, changeReserved = 0, note = '') { const product = state.products.find(p => p.id === productId); if (!product) return false; product.stockReal = Math.max(0, (product.stockReal || product.stock || 0) + changeReal); product.stockReserved = Math.max(0, (product.stockReserved || 0) + changeReserved); logInventoryAction(productId, changeReal !== 0 ? 'real' : 'reserved', changeReal !== 0 ? changeReal : changeReserved, note); saveState(); return true; }
-function logInventoryAction(productId, type, qty, note) { const product = state.products.find(p => p.id === productId); state.inventoryLog.unshift({ id: 'LOG-' + Date.now(), productId, productName: product?.nameAr || 'منتج', type, qty, note: note || '', timestamp: new Date().toISOString(), before: { real: product?.stockReal, reserved: product?.stockReserved }, after: { real: product?.stockReal + (type==='real'?qty:0), reserved: product?.stockReserved + (type==='reserved'?qty:0) } }); if (state.inventoryLog.length > 100) state.inventoryLog.pop(); }
+function getAvailableStock(p) { const real = p.stockReal || p.stock || 0, reserved = p.stockReserved || 0; return Math.max(0, real - reserved); }
+function getStockStatus(p) { const a = getAvailableStock(p); if (a === 0) return { label: 'نفذ', class: 'off', color: 'var(--error)' }; if (a <= 5) return { label: `منخفض (${a})`, class: 'low', color: 'var(--warning)' }; return { label: `متوفر (${a})`, class: 'on', color: 'var(--success)' }; }
+function updateStock(productId, changeReal = 0, changeReserved = 0, note = '') {
+    const p = state.products.find(x => x.id === productId); if (!p) return false;
+    p.stockReal = Math.max(0, (p.stockReal || p.stock || 0) + changeReal);
+    p.stockReserved = Math.max(0, (p.stockReserved || 0) + changeReserved);
+    logInventoryAction(productId, changeReal !== 0 ? 'real' : 'reserved', changeReal !== 0 ? changeReal : changeReserved, note);
+    saveState(); return true;
+}
+function logInventoryAction(productId, type, qty, note) {
+    const p = state.products.find(x => x.id === productId);
+    state.inventoryLog.unshift({ id: 'LOG-' + Date.now(), productId, productName: p?.nameAr || 'منتج', type, qty, note: note || '', timestamp: new Date().toISOString(), before: { real: p?.stockReal, reserved: p?.stockReserved }, after: { real: p?.stockReal + (type==='real'?qty:0), reserved: p?.stockReserved + (type==='reserved'?qty:0) } });
+    if (state.inventoryLog.length > 100) state.inventoryLog.pop();
+}
 
 // ==================== CURRENCY ====================
-function getCurrencySymbol(curr) { return { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' }[curr] || curr; }
-function convertPrice(priceSAR, targetCurr) { const rates = { SAR: 1, USD: 0.27, AED: 0.99, EGP: 12.5 }; return Math.round(priceSAR * (rates[targetCurr] || 1)); }
-function updateAdminCurrency() { const newCurr = document.getElementById('adminCurrency').value; state.settings.currency = newCurr; saveState(); renderProducts(); toast(`تم تغيير العملة إلى ${getCurrencySymbol(newCurr)}`, 'success'); }
+function getCurrencySymbol(c) { return { SAR: 'ر.س', USD: '$', AED: 'د.إ', EGP: 'ج.م' }[c] || c; }
+function convertPrice(p, t) { const r = { SAR: 1, USD: 0.27, AED: 0.99, EGP: 12.5 }; return Math.round(p * (r[t] || 1)); }
+function updateAdminCurrency() { const c = document.getElementById('adminCurrency').value; state.settings.currency = c; saveState(); renderProducts(); toast(`تم تغيير العملة إلى ${getCurrencySymbol(c)}`, 'success'); }
 
 // ==================== CATEGORIES ====================
-function populateCatSelects() { ['pCategory','editCategory'].forEach(sid => { const sel = document.getElementById(sid); if (!sel) return; const currentVal = sel.value; sel.innerHTML = sid === 'editCategory' ? '' : '<option value="">-- اختر الفئة --</option>'; if (!state.categories || state.categories.length === 0) initDefaults(); state.categories.forEach(c => { const option = document.createElement('option'); option.value = c.id; option.textContent = c.ar; sel.appendChild(option); }); if (currentVal && state.categories.some(c => c.id === currentVal)) sel.value = currentVal; }); }
+function populateCatSelects() { ['pCategory','editCategory'].forEach(sid => { const sel = document.getElementById(sid); if (!sel) return; const cv = sel.value; sel.innerHTML = sid === 'editCategory' ? '' : '<option value="">-- اختر الفئة --</option>'; if (!state.categories?.length) initDefaults(); state.categories.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.ar; sel.appendChild(o); }); if (cv && state.categories.some(c => c.id === cv)) sel.value = cv; }); }
 function renderCategories() { const el = document.getElementById('categoriesList'); if(!el) return; el.innerHTML = state.categories.map(c => { const cnt = state.products.filter(p => p.category === c.id).length; return `<div class="cat-vis"><div class="cat-color" style="background:${c.color}"></div><span class="cat-name">${c.ar}</span><span class="cat-count">${cnt} منتج</span><button class="btn btn-red btn-icon btn-sm" onclick="deleteCat('${c.id}')">✕</button></div>`; }).join(''); }
-function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(); const en = document.getElementById('newCatNameEn').value.trim(); const color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
+function addCategory() { const ar = document.getElementById('newCatNameAr').value.trim(), en = document.getElementById('newCatNameEn').value.trim(), color = document.getElementById('newCatColor').value; if (!ar) { toast('❌ أدخل اسم الفئة', 'error'); return; } const id = ar.replace(/\s+/g,'_') + '_' + Date.now(); state.categories.push({id, ar, en:en||ar, color}); saveState(); populateCatSelects(); renderCategories(); document.getElementById('newCatNameAr').value = ''; document.getElementById('newCatNameEn').value = ''; toast('✅ تمت إضافة الفئة', 'success'); }
 function deleteCat(id) { if (!confirm('حذف هذه الفئة ومنتجاتها؟')) return; state.categories = state.categories.filter(c => c.id !== id); state.products = state.products.filter(p => p.category !== id); saveState(); populateCatSelects(); renderCategories(); renderProducts(); updateStats(); toast('✅ تم الحذف', 'success'); }
 
 // ==================== PRODUCTS ====================
-function renderProducts() { const filter = document.getElementById('filterCat')?.value || ''; const currentCurr = state.settings.currency || 'SAR'; let prods = [...state.products]; if (filter === 'hidden') prods = prods.filter(p => !p.visible); else if (filter === 'visible') prods = prods.filter(p => p.visible); const tbody = document.getElementById('productsBody'); if (!tbody) return; tbody.innerHTML = prods.map(p => { const cat = state.categories.find(c => c.id === p.category); const available = getAvailableStock(p); const status = getStockStatus(p); const displayPrice = convertPrice(p.price, currentCurr); const currSym = getCurrencySymbol(currentCurr); const real = p.stockReal || p.stock || 0; const reserved = p.stockReserved || 0; const percent = real > 0 ? Math.min(100, (reserved / real) * 100) : 0; const barClass = percent >= 90 ? 'low' : percent >= 70 ? 'warning' : ''; return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${displayPrice} ${currSym}</td><td style="min-width:140px"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px"><span class="stock-badge real">📦 ${real}</span><span class="stock-badge reserved">🔒 ${reserved}</span><span class="stock-badge available">✅ ${available}</span></div><div class="stock-bar"><div class="stock-bar-fill ${barClass}" style="width:${percent}%"></div></div></td><td><span class="badge ${status.class}" style="background:${status.color}20;color:${status.color}">${status.label}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')">${p.visible?'👁️':'️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button></div></td></tr>`; }).join(''); }
+function renderProducts() {
+    const filter = document.getElementById('filterCat')?.value || '', curr = state.settings.currency || 'SAR';
+    let prods = [...state.products];
+    if (filter === 'hidden') prods = prods.filter(p => !p.visible); else if (filter === 'visible') prods = prods.filter(p => p.visible);
+    const tbody = document.getElementById('productsBody'); if (!tbody) return;
+    tbody.innerHTML = prods.map(p => {
+        const cat = state.categories.find(c => c.id === p.category), avail = getAvailableStock(p), status = getStockStatus(p), price = convertPrice(p.price, curr), sym = getCurrencySymbol(curr), real = p.stockReal || p.stock || 0, res = p.stockReserved || 0, pct = real > 0 ? Math.min(100, (res / real) * 100) : 0, barCls = pct >= 90 ? 'low' : pct >= 70 ? 'warning' : '';
+        return `<tr><td><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div></td><td><div class="p-name">${p.nameAr}</div><div class="p-cat">${p.nameEn||''}</div></td><td>${cat?cat.ar:'-'}</td><td class="p-price">${price} ${sym}</td><td style="min-width:140px"><div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px"><span class="stock-badge real">📦 ${real}</span><span class="stock-badge reserved">🔒 ${res}</span><span class="stock-badge available">✅ ${avail}</span></div><div class="stock-bar"><div class="stock-bar-fill ${barCls}" style="width:${pct}%"></div></div></td><td><span class="badge ${status.class}" style="background:${status.color}20;color:${status.color}">${status.label}</span></td><td style="white-space:nowrap"><div style="display:flex;gap:3px"><button class="btn btn-ghost btn-icon btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn btn-ghost btn-icon btn-sm" onclick="toggleVis('${p.id}')">${p.visible?'👁️':'️‍🗨️'}</button><button class="btn btn-red btn-icon btn-sm" onclick="deleteProduct('${p.id}')">🗑️</button></div></td></tr>`;
+    }).join('');
+}
 function previewImg(input, uploadId, stateKey) { const file = input.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { state[stateKey] = e.target.result; document.getElementById(uploadId).innerHTML = `<img src="${e.target.result}" alt="معاينة">`; }; reader.readAsDataURL(file); }
-function saveProduct() { const nameAr = document.getElementById('pNameAr').value.trim(), nameEn = document.getElementById('pNameEn').value.trim(), category = document.getElementById('pCategory').value, price = parseFloat(document.getElementById('pPrice').value), stockReal = parseInt(document.getElementById('pStockReal').value) || 0, stockReserved = parseInt(document.getElementById('pStockReserved').value) || 0, color = document.getElementById('pColor').value, opacity = parseFloat(document.getElementById('pOpacity').value) / 100, lensSize = parseInt(document.getElementById('pLensSize').value), desc = document.getElementById('pDesc').value.trim(), visible = document.getElementById('pVisible').checked; if (!nameAr) { toast('❌ أدخل اسم المنتج', 'error'); return; } if (!category) { toast('❌ اختر فئة', 'error'); return; } if (isNaN(price) || price < 0) { toast('❌ أدخل سعراً صحيحاً', 'error'); return; } if (isNaN(stockReal) || stockReal < 0) { toast('❌ أدخل مخزوناً صحيحاً', 'error'); return; } if (!color || !/^#[0-9a-fA-F]{6}$/.test(color)) { toast('❌ اختر لوناً صحيحاً', 'error'); return; } state.products.push({ id: 'p_' + Date.now(), nameAr, nameEn, category, price, stockReal, stockReserved, color, opacity, lensSize, gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE }); saveState(); updateStats(); renderProducts(); toast('✅ تمت إضافة المنتج', 'success'); ['pNameAr','pNameEn','pPrice','pStockReal','pStockReserved','pDesc','pCategory'].forEach(id => document.getElementById(id).value=''); document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056'; document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%'; document.getElementById('pLensSize').value='85'; document.getElementById('pLensSizeVal').textContent='85%'; state.currentLensImg=null; state.currentCardImg=null; document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>'; }
+function saveProduct() {
+    const nameAr = document.getElementById('pNameAr').value.trim(), nameEn = document.getElementById('pNameEn').value.trim(), category = document.getElementById('pCategory').value, price = parseFloat(document.getElementById('pPrice').value), stockReal = parseInt(document.getElementById('pStockReal').value) || 0, stockReserved = parseInt(document.getElementById('pStockReserved').value) || 0, color = document.getElementById('pColor').value, opacity = parseFloat(document.getElementById('pOpacity').value) / 100, lensSize = parseInt(document.getElementById('pLensSize').value), desc = document.getElementById('pDesc').value.trim(), visible = document.getElementById('pVisible').checked;
+    if (!nameAr) { toast('❌ أدخل اسم المنتج', 'error'); return; } if (!category) { toast('❌ اختر فئة', 'error'); return; } if (isNaN(price) || price < 0) { toast('❌ أدخل سعراً صحيحاً', 'error'); return; } if (isNaN(stockReal) || stockReal < 0) { toast('❌ أدخل مخزوناً صحيحاً', 'error'); return; } if (!color || !/^#[0-9a-fA-F]{6}$/.test(color)) { toast('❌ اختر لوناً صحيحاً', 'error'); return; }
+    state.products.push({ id: 'p_' + Date.now(), nameAr, nameEn, category, price, stockReal, stockReserved, color, opacity, lensSize, gradient: `radial-gradient(circle at 40% 35%,${color},${adjColor(color,-40)},${adjColor(color,-80)})`, desc, rating: 4.5+Math.random()*0.5, reviews: Math.floor(Math.random()*200)+10, visible, lensImage: state.currentLensImg, cardImage: state.currentCardImg, baseLens: BASE_LENS_TEMPLATE });
+    saveState(); updateStats(); renderProducts(); toast('✅ تمت إضافة المنتج', 'success');
+    ['pNameAr','pNameEn','pPrice','pStockReal','pStockReserved','pDesc','pCategory'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('pColor').value='#D4A056'; document.getElementById('pColorHex').value='#D4A056';
+    document.getElementById('pOpacity').value='70'; document.getElementById('pOpacityVal').textContent='70%';
+    document.getElementById('pLensSize').value='85'; document.getElementById('pLensSizeVal').textContent='85%';
+    state.currentLensImg=null; state.currentCardImg=null; document.getElementById('lensImgUpload').innerHTML='<span class="upload-icon">📷</span><span>ارفع صورة</span>';
+}
 function editProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; populateCatSelects(); document.getElementById('editId').value = p.id; document.getElementById('editNameAr').value = p.nameAr; document.getElementById('editNameEn').value = p.nameEn || ''; document.getElementById('editCategory').value = p.category; document.getElementById('editPrice').value = p.price; document.getElementById('editStockReal').value = p.stockReal || p.stock || 0; document.getElementById('editStockReserved').value = p.stockReserved || 0; document.getElementById('editColor').value = p.color; document.getElementById('editColorHex').value = p.color; document.getElementById('editOpacity').value = Math.round((p.opacity||0.7)*100); document.getElementById('editOpacityVal').textContent = Math.round((p.opacity||0.7)*100)+'%'; document.getElementById('editLensSize').value = p.lensSize || 85; document.getElementById('editLensSizeVal').textContent = (p.lensSize || 85)+'%'; document.getElementById('editDesc').value = p.desc || ''; document.getElementById('editModal').classList.add('show'); }
 function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
-function updateProduct() { const id = document.getElementById('editId').value; const p = state.products.find(x => x.id === id); if (!p) return; p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; p.nameEn = document.getElementById('editNameEn').value.trim(); p.category = document.getElementById('editCategory').value || p.category; p.price = parseInt(document.getElementById('editPrice').value) ?? p.price; const newReal = parseInt(document.getElementById('editStockReal').value) ?? (p.stockReal || p.stock || 0), newReserved = parseInt(document.getElementById('editStockReserved').value) ?? (p.stockReserved || 0); if (newReal !== (p.stockReal || p.stock || 0)) logInventoryAction(id, 'real', newReal - (p.stockReal || p.stock || 0), 'تعديل يدوي'); if (newReserved !== (p.stockReserved || 0)) logInventoryAction(id, 'reserved', newReserved - (p.stockReserved || 0), 'تعديل يدوي'); p.stockReal = newReal; p.stockReserved = newReserved; p.color = document.getElementById('editColor').value; p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; p.lensSize = parseInt(document.getElementById('editLensSize').value); p.desc = document.getElementById('editDesc').value.trim(); p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`; saveState(); renderProducts(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success'); }
+function updateProduct() {
+    const id = document.getElementById('editId').value, p = state.products.find(x => x.id === id); if (!p) return;
+    p.nameAr = document.getElementById('editNameAr').value.trim() || p.nameAr; p.nameEn = document.getElementById('editNameEn').value.trim(); p.category = document.getElementById('editCategory').value || p.category; p.price = parseInt(document.getElementById('editPrice').value) ?? p.price;
+    const newReal = parseInt(document.getElementById('editStockReal').value) ?? (p.stockReal || p.stock || 0), newReserved = parseInt(document.getElementById('editStockReserved').value) ?? (p.stockReserved || 0);
+    if (newReal !== (p.stockReal || p.stock || 0)) logInventoryAction(id, 'real', newReal - (p.stockReal || p.stock || 0), 'تعديل يدوي');
+    if (newReserved !== (p.stockReserved || 0)) logInventoryAction(id, 'reserved', newReserved - (p.stockReserved || 0), 'تعديل يدوي');
+    p.stockReal = newReal; p.stockReserved = newReserved; p.color = document.getElementById('editColor').value; p.opacity = parseInt(document.getElementById('editOpacity').value) / 100; p.lensSize = parseInt(document.getElementById('editLensSize').value); p.desc = document.getElementById('editDesc').value.trim(); p.gradient = `radial-gradient(circle at 40% 35%,${p.color},${adjColor(p.color,-40)},${adjColor(p.color,-80)})`;
+    saveState(); renderProducts(); updateStats(); closeEditModal(); toast('✅ تم تحديث المنتج', 'success');
+}
 function deleteProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return; if (!confirm(`حذف "${p.nameAr}"؟`)) return; state.products = state.products.filter(x => x.id !== id); saveState(); renderProducts(); updateStats(); toast('✅ تم حذف المنتج', 'success'); }
 function toggleVis(id) { const p = state.products.find(x => x.id === id); if (!p) return; p.visible = !p.visible; saveState(); renderProducts(); renderVisibility(); renderHiddenOverview(); updateStats(); toast(p.visible ? `✅ تم إظهار "${p.nameAr}"` : `️ تم إخفاء "${p.nameAr}"`, 'success'); }
-function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const currentCurr = state.settings.currency || 'SAR'; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category); const available = getAvailableStock(p); const status = getStockStatus(p); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, currentCurr)} ${getCurrencySymbol(currentCurr)}</div><div style="font-size:9px;color:${status.color}">${status.label}</div></div><label class="toggle"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderVisibility() { const el = document.getElementById('visibilityList'); if (!el) return; const curr = state.settings.currency || 'SAR'; el.innerHTML = state.products.map(p => { const cat = state.categories.find(c => c.id === p.category), avail = getAvailableStock(p), status = getStockStatus(p); return `<div class="vis-item"><div class="p-thumb" style="background:${p.color}">${p.nameAr.charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px">${p.nameAr}</div><div style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''} · ${convertPrice(p.price, curr)} ${getCurrencySymbol(curr)}</div><div style="font-size:9px;color:${status.color}">${status.label}</div></div><label class="toggle"><input type="checkbox" ${p.visible?'checked':''} onchange="toggleVis('${p.id}')"><span class="toggle-slider"></span></label><span class="badge ${p.visible?'on':'off'}">${p.visible?'مرئي':'مخفي'}</span></div>`; }).join(''); }
+function renderHiddenOverview() { const hidden = state.products.filter(p => !p.visible), el = document.getElementById('hiddenOverviewList'); if (!el) return; if (hidden.length === 0) { el.innerHTML = '<p style="padding:8px 0">لا توجد منتجات مخفية ✅</p>'; return; } el.innerHTML = hidden.map(p => { const cat = state.categories.find(c => c.id === p.category); return `<div class="hidden-item"><div class="p-thumb" style="background:${p.color};width:26px;height:26px;border-radius:5px;font-size:9px">${p.nameAr.charAt(0)}</div><span style="flex:1">${p.nameAr}</span><span style="font-size:9px;color:var(--text-dim)">${cat?cat.ar:''}</span><span class="badge off">مخفي</span><button class="btn btn-ghost btn-sm" onclick="toggleVis('${p.id}')">إظهار</button></div>`; }).join(''); }
+function updateStats() { const all = state.products; document.getElementById('statProducts').textContent = all.length; document.getElementById('statVisible').textContent = all.filter(p => p.visible).length; document.getElementById('statLowStock').textContent = all.filter(p => getAvailableStock(p) > 0 && getAvailableStock(p) <= 5).length; document.getElementById('statOutOfStock').textContent = all.filter(p => getAvailableStock(p) === 0).length; }
 
-// ==================== INVOICES (Local Only for Now) ====================
+// ==================== ✅ INVOICES + SUPABASE ====================
 function generateInvoiceId() { return 'INV-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).substr(2,4).toUpperCase(); }
-function saveInvoice(customerName, customerPhone, items, total, currency) { const invoiceId = generateInvoiceId(); const invoice = { id: invoiceId, customer_name: customerName || 'عميل زائر', customer_phone: customerPhone || 'غير محدد', items, total, currency: currency || 'SAR', status: 'completed' }; state.invoices.unshift(invoice); localStorage.setItem('lens_invoices', JSON.stringify(state.invoices)); return invoice; }
-function renderInvoices(filter = '') { const tbody = document.getElementById('invoicesBody'); if (!tbody) return; let invoices = [...(state.invoices || [])]; if (filter) { const searchTerm = filter.toLowerCase(); invoices = invoices.filter(inv => inv.id?.toLowerCase().includes(searchTerm) || inv.customer_phone?.includes(searchTerm)); } if (invoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-dim)">لا توجد فواتير ${filter ? 'تطابق البحث' : 'حتى الآن'}</td></tr>`; return; } tbody.innerHTML = invoices.map(inv => { const date = new Date(inv.created_at || inv.date).toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }); const itemsCount = Array.isArray(inv.items) ? inv.items.reduce((sum, item) => sum + (item.qty||1), 0) : 0; const currSym = getCurrencySymbol(inv.currency); return `<tr><td><span class="invoice-id">${inv.id}</span></td><td><span class="invoice-date">${date}</span></td><td>${inv.customer_name || inv.customerName}</td><td>${inv.customer_phone || inv.customerPhone}</td><td>${itemsCount} منتج</td><td><span class="invoice-total">${convertPrice(inv.total, state.settings.currency)} ${currSym}</span></td><td><span class="badge on">مكتملة</span></td><td class="invoice-actions"><button class="btn btn-ghost btn-sm" onclick="printInvoice('${inv.id}')">🖨️</button><button class="btn btn-ghost btn-sm" onclick="viewInvoice('${inv.id}')">👁️</button></td></tr>`; }).join(''); }
-function searchInvoices() { const query = document.getElementById('invoiceSearch').value.trim(); renderInvoices(query); }
-function viewInvoice(id) { let inv = state.invoices.find(i => i.id === id); if (!inv) { toast('❌ الفاتورة غير موجودة', 'error'); return; } showInvoiceModal(inv); }
-function showInvoiceModal(inv) { const itemsHTML = (inv.items || []).map(item => { const p = getProduct(item.productId); return `<tr><td>${p?.nameAr || 'منتج'}</td><td>${item.qty || 1}</td><td>${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`; }).join(''); const modal = document.createElement('div'); modal.className = 'overlay show'; modal.innerHTML = `<div class="modal" style="max-width:500px"><div class="modal-head"><h3 class="modal-title">تفاصيل الفاتورة #${inv.id}</h3><button class="modal-close" onclick="this.closest('.overlay').remove()">✕</button></div><div class="modal-body"><p><strong>العميل:</strong> ${inv.customer_name || inv.customerName}</p><p><strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}</p><p><strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}</p><hr style="border-color:var(--border);margin:12px 0"><table style="width:100%;font-size:11px"><thead><tr><th style="text-align:right">المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody>${itemsHTML}</tbody></table><hr style="border-color:var(--border);margin:12px 0"><div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px"><span>الإجمالي:</span><span style="color:var(--gold)">${convertPrice(inv.total, inv.currency)} ${getCurrencySymbol(inv.currency)}</span></div></div><div class="modal-foot"><button class="btn btn-gold" onclick="printInvoice('${inv.id}');this.closest('.overlay').remove()">🖨️ طباعة</button></div></div>`; document.body.appendChild(modal); modal.querySelector('.modal-close').onclick = () => modal.remove(); }
+
+// ✅ حفظ فاتورة جديدة (تبدأ بـ pending)
+async function saveInvoice(customerName, customerPhone, items, total, currency) {
+    const invoiceId = generateInvoiceId();
+    const invoice = { id: invoiceId, customer_name: customerName || 'عميل زائر', customer_phone: customerPhone || 'غير محدد', items, total, currency: currency || 'SAR', status: 'pending' }; // ✅ تبدأ معلقة
+    
+    // ✅ حفظ محلياً أولاً
+    state.invoices.unshift(invoice); localStorage.setItem('lens_invoices', JSON.stringify(state.invoices));
+    
+    // ✅ حجز الكميات في المخزون (لأن الفاتورة معلقة)
+    for (const item of items) {
+        const p = state.products.find(x => x.id === item.productId);
+        if (p) updateStock(item.productId, 0, item.qty || 1, `حجز فاتورة ${invoiceId}`);
+    }
+    
+    // ✅ لو في Supabase، احفظ هناك كمان
+    if (supabase) {
+        try { await supabase.from('invoices').insert([invoice]); console.log('✅ Invoice saved to Supabase:', invoiceId); }
+        catch (err) { console.warn('⚠️ Supabase save failed, using local only'); }
+    }
+    
+    toast('✅ تم إنشاء الفاتورة (قيد الانتظار)', 'success');
+    return invoice;
+}
+
+// ✅ عرض الفواتير مع حالة كل واحدة
+async function renderInvoices(filter = '') {
+    const tbody = document.getElementById('invoicesBody'); if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px">⏳ جاري التحميل...</td></tr>';
+    
+    let invoices = [...(state.invoices || [])];
+    if (filter) { const s = filter.toLowerCase(); invoices = invoices.filter(inv => inv.id?.toLowerCase().includes(s) || inv.customer_phone?.includes(s)); }
+    
+    if (invoices.length === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-dim)">لا توجد فواتير ${filter ? 'تطابق البحث' : 'حتى الآن'}</td></tr>`; return; }
+    
+    tbody.innerHTML = invoices.map(inv => {
+        const date = new Date(inv.created_at || inv.date).toLocaleDateString('ar-SA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+        const itemsCount = Array.isArray(inv.items) ? inv.items.reduce((s, i) => s + (i.qty||1), 0) : 0;
+        const sym = getCurrencySymbol(inv.currency), total = convertPrice(inv.total, state.settings.currency);
+        const statusLabel = getStatusLabel(inv.status || 'pending');
+        return `<tr><td><span class="invoice-id">${inv.id}</span></td><td><span class="invoice-date">${date}</span></td><td>${inv.customer_name || inv.customerName}</td><td>${inv.customer_phone || inv.customerPhone}</td><td>${itemsCount} منتج</td><td><span class="invoice-total">${total} ${sym}</span></td><td><span class="badge ${getStatusBadge(inv.status || 'pending')}">${statusLabel}</span></td><td class="invoice-actions"><select class="status-select" onchange="updateInvoiceStatus('${inv.id}', this.value)" data-inv='${JSON.stringify(inv).replace(/'/g,"\\'")}'>
+            <option value="pending" ${inv.status==='pending'?'selected':''}>🟡 معلق</option>
+            <option value="confirmed" ${inv.status==='confirmed'?'selected':''}>🔵 مؤكد</option>
+            <option value="completed" ${inv.status==='completed'?'selected':''}>🟢 مكتمل</option>
+            <option value="cancelled" ${inv.status==='cancelled'?'selected':''}>🔴 ملغى</option>
+        </select><button class="btn btn-ghost btn-sm" onclick="viewInvoice('${inv.id}')">👁️</button></td></tr>`;
+    }).join('');
+}
+
+function getStatusLabel(s) { return { pending:'🟡 معلق', confirmed:'🔵 مؤكد', completed:'🟢 مكتمل', cancelled:'🔴 ملغى' }[s] || s; }
+function getStatusBadge(s) { return { pending:'low', confirmed:'on', completed:'on', cancelled:'off' }[s] || 'on'; }
+
+// ✅ تحديث حالة الفاتورة + تحديث المخزون + الحفظ في Supabase
+async function updateInvoiceStatus(invoiceId, newStatus) {
+    const inv = state.invoices.find(i => i.id === invoiceId);
+    if (!inv) { toast('❌ الفاتورة غير موجودة', 'error'); return; }
+    
+    const oldStatus = inv.status || 'pending';
+    if (oldStatus === newStatus) return;
+    
+    console.log(`🔄 ${invoiceId}: ${oldStatus} → ${newStatus}`);
+    
+    // ✅ تحديث المخزون حسب الانتقال بين الحالات
+    for (const item of (inv.items || [])) {
+        const p = state.products.find(x => x.id === item.productId);
+        if (!p) continue;
+        const qty = item.qty || 1;
+        
+        if (oldStatus === 'pending' && newStatus === 'completed') {
+            // من معلق → مكتمل: خصم من الفعلي + إلغاء الحجز
+            updateStock(item.productId, -qty, -qty, `فاتورة ${invoiceId} اكتملت`);
+        } else if (oldStatus === 'pending' && newStatus === 'cancelled') {
+            // من معلق → ملغى: تحرير الحجز فقط
+            updateStock(item.productId, 0, -qty, `فاتورة ${invoiceId} ألغيت`);
+        } else if (oldStatus === 'confirmed' && newStatus === 'completed') {
+            // من مؤكد → مكتمل: خصم من الفعلي (الحجز موجود)
+            updateStock(item.productId, -qty, 0, `فاتورة ${invoiceId} اكتملت`);
+        } else if (newStatus === 'pending' && !['pending'].includes(oldStatus)) {
+            // أي حالة → معلقة: حجز الكمية
+            updateStock(item.productId, 0, +qty, `فاتورة ${invoiceId} عادت للمعلق`);
+        }
+    }
+    
+    // ✅ تحديث الحالة في الـ state
+    inv.status = newStatus;
+    if (newStatus === 'completed') inv.confirmed_at = new Date().toISOString();
+    if (newStatus === 'cancelled') inv.cancelled_at = new Date().toISOString();
+    saveState();
+    
+    // ✅ تحديث في Supabase لو موجود
+    if (supabase) {
+        try {
+            await supabase.from('invoices').update({ status: newStatus, confirmed_at: newStatus==='completed'?new Date().toISOString():null, cancelled_at: newStatus==='cancelled'?new Date().toISOString():null }).eq('id', invoiceId);
+            console.log('✅ Invoice status updated in Supabase');
+        } catch (err) { console.warn('⚠️ Supabase update failed'); }
+    }
+    
+    renderProducts(); renderInvoices(); renderInventoryPage();
+    toast(`✅ تم تحديث الحالة إلى: ${getStatusLabel(newStatus)}`, 'success');
+}
+
+function searchInvoices() { const q = document.getElementById('invoiceSearch').value.trim(); renderInvoices(q); }
+function viewInvoice(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) { toast('❌ الفاتورة غير موجودة', 'error'); return; } showInvoiceModal(inv); }
+function showInvoiceModal(inv) {
+    const itemsHTML = (inv.items || []).map(item => { const p = getProduct(item.productId); return `<tr><td>${p?.nameAr || 'منتج'}</td><td>${item.qty || 1}</td><td>${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`; }).join('');
+    const modal = document.createElement('div'); modal.className = 'overlay show';
+    modal.innerHTML = `<div class="modal" style="max-width:500px"><div class="modal-head"><h3 class="modal-title">تفاصيل الفاتورة #${inv.id}</h3><button class="modal-close" onclick="this.closest('.overlay').remove()">✕</button></div><div class="modal-body"><p><strong>العميل:</strong> ${inv.customer_name || inv.customerName}</p><p><strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}</p><p><strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}</p><p><strong>الحالة:</strong> ${getStatusLabel(inv.status || 'pending')}</p><hr style="border-color:var(--border);margin:12px 0"><table style="width:100%;font-size:11px"><thead><tr><th style="text-align:right">المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody>${itemsHTML}</tbody></table><hr style="border-color:var(--border);margin:12px 0"><div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px"><span>الإجمالي:</span><span style="color:var(--gold)">${convertPrice(inv.total, inv.currency)} ${getCurrencySymbol(inv.currency)}</span></div></div><div class="modal-foot"><button class="btn btn-gold" onclick="printInvoice('${inv.id}');this.closest('.overlay').remove()">🖨️ طباعة</button></div></div>`;
+    document.body.appendChild(modal); modal.querySelector('.modal-close').onclick = () => modal.remove();
+}
 function printInvoice(id) { const inv = state.invoices.find(i => i.id === id); if (!inv) { toast('❌ الفاتورة غير موجودة', 'error'); return; } doPrintInvoice(inv); }
-function doPrintInvoice(inv) { const itemsHTML = (inv.items || []).map(item => { const p = getProduct(item.productId); return `<tr><td>${p?.nameAr || 'منتج'}</td><td style="text-align:center">${item.qty || 1}</td><td style="text-align:left">${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`; }).join(''); const printWindow = window.open('', '_blank'); printWindow.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>فاتورة #${inv.id}</title><style>body{font-family:'Inter',sans-serif;padding:20px;direction:rtl;text-align:right}.invoice{max-width:600px;margin:0 auto;border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:15px;margin-bottom:20px}.header h1{color:#c9a84c;margin:0;font-size:24px}.info{display:flex;justify-content:space-between;margin-bottom:20px;font-size:12px}table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#f5f5f5;padding:8px;text-align:right;font-size:11px}td{padding:8px;border-bottom:1px solid #eee;font-size:11px}.total{text-align:left;font-weight:700;font-size:14px;color:#c9a84c;border-top:2px solid #c9a84c;padding-top:10px}@media print{.no-print{display:none}}</style></head><body><div class="invoice"><div class="header"><h1>LENSORA</h1><p style="margin:5px 0 0;color:#666;font-size:12px">عدسات ملونة فاخرة</p></div><div class="info"><div><strong>رقم الفاتورة:</strong> #${inv.id}<br><strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}</div><div style="text-align:left"><strong>العميل:</strong> ${inv.customer_name || inv.customerName}<br><strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}</div></div><table><thead><tr><th>المنتج</th><th style="text-align:center">الكمية</th><th style="text-align:left">السعر</th></tr></thead><tbody>${itemsHTML}</tbody></table><div class="total">الإجمالي: ${convertPrice(inv.total, inv.currency)} ${getCurrencySymbol(inv.currency)}</div><p style="text-align:center;font-size:10px;color:#999;margin-top:30px">شكراً لثقتكم بنا ✦ LENSORA</p></div><button class="no-print" onclick="window.print();window.close()" style="position:fixed;bottom:20px;left:20px;padding:10px 20px;background:#c9a84c;color:#0a0808;border:none;border-radius:6px;cursor:pointer">🖨️ طباعة الفاتورة</button></body></html>`); printWindow.document.close(); }
+function doPrintInvoice(inv) {
+    const itemsHTML = (inv.items || []).map(item => { const p = getProduct(item.productId); return `<tr><td>${p?.nameAr || 'منتج'}</td><td style="text-align:center">${item.qty || 1}</td><td style="text-align:left">${convertPrice(p?.price || 0, inv.currency)} ${getCurrencySymbol(inv.currency)}</td></tr>`; }).join('');
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>فاتورة #${inv.id}</title><style>body{font-family:'Inter',sans-serif;padding:20px;direction:rtl;text-align:right}.invoice{max-width:600px;margin:0 auto;border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:15px;margin-bottom:20px}.header h1{color:#c9a84c;margin:0;font-size:24px}.info{display:flex;justify-content:space-between;margin-bottom:20px;font-size:12px}table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#f5f5f5;padding:8px;text-align:right;font-size:11px}td{padding:8px;border-bottom:1px solid #eee;font-size:11px}.total{text-align:left;font-weight:700;font-size:14px;color:#c9a84c;border-top:2px solid #c9a84c;padding-top:10px}@media print{.no-print{display:none}}</style></head><body><div class="invoice"><div class="header"><h1>LENSORA</h1><p style="margin:5px 0 0;color:#666;font-size:12px">عدسات ملونة فاخرة</p></div><div class="info"><div><strong>رقم الفاتورة:</strong> #${inv.id}<br><strong>التاريخ:</strong> ${new Date(inv.created_at || inv.date).toLocaleString('ar-SA')}</div><div style="text-align:left"><strong>العميل:</strong> ${inv.customer_name || inv.customerName}<br><strong>الهاتف:</strong> ${inv.customer_phone || inv.customerPhone}</div></div><table><thead><tr><th>المنتج</th><th style="text-align:center">الكمية</th><th style="text-align:left">السعر</th></tr></thead><tbody>${itemsHTML}</tbody></table><div class="total">الإجمالي: ${convertPrice(inv.total, inv.currency)} ${getCurrencySymbol(inv.currency)}</div><p style="text-align:center;font-size:10px;color:#999;margin-top:30px">شكراً لثقتكم بنا ✦ LENSORA</p></div><button class="no-print" onclick="window.print();window.close()" style="position:fixed;bottom:20px;left:20px;padding:10px 20px;background:#c9a84c;color:#0a0808;border:none;border-radius:6px;cursor:pointer">🖨️ طباعة الفاتورة</button></body></html>`);
+    w.document.close();
+}
+
+// ==================== ✅ INVENTORY REPORT PAGE ====================
+function renderInventoryPage() {
+    const report = state.products.map(p => {
+        const real = p.stockReal || p.stock || 0, reserved = p.stockReserved || 0, avail = Math.max(0, real - reserved);
+        const pendingReserved = state.invoices.filter(inv => inv.status === 'pending').reduce((s, inv) => { const it = inv.items?.find(i => i.productId === p.id); return s + (it?.qty || 0); }, 0);
+        return { id: p.id, name: p.nameAr, real, reserved, pendingReserved, avail, category: state.categories.find(c => c.id === p.category)?.ar || '-' };
+    });
+    
+    // ✅ تحديث الإحصائيات العامة
+    document.getElementById('totalReal').textContent = report.reduce((s, r) => s + r.real, 0);
+    document.getElementById('totalReserved').textContent = report.reduce((s, r) => s + r.reserved, 0);
+    document.getElementById('totalAvailable').textContent = report.reduce((s, r) => s + r.avail, 0);
+    document.getElementById('totalPending').textContent = state.invoices.filter(inv => inv.status === 'pending').length;
+    
+    // ✅ عرض الجدول
+    const tbody = document.getElementById('inventoryBody'); if (!tbody) return;
+    tbody.innerHTML = report.map(r => {
+        const status = r.avail === 0 ? '<span class="badge off">نفذ</span>' : r.avail <= 5 ? '<span class="badge low">منخفض</span>' : '<span class="badge on">متوفر</span>';
+        return `<tr><td><strong>${r.name}</strong></td><td>${r.category}</td><td>${r.real}</td><td>${r.reserved} <span style="font-size:9px;color:var(--text-dim)">(${r.pendingReserved} معلق)</span></td><td><strong style="color:var(--gold)">${r.avail}</strong></td><td>${status}</td></tr>`;
+    }).join('');
+}
 
 // ==================== HELPERS ====================
-function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)); const g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)); const b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
-function getProduct(id) { const p = state.products.find(p => p.id === id); if (!p) return { stockReal: 0, stockReserved: 0, price: 0, name: '', gradient: '' }; return { ...p, stockReal: p.stockReal || p.stock || 0, stockReserved: p.stockReserved || 0 }; }
+function adjColor(hex, amount) { hex = hex.replace('#',''); const r = Math.max(0, Math.min(255, parseInt(hex.substring(0,2),16)+amount)), g = Math.max(0, Math.min(255, parseInt(hex.substring(2,4),16)+amount)), b = Math.max(0, Math.min(255, parseInt(hex.substring(4,6),16)+amount)); return '#'+[r,g,b].map(c=>c.toString(16).padStart(2,'0')).join(''); }
+function getProduct(id) { const p = state.products.find(x => x.id === id); if (!p) return { stockReal: 0, stockReserved: 0, price: 0, name: '', gradient: '' }; return { ...p, stockReal: p.stockReal || p.stock || 0, stockReserved: p.stockReserved || 0 }; }
 document.getElementById('pColor')?.addEventListener('input', e => { document.getElementById('pColorHex').value = e.target.value; });
 document.getElementById('pColorHex')?.addEventListener('input', e => { if(/^#[0-9a-fA-F]{6}$/.test(e.target.value)) document.getElementById('pColor').value = e.target.value; });
 document.getElementById('editColor')?.addEventListener('input', e => { document.getElementById('editColorHex').value = e.target.value; });
@@ -438,8 +588,18 @@ document.getElementById('editModal')?.addEventListener('click', e => { if(e.targ
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeEditModal(); });
 
 // ==================== STORE PREVIEW ====================
-function openStore() { const storeData = { categories: state.categories, products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)), settings: state.settings }; const html = buildStoreHTML(storeData); window.open(URL.createObjectURL(new Blob([html], {type:'text/html'})), '_blank'); }
-function buildStoreHTML(data) { const {categories, products, settings} = data; const grouped = {}; categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; }); let cardsHTML = ''; const currSym = getCurrencySymbol(settings.currency || 'SAR'); categories.forEach(c => { if (!grouped[c.id] || grouped[c.id].lenses.length === 0) return; const lenses = grouped[c.id].lenses, main = lenses[0], displayPrice = convertPrice(main.price, settings.currency || 'SAR'); cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;background:rgba(18,14,12,.85);border:1px solid rgba(201,168,76,.06);position:relative"><div style="position:absolute;inset:0;background:${c.color};opacity:.3"></div><div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center"><div style="width:100px;height:100px;border-radius:50%;background:${main.gradient};box-shadow:inset 0 0 30px rgba(0,0,0,.4)"></div></div><div style="position:relative;padding:14px 16px"><div style="display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:#c9a84c;margin-bottom:8px">${c.ar}</div><div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div><div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات</div><div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)"><div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${displayPrice} ${currSym}</strong></div><button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button></div></div></div>`; }); return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>معاينة</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:40px 20px}.hero{text-align:center;margin-bottom:40px}.hero h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:clamp(32px,8vw,52px)}.track{display:flex;gap:14px;overflow-x:auto;padding:20px 0}</style></head><body><div class="hero"><h1>LENSORA</h1><p style="color:var(--text-dim)">معاينة المتجر (${currSym})</p></div><div class="track">${cardsHTML||'<p style="text-align:center;color:var(--text-dim)">لا توجد منتجات</p>'}</div></body></html>`; }
+function openStore() { const data = { categories: state.categories, products: state.products.filter(p => p.visible && !state.hiddenColorIds.includes(p.id)), settings: state.settings }; const html = buildStoreHTML(data); window.open(URL.createObjectURL(new Blob([html], {type:'text/html'})), '_blank'); }
+function buildStoreHTML(data) {
+    const {categories, products, settings} = data, grouped = {};
+    categories.forEach(c => { grouped[c.id] = {cat:c, lenses:products.filter(p => p.category === c.id)}; });
+    let cardsHTML = '', sym = getCurrencySymbol(settings.currency || 'SAR');
+    categories.forEach(c => {
+        if (!grouped[c.id]?.lenses.length) return;
+        const lenses = grouped[c.id].lenses, main = lenses[0], price = convertPrice(main.price, settings.currency || 'SAR');
+        cardsHTML += `<div style="flex:0 0 260px;border-radius:20px;overflow:hidden;background:rgba(18,14,12,.85);border:1px solid rgba(201,168,76,.06);position:relative"><div style="position:absolute;inset:0;background:${c.color};opacity:.3"></div><div style="position:relative;height:160px;display:flex;align-items:center;justify-content:center"><div style="width:100px;height:100px;border-radius:50%;background:${main.gradient};box-shadow:inset 0 0 30px rgba(0,0,0,.4)"></div></div><div style="position:relative;padding:14px 16px"><div style="display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.1);font-size:8px;color:#c9a84c;margin-bottom:8px">${c.ar}</div><div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px">${main.nameAr}</div><div style="font-size:10px;color:#8a7e73;margin-bottom:12px">${lenses.length} تدرجات</div><div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(201,168,76,.06)"><div style="font-size:11px;color:#8a7e73">من <strong style="font-size:16px;color:#c9a84c;font-weight:700">${price} ${sym}</strong></div><button style="padding:7px 16px;border-radius:16px;background:linear-gradient(135deg,#c9a84c,#b8943a);color:#0a0808;font-weight:700;font-size:10px;border:none">اكتشفي ✦</button></div></div></div>`;
+    });
+    return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>معاينة</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css"><style>:root{--bg:#0a0808;--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:40px 20px}.hero{text-align:center;margin-bottom:40px}.hero h1{font-family:'Playfair Display',serif;color:var(--gold);font-size:clamp(32px,8vw,52px)}.track{display:flex;gap:14px;overflow-x:auto;padding:20px 0}</style></head><body><div class="hero"><h1>LENSORA</h1><p style="color:var(--text-dim)">معاينة المتجر (${sym})</p></div><div class="track">${cardsHTML||'<p style="text-align:center;color:var(--text-dim)">لا توجد منتجات</p>'}</div></body></html>`;
+}
 </script>
 </body>
 </html>
