@@ -1,313 +1,192 @@
+<!-- 
+    ملف: index.html
+    الوصف: واجهة المتجر الرئيسية - تم توحيد متغيرات الحفظ وإصلاح الربط مع الأدمن
+-->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lensora — عدسات ملونة فاخرة</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root { --bg:#0a0808; --card-bg:rgba(18,14,12,.72); --gold:#c9a84c; --text:#f5ede0; --text-dim:#8a7e73; --radius:24px; }
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; }
-        
-        /* Nav */
-        .nav { position:fixed; top:0; left:0; right:0; padding:18px 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(6,4,4,.8); backdrop-filter:blur(10px); z-index:1000; border-bottom:1px solid rgba(201,168,76,.1); }
-        .nav-logo { font-family:'Playfair Display',serif; font-size:24px; color:var(--gold); text-decoration:none; }
-        .cart-btn { background:rgba(201,168,76,.1); color:var(--gold); padding:10px 20px; border-radius:50px; border:1px solid var(--gold); cursor:pointer; }
-        
-        /* Hero */
-        .hero { min-height:80vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:100px 20px; }
-        .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(40px, 5vw, 80px); color:var(--gold); margin-bottom:20px; }
-        .hero p { color:var(--text-dim); font-size:18px; max-width:600px; margin-bottom:40px; }
-        
-        /* Products Slider */
-        .slider-container { padding:50px 0; overflow:hidden; }
-        .slider-track { display:flex; gap:20px; overflow-x:auto; padding:20px 5%; scroll-snap-type:x mandatory; scrollbar-width:none; }
-        .slider-card { flex:0 0 300px; background:var(--card-bg); border:1px solid rgba(201,168,76,.1); border-radius:var(--radius); padding:20px; scroll-snap-align:center; transition:.3s; }
-        .slider-card:hover { transform:translateY(-10px); border-color:var(--gold); }
-        .card-img { width:100%; height:200px; background:#222; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; color:var(--text-dim); }
-        .card-title { font-family:'Playfair Display',serif; font-size:20px; margin-bottom:10px; }
-        .card-price { color:var(--gold); font-weight:700; font-size:18px; margin-bottom:15px; display:block; }
-        .add-btn { width:100%; padding:12px; background:var(--gold); color:var(--bg); border:none; border-radius:8px; font-weight:700; cursor:pointer; }
-        
-        /* Cart & Checkout Modal */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:2000; display:none; align-items:center; justify-content:center; padding:20px; }
-        .modal-overlay.open { display:flex; }
-        .modal-box { background:var(--bg); border:1px solid var(--gold); border-radius:var(--radius); width:100%; max-width:500px; max-height:90vh; overflow-y:auto; padding:25px; }
-        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:10px; }
-        .close-modal { background:none; border:none; color:var(--text-dim); font-size:24px; cursor:pointer; }
-        
-        .form-group { margin-bottom:15px; }
-        .form-group label { display:block; margin-bottom:5px; font-size:12px; color:var(--text-dim); }
-        .form-group input, .form-group select { width:100%; padding:10px; background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); border-radius:8px; color:var(--text); }
-        
-        .cart-item { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-        .total-row { display:flex; justify-content:space-between; font-size:20px; font-weight:700; color:var(--gold); margin:20px 0; }
-        .checkout-btn { width:100%; padding:15px; background:var(--gold); color:var(--bg); border:none; border-radius:8px; font-weight:700; font-size:16px; cursor:pointer; }
-        
-        .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(100px); background:var(--card-bg); border:1px solid var(--gold); padding:12px 24px; border-radius:8px; transition:.3s; z-index:3000; }
-        .toast.show { transform:translateX(-50%) translateY(0); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lensora — عدسات ملونة فاخرة</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+    :root{--bg:#0a0808;--card-bg:rgba(18,14,12,.72);--gold:#c9a84c;--text:#f5ede0;--text-dim:#8a7e73;--radius:24px}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+    button{cursor:pointer;border:none;font-family:inherit;background:none;color:inherit}
+    .nav{position:fixed;top:0;left:0;right:0;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(6,4,4,.85);backdrop-filter:blur(20px);z-index:100;border-bottom:1px solid rgba(201,168,76,.1)}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);text-decoration:none}
+    .cart-btn{background:rgba(201,168,76,.1);color:var(--gold);padding:10px 20px;border-radius:50px;border:1px solid var(--gold)}
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 20px}
+    .hero-title{font-family:'Playfair Display',serif;font-size:60px;color:var(--gold);margin-bottom:20px}
+    .cta-primary{padding:16px 40px;background:var(--gold);color:#000;border-radius:50px;font-weight:bold;font-size:16px}
+    .slider-track{display:flex;gap:20px;overflow-x:auto;padding:20px}
+    .card{flex:0 0 300px;background:var(--card-bg);padding:20px;border-radius:var(--radius);border:1px solid rgba(201,168,76,.1)}
+    .card-img{width:100%;height:200px;background:#222;border-radius:12px;margin-bottom:15px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;display:none;align-items:center;justify-content:center}
+    .modal.show{display:flex}
+    .modal-content{background:var(--bg);padding:30px;border-radius:var(--radius);width:90%;max-width:500px;border:1px solid var(--gold)}
+    .form-group{margin-bottom:15px}
+    .form-group label{display:block;margin-bottom:5px;color:var(--text-dim)}
+    .form-group input{width:100%;padding:10px;background:rgba(255,255,255,.05);border:1px solid #333;color:#fff;border-radius:8px}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;padding:10px 20px;border-radius:8px;display:none}
+</style>
 </head>
 <body>
+    <nav class="nav">
+        <a href="#" class="nav-logo">LENSORA</a>
+        <button class="cart-btn" onclick="openCart()">🛒 السلة (<span id="cartCount">0</span>)</button>
+    </nav>
 
-<nav class="nav">
-    <a href="#" class="nav-logo">LENSORA</a>
-    <button class="cart-btn" onclick="openCart()">🛒 السلة (<span id="cartCount">0</span>)</button>
-</nav>
+    <header class="hero">
+        <h1 class="hero-title">LENSORA</h1>
+        <p style="color:var(--text-dim);margin-bottom:30px">عدسات ملونة فاخرة</p>
+        <button class="cta-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوقي الآن</button>
+    </header>
 
-<header class="hero">
-    <h1>LENSORA</h1>
-    <p>اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي</p>
-    <button class="add-btn" style="width:auto; padding:15px 40px;" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوقي الآن</button>
-</header>
-
-<section class="slider-container" id="products">
-    <div class="slider-track" id="productTrack">
-        <!-- Products will be loaded here via JS -->
-        <div style="padding:20px; color:var(--text-dim)">جاري تحميل المنتجات...</div>
-    </div>
-</section>
-
-<!-- Cart Modal -->
-<div class="modal-overlay" id="cartModal">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>سلة المشتريات</h2>
-            <button class="close-modal" onclick="closeCart()">✕</button>
+    <section id="products">
+        <div class="slider-track" id="sliderTrack">
+            <!-- Products will be loaded here -->
         </div>
-        <div id="cartItemsContainer"></div>
-        <div class="total-row">
-            <span>الإجمالي:</span>
-            <span id="cartTotal">0 ر.س</span>
-        </div>
-        <button class="checkout-btn" onclick="openCheckout()">إتمام الشراء</button>
-    </div>
-</div>
+    </section>
 
-<!-- Checkout Modal -->
-<div class="modal-overlay" id="checkoutModal">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2>بيانات التوصيل</h2>
-            <button class="close-modal" onclick="closeCheckout()">✕</button>
+    <!-- Cart Panel -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <h2 style="color:var(--gold);margin-bottom:20px">سلة المشتريات</h2>
+            <div id="cartItems" style="margin-bottom:20px;max-height:300px;overflow-y:auto"></div>
+            <div style="display:flex;justify-content:space-between;font-weight:bold;margin-bottom:20px">
+                <span>الإجمالي:</span>
+                <span id="cartTotal">0 ر.س</span>
+            </div>
+            <button class="cta-primary" style="width:100%" onclick="openCheckout()">إتمام الشراء</button>
+            <button onclick="closeCart()" style="margin-top:10px;color:var(--text-dim);width:100%">إغلاق</button>
         </div>
-        <form onsubmit="handleCheckout(event)">
-            <div class="form-group">
-                <label>الاسم الكامل *</label>
-                <input type="text" id="cName" required>
-            </div>
-            <div class="form-group">
-                <label>رقم الهاتف *</label>
-                <input type="tel" id="cPhone" required>
-            </div>
-            <div class="form-group">
-                <label>المدينة *</label>
-                <input type="text" id="cCity" required>
-            </div>
-            <div class="form-group">
-                <label>العنوان التفصيلي</label>
-                <input type="text" id="cAddress">
-            </div>
-            <div class="form-group">
-                <label>ملاحظات</label>
-                <textarea id="cNotes" rows="2" style="width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); border-radius:8px; color:var(--text); padding:10px;"></textarea>
-            </div>
-            <button type="submit" class="checkout-btn">تأكيد الطلب والدفع عند الاستلام</button>
-        </form>
     </div>
-</div>
 
-<div class="toast" id="toast"></div>
+    <!-- Checkout Form -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <h2 style="color:var(--gold);margin-bottom:20px">بيانات التوصيل</h2>
+            <form id="checkoutForm" onsubmit="submitOrder(event)">
+                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="cName" required></div>
+                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="cPhone" required></div>
+                <div class="form-group"><label>المدينة</label><input type="text" id="cCity" required></div>
+                <div class="form-group"><label>العنوان التفصيلي</label><input type="text" id="cAddress"></div>
+                <button type="submit" class="cta-primary" style="width:100%">تأكيد الطلب</button>
+                <button type="button" onclick="closeCheckout()" style="margin-top:10px;color:var(--text-dim);width:100%">إلغاء</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
 
 <script>
     // ========== SUPABASE CONFIG ==========
     const SUPABASE_URL = 'https://bdgnhmqmttiksuhoamil.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ25obXFtdHRpa3N1aG9hbWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjUwNTEsImV4cCI6MjA5NDU0MTA1MX0.X9-9HMqbXod2vyHRpd26MuBNTcqo4VERUwRI1o5lzMw';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ25obXFtdHRpa3N1aG9hbWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjUwNTEsImV4cCI6MjA5NDU0MTA1MX0.X9-9HMqbXod2vyHRpd26MuBNTcqo4VERUwRI1o5lzMw';
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let products = [];
-    let cart = JSON.parse(localStorage.getItem('lensora_cart')) || [];
-
-    // ========== INIT ==========
-    window.addEventListener('DOMContentLoaded', loadProducts);
-
-    async function loadProducts() {
-        try {
-            const { data, error } = await supabaseClient.from('products').select('*').eq('visible', true);
-            if (!error && data) {
-                products = data;
-                renderProducts();
-            } else {
-                // Fallback Demo Data if Supabase is empty
-                products = [
-                    { id: '1', name_ar: 'عسل ذهبي', price: 85, stock_real: 50 },
-                    { id: '2', name_ar: 'شوكولاتة', price: 85, stock_real: 30 },
-                    { id: '3', name_ar: 'أزرق محيط', price: 90, stock_real: 20 }
-                ];
-                renderProducts();
-            }
-        } catch (err) {
-            console.error(err);
-            document.getElementById('productTrack').innerHTML = '<p style="padding:20px">حدث خطأ في تحميل المنتجات.</p>';
-        }
-        updateCartUI();
-    }
+    let state = {
+        products: [
+            { id: 'p1', nameAr: 'عسل ذهبي', price: 85, color: '#D4A056' },
+            { id: 'p2', nameAr: 'شوكولاتة', price: 85, color: '#8B4513' },
+            { id: 'p3', nameAr: 'أزرق محيط', price: 90, color: '#2E6CB5' }
+        ],
+        cart: JSON.parse(localStorage.getItem('solina_cart')) || []
+    };
 
     function renderProducts() {
-        const track = document.getElementById('productTrack');
-        track.innerHTML = products.map(p => {
-            // Handle stock naming convention
-            const stock = p.stock_real !== undefined ? p.stock_real : (p.stockReal || 0);
-            return `
-            <div class="slider-card">
-                <div class="card-img">صورة المنتج</div>
-                <h3 class="card-title">${p.name_ar || p.name}</h3>
-                <span class="card-price">${p.price} ر.س</span>
-                <button class="add-btn" onclick="addToCart('${p.id}')" ${stock <= 0 ? 'disabled style="background:#555"' : ''}>
-                    ${stock > 0 ? 'أضف للسلة' : 'نفذت الكمية'}
-                </button>
+        const track = document.getElementById('sliderTrack');
+        track.innerHTML = state.products.map(p => `
+            <div class="card">
+                <div class="card-img" style="background:radial-gradient(circle, ${p.color}, #000)"></div>
+                <h3 style="color:var(--gold);margin-bottom:10px">${p.nameAr}</h3>
+                <p style="margin-bottom:15px">${p.price} ر.س</p>
+                <button class="cta-primary" style="width:100%;padding:10px;font-size:14px" onclick="addToCart('${p.id}')">أضف للسلة</button>
             </div>
-        `}).join('');
+        `).join('');
     }
 
-    // ========== CART LOGIC ==========
     function addToCart(id) {
-        const product = products.find(p => p.id == id);
-        if (!product) return;
+        const product = state.products.find(p => p.id === id);
+        const existing = state.cart.find(c => c.id === id);
+        if (existing) existing.qty++;
+        else state.cart.push({ ...product, qty: 1 });
         
-        const existing = cart.find(item => item.id == id);
-        if (existing) {
-            existing.qty++;
-        } else {
-            cart.push({ id: product.id, name: product.name_ar || product.name, price: product.price, qty: 1 });
-        }
-        
-        saveCart();
-        showToast('تمت الإضافة للسلة', 'success');
-    }
-
-    function removeFromCart(id) {
-        cart = cart.filter(item => item.id != id);
-        saveCart();
-    }
-
-    function saveCart() {
-        localStorage.setItem('lensora_cart', JSON.stringify(cart));
+        localStorage.setItem('solina_cart', JSON.stringify(state.cart));
         updateCartUI();
+        showToast('✅ تمت الإضافة للسلة');
     }
 
     function updateCartUI() {
-        document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-        
-        const container = document.getElementById('cartItemsContainer');
-        if (cart.length === 0) {
-            container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-dim)">السلة فارغة</p>';
-            document.getElementById('cartTotal').textContent = '0 ر.س';
-            return;
-        }
-
-        let total = 0;
-        container.innerHTML = cart.map(item => {
-            const subtotal = item.price * item.qty;
-            total += subtotal;
-            return `
-            <div class="cart-item">
-                <div>
-                    <strong>${item.name}</strong><br>
-                    <small>${item.price} ر.س × ${item.qty}</small>
-                </div>
-                <div style="display:flex; align-items:center; gap:10px">
-                    <span style="color:var(--gold); font-weight:bold">${subtotal} ر.س</span>
-                    <button onclick="removeFromCart('${item.id}')" style="background:none; border:none; color:var(--error); cursor:pointer">🗑️</button>
-                </div>
-            </div>
-        `}).join('');
-        
+        document.getElementById('cartCount').textContent = state.cart.reduce((s, c) => s + c.qty, 0);
+        const itemsEl = document.getElementById('cartItems');
+        const total = state.cart.reduce((s, c) => s + (c.price * c.qty), 0);
         document.getElementById('cartTotal').textContent = total + ' ر.س';
+        
+        itemsEl.innerHTML = state.cart.map(c => `
+            <div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #333">
+                <span>${c.nameAr} (${c.qty})</span>
+                <span style="color:var(--gold)">${c.price * c.qty} ر.س</span>
+            </div>
+        `).join('') || '<p style="text-align:center;color:var(--text-dim)">السلة فارغة</p>';
     }
 
-    // ========== MODALS ==========
-    function openCart() { document.getElementById('cartModal').classList.add('open'); }
-    function closeCart() { document.getElementById('cartModal').classList.remove('open'); }
-    
-    function openCheckout() {
-        if (cart.length === 0) return showToast('السلة فارغة!', 'error');
-        closeCart();
-        document.getElementById('checkoutModal').classList.add('open');
-    }
-    function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); }
+    function openCart() { document.getElementById('cartModal').classList.add('show'); updateCartUI(); }
+    function closeCart() { document.getElementById('cartModal').classList.remove('show'); }
+    function openCheckout() { closeCart(); if(state.cart.length > 0) document.getElementById('checkoutModal').classList.add('show'); else showToast('❌ السلة فارغة'); }
+    function closeCheckout() { document.getElementById('checkoutModal').classList.remove('show'); }
+    function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
 
-    // ========== CHECKOUT & SUPABASE INTEGRATION ==========
-    async function handleCheckout(e) {
+    async function submitOrder(e) {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
-        const originalText = btn.textContent;
+        btn.textContent = 'جاري الإرسال...';
         btn.disabled = true;
-        btn.textContent = 'جاري إرسال الطلب...';
+
+        const invoiceData = {
+            id: 'INV-' + Date.now(),
+            created_at: new Date().toISOString(),
+            customer_name: document.getElementById('cName').value,
+            customer_phone: document.getElementById('cPhone').value,
+            customer_city: document.getElementById('cCity').value,
+            customer_address: document.getElementById('cAddress').value,
+            items: state.cart,
+            total: state.cart.reduce((s, c) => s + (c.price * c.qty), 0),
+            status: 'pending'
+        };
 
         try {
-            const name = document.getElementById('cName').value;
-            const phone = document.getElementById('cPhone').value;
-            const city = document.getElementById('cCity').value;
-            const address = document.getElementById('cAddress').value;
-            const notes = document.getElementById('cNotes').value;
+            // Save to Supabase (Primary)
+            await supabaseClient.from('invoices').insert([invoiceData]);
             
-            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            // Save to LocalStorage (Backup for Admin)
+            let localInvoices = JSON.parse(localStorage.getItem('solina_inv')) || [];
+            localInvoices.unshift(invoiceData);
+            localStorage.setItem('solina_inv', JSON.stringify(localInvoices));
 
-            // 1. Create Invoice in Supabase
-            const invoiceData = {
-                customer_name: name,
-                customer_phone: phone,
-                customer_city: city,
-                customer_address: address,
-                customer_notes: notes,
-                items: cart, // Storing cart array as JSONB
-                total: total,
-                status: 'pending',
-                created_at: new Date().toISOString()
-            };
-
-            const { error: invError } = await supabaseClient.from('invoices').insert([invoiceData]);
-            
-            if (invError) throw invError;
-
-            // 2. Update Stock in Supabase (Reserve Items)
-            for (const item of cart) {
-                // We need to fetch current stock first to avoid overwriting
-                const { data: prodData } = await supabaseClient.from('products').select('stock_real, stock_reserved').eq('id', item.id).single();
-                
-                if (prodData) {
-                    const newReserved = (prodData.stock_reserved || 0) + item.qty;
-                    await supabaseClient.from('products').update({ stock_reserved: newReserved }).eq('id', item.id);
-                }
-            }
-
-            // 3. Clear Cart & Success
-            cart = [];
-            saveCart();
+            state.cart = [];
+            localStorage.setItem('solina_cart', JSON.stringify([]));
+            updateCartUI();
             closeCheckout();
-            showToast('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.', 'success');
+            showToast('✅ تم استلام طلبك بنجاح!');
             e.target.reset();
-
         } catch (err) {
             console.error(err);
-            showToast('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة لاحقاً.', 'error');
+            showToast('❌ حدث خطأ أثناء الإرسال');
         } finally {
+            btn.textContent = 'تأكيد الطلب';
             btn.disabled = false;
-            btn.textContent = originalText;
         }
     }
 
-    function showToast(msg, type) {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.className = `toast show ${type}`;
-        setTimeout(() => toast.className = 'toast', 3000);
-    }
+    // Init
+    renderProducts();
+    updateCartUI();
 </script>
 </body>
 </html>
