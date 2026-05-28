@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solina — عدسات ملونة فاخرة</title>
-<meta name="description" content="اكتشفي مجموعة Solina من العدسات الملونة الفاخرة - ألوان طبيعية، مواد آمنة معتمدة، وشحن مجاني">
+<title>SOLINA — عدسات ملونة فاخرة</title>
+<meta name="description" content="اكتشفي مجموعة SOLINA من العدسات الملونة الفاخرة - ألوان طبيعية، مواد آمنة معتمدة، وشحن مجاني">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
@@ -248,7 +248,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <p class="hero-sub">اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي بأمان تام وجودة عالمية</p>
 <div class="hero-ctas">
 <button class="cta-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوّقي الآن ✦</button>
-<button class="cta-secondary" onclick="openWishlist()">المفضلة ♡</button>
+<button class="cta-secondary" onclick="showToast('♡ المفضلة قيد التطوير','info')">المفضلة ♡</button>
 </div>
 </div>
 <div class="hero-scroll"><span>اكتشفي</span><div class="scroll-line"></div></div>
@@ -374,7 +374,6 @@ function initSmoothSlider() {
   let activeCatIdx = 0, currentPos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0, animFrame = null, isAnimating = false, autoplayInterval = null;
   function getCenterOffset() { const vp = document.querySelector('.slider-viewport'); return vp ? (vp.offsetWidth - CARD_W) / 2 : 0; }
   
-  // ✅ FIXED: Corrected modulo operator
   function updateDots(idx) {
     const normalized = ((idx % total) + total) % total;
     document.querySelectorAll('#sliderDots .slider-dot').forEach((d, i) => d.classList.toggle('active', i === normalized));
@@ -486,13 +485,12 @@ async function handleCheckout(e) {
         await supabaseClient.from('products').update({ stock_real: newReal, stock_reserved: newReserved }).eq('id', c.productId);
       }
     }
-    showToast('✅ تم إرسال طلبك بنجاح! 🎉', 'success');
+    showToast('✅ تم إرسال طلبك بنجاح! 🎉 سنتواصل معك قريباً', 'success');
     state.cart = []; localStorage.setItem('solina_cart', JSON.stringify([])); updateCartBadge(); closeCheckoutModal(); e.target.reset();
     await loadData(); initSmoothSlider();
   } catch (err) { console.error(err); showToast('❌ حدث خطأ أثناء الحفظ', 'error'); } finally { btn.disabled = false; btn.innerHTML = originalText; }
 }
 
-function openWishlist() { showToast('♡ المفضلة قيد التطوير', 'info'); }
 document.getElementById('currencySelect').onchange = function() { state.currentCurrency = this.value; initSmoothSlider(); renderCart(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLensModal(); closeCart(); closeCheckoutModal(); } });
 window.addEventListener('scroll', () => { document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60); }, { passive: true });
