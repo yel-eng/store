@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -30,6 +30,9 @@
 <!-- Fonts -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/index.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5.1.0/index.min.css">
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 /* ========== BASE VARIABLES ========== */
 :root{
@@ -37,7 +40,6 @@
 --text:#f5ede0;--text-dim:#8a7e73;--radius:24px;--radius-sm:14px;
 --preview-dark:#121010;--preview-light:#f4f1ed;
 --success:#2ecc71;--warning:#f39c12;--error:#e74c3c;
-/* ✅ Fixed: Slower, smoother transitions */
 --transition-fast:.25s cubic-bezier(.22,1,.36,1);
 --transition-normal:.6s cubic-bezier(.22,1,.36,1);
 --transition-slow:.9s cubic-bezier(.22,1,.36,1);
@@ -56,6 +58,7 @@ button{cursor:pointer;border:none;font-family:inherit;background:none;color:inhe
 button:disabled{cursor:not-allowed;opacity:.5}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
 /* ========== AMBIENT BACKGROUND ========== */
 .ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .ambient-orb{position:absolute;border-radius:50%;filter:blur(150px);opacity:.06}
@@ -66,6 +69,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @keyframes orb2{0%,100%{transform:translate(0,0)}33%{transform:translate(80px,-70px)}66%{transform:translate(-60px,40px)}}
 @keyframes orb3{0%,100%{transform:translate(-50%,-50%)}33%{transform:translate(calc(-50%+80px),calc(-50%-50px))}66%{transform:translate(calc(-50%-50px),calc(-50%+80px))}}
 #particlesCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.3}
+
 /* ========== NAVIGATION ========== */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(6,4,4,.15);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,.04);transition:all var(--transition-normal)}
 .nav.scrolled{background:rgba(8,6,6,.9);padding:12px 5%;border-bottom-color:rgba(201,168,76,.08);box-shadow:0 4px 30px rgba(0,0,0,.1)}
@@ -85,6 +89,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .admin-link{display:none;padding:12px 18px;border-radius:50px;background:rgba(201,168,76,.1);color:var(--gold);font-size:13px;font-weight:600;border:1px solid rgba(201,168,76,.2);transition:all var(--transition-normal)}
 .admin-link:hover{background:var(--gold);color:var(--bg)}
 body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
+
 /* ========== HERO SECTION ========== */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 5% 80px}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(201,168,76,.04) 0%,transparent 70%),radial-gradient(ellipse 35% 35% at 15% 85%,rgba(74,144,217,.03) 0%,transparent 50%),radial-gradient(ellipse 35% 35% at 85% 85%,rgba(123,94,167,.03) 0%,transparent 50%)}
@@ -126,6 +131,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .hero-scroll span{font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
 .scroll-line{width:1px;height:45px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
 @keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.4);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+
 /* ========== CATEGORIES SLIDER ========== */
 .categories-section{padding:80px 5% 140px;max-width:1500px;margin:0 auto;position:relative;z-index:2}
 .section-header{text-align:center;margin-bottom:60px}
@@ -189,6 +195,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-dot{width:12px;height:12px;border-radius:50%;background:rgba(201,168,76,.12);transition:all var(--transition-fast);cursor:pointer;border:2px solid transparent}
 .slider-dot:hover{background:rgba(201,168,76,.3)}
 .slider-dot.active{background:var(--gold);transform:scale(1.4);box-shadow:0 0 15px rgba(201,168,76,.5)}
+
 /* ========== MODAL ========== */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all var(--transition-normal);padding:20px;backdrop-filter:blur(12px)}
 .modal-bg.open{opacity:1;visibility:visible}
@@ -213,7 +220,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .modal-box.light-bg .modal-close{background:rgba(0,0,0,.04);color:#5a4a3a}
 .modal-box.light-bg .modal-close:hover{background:#5a4a3a;color:#fff}
 
-/* NEW: Modal Side Arrows */
+/* Modal Side Arrows */
 .modal-nav-arrow {
     position: absolute;
     top: 50%;
@@ -241,7 +248,6 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 }
 .modal-nav-prev { right: 20px; }
 .modal-nav-next { left: 20px; }
-
 @media(max-width: 768px) {
     .modal-nav-arrow { width: 40px; height: 40px; font-size: 18px; right: 10px; left: 10px; }
 }
@@ -330,6 +336,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .slider-dot-modal{width:10px;height:10px;border-radius:50%;background:rgba(201,168,76,.1);transition:all var(--transition-fast);cursor:pointer}
 .modal-box.light-bg .slider-dot-modal{background:rgba(0,0,0,.08)}
 .slider-dot-modal.active{background:var(--gold);transform:scale(1.5);box-shadow:0 0 14px rgba(201,168,76,.5)}
+
 /* ========== CART ========== */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;opacity:0;visibility:hidden;transition:all var(--transition-normal)}
 .cart-overlay.open{opacity:1;visibility:visible}
@@ -360,6 +367,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .checkout-btn{width:100%;padding:18px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:15px;margin-top:18px;transition:all var(--transition-fast);position:relative;overflow:hidden}
 .checkout-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.3)}
 .checkout-btn:disabled{background:var(--text-dim);opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
 /* ========== WISHLIST PANEL ========== */
 .wishlist-panel{position:fixed;top:0;right:0;width:460px;max-width:100vw;height:100vh;background:rgba(10,8,8,.96);backdrop-filter:blur(40px);z-index:3001;transform:translateX(100%);transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;border-right:1px solid rgba(201,168,76,.04)}
 .wishlist-panel.open{transform:translateX(0)}
@@ -374,12 +382,14 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .wi-actions{display:flex;gap:8px;margin-top:12px}
 .wi-add{padding:8px 16px;border-radius:8px;background:var(--gold);color:var(--bg);font-size:11px;font-weight:600}
 .wi-remove{padding:8px 12px;border-radius:8px;background:rgba(231,76,60,.1);color:#e74c3c;font-size:11px}
+
 /* ========== TOAST ========== */
 .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(120px);background:rgba(14,12,12,.95);backdrop-filter:blur(20px);border:1px solid rgba(201,168,76,.12);color:var(--text);padding:18px 36px;border-radius:var(--radius-sm);font-size:14px;z-index:9999;transition:transform var(--transition-slow) cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:12px;white-space:nowrap;box-shadow:0 12px 50px rgba(0,0,0,.5)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--error)}
 .toast.warning{border-color:var(--warning)}
+
 /* ========== COOKIE CONSENT ========== */
 .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:rgba(18,14,12,.98);backdrop-filter:blur(20px);border-top:1px solid rgba(201,168,76,.12);padding:20px 5%;z-index:4000;transform:translateY(100%);transition:transform var(--transition-normal);display:flex;align-items:center;justify-content:space-between;gap:20px}
 .cookie-banner.show{transform:translateY(0)}
@@ -391,6 +401,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .cookie-btn.accept{background:var(--gold);color:var(--bg)}
 .cookie-btn.decline{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
 .cookie-btn.settings{background:transparent;color:var(--text-dim);border:1px solid rgba(201,168,76,.2)}
+
 /* ========== AGE VERIFICATION ========== */
 .age-modal{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:5000;display:flex;align-items:center;justify-content:center;padding:20px}
 .age-modal.hidden{display:none}
@@ -403,6 +414,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .age-btn.confirm:hover{background:var(--gold-light)}
 .age-btn.exit{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.2)}
 .age-btn.exit:hover{background:rgba(231,76,60,.2)}
+
 /* ========== FOOTER ========== */
 .footer{text-align:center;padding:50px 5%;border-top:1px solid rgba(201,168,76,.03);color:var(--text-dim);font-size:13px;position:relative;z-index:2}
 .footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:20px;flex-wrap:wrap}
@@ -411,6 +423,23 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .footer-social{display:flex;justify-content:center;gap:16px;margin-bottom:20px}
 .footer-social a{width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.06);display:flex;align-items:center;justify-content:center;color:var(--gold);transition:all var(--transition-fast)}
 .footer-social a:hover{background:var(--gold);color:var(--bg);transform:translateY(-2px)}
+
+/* ========== CUSTOMER MODAL FORM ========== */
+.customer-form-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
+.customer-form-overlay.show{display:flex}
+.customer-form-modal{background:var(--card-bg);border:1px solid var(--gold);border-radius:var(--radius);width:100%;max-width:700px;max-height:90vh;overflow-y:auto;padding:25px}
+.customer-form-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:22px;margin-bottom:20px;text-align:center}
+.customer-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.customer-form-group{display:flex;flex-direction:column;gap:5px}
+.customer-form-group label{font-size:11px;color:var(--text-dim)}
+.customer-form-group input,.customer-form-group select,.customer-form-group textarea{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.1);border-radius:8px;padding:10px;color:var(--text);font-size:13px}
+.customer-form-group input:focus{outline:2px solid var(--gold)}
+.customer-form-group.full{grid-column:1/-1}
+.customer-form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:15px;border-top:1px solid rgba(255,255,255,.1)}
+.customer-form-btn{padding:12px 24px;border-radius:8px;font-weight:600;cursor:pointer;border:none}
+.customer-form-btn.cancel{background:rgba(255,255,255,.1);color:var(--text)}
+.customer-form-btn.submit{background:var(--gold);color:var(--bg)}
+
 /* ========== RESPONSIVE ========== */
 @media(max-width:1024px){.slider-card{flex:0 0 300px}}
 @media(max-width:768px){
@@ -424,6 +453,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 .lens-details h3{font-size:24px}
 .cookie-banner{flex-direction:column;text-align:center}
 .cookie-actions{width:100%;justify-content:center}
+.customer-form-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){.hero-glass{padding:32px 20px}.card-body{padding:16px 20px}.slider-card{flex:0 0 260px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
@@ -434,12 +464,15 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <div class="age-modal" id="ageModal" role="dialog" aria-modal="true" aria-labelledby="age-title">
 <div class="age-box"><h3 id="age-title">🔞 تأكيد العمر</h3><p>هذا الموقع يحتوي على منتجات تجميلية. يجب أن يكون عمرك 18 سنة أو أكثر للدخول.</p>
 <div class="age-btns"><button class="age-btn confirm" onclick="confirmAge()">أنا أبلغ 18+ ✓</button><button class="age-btn exit" onclick="exitSite()">خروج</button></div></div></div>
+
 <!-- Cookie Consent -->
 <div class="cookie-banner" id="cookieBanner" role="region" aria-label="إشعار ملفات تعريف الارتباط">
 <p class="cookie-text">نستخدم ملفات تعريف الارتباط لتحسين تجربتك. <a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a> | <a href="#terms" onclick="showTerms()">الشروط</a></p>
 <div class="cookie-actions"><button class="cookie-btn accept" onclick="acceptCookies()">قبول الكل</button><button class="cookie-btn settings" onclick="showCookieSettings()">الإعدادات</button></div></div>
+
 <div class="ambient"><div class="ambient-orb"></div><div class="ambient-orb"></div><div class="ambient-orb"></div></div>
 <canvas id="particlesCanvas"></canvas>
+
 <nav class="nav" id="mainNav" role="navigation" aria-label="القائمة الرئيسية">
 <a href="#" class="nav-logo" aria-label="العودة للرئيسية">
 <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="18" stroke="#c9a84c" stroke-width="1" opacity=".3"/><circle cx="20" cy="20" r="12" stroke="#c9a84c" stroke-width=".5" opacity=".2"/><circle cx="20" cy="20" r="8" fill="url(#lg1)" opacity=".7"/><defs><radialGradient id="lg1" cx="40%" cy="35%"><stop offset="0%" stop-color="#e8d5a3"/><stop offset="100%" stop-color="#8B7355"/></radialGradient></defs></svg>
@@ -455,7 +488,9 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 </select></div>
 <button class="cart-btn" onclick="openCart()" aria-label="فتح سلة المشتريات">🛒 <span class="sr-only">السلة</span><span class="cart-badge" id="cartBadge" style="display:none" aria-live="polite"></span></button>
 <a href="admin.html" class="admin-link" id="adminLink" aria-label="لوحة التحكم">⚙️ <span>الداشبورد</span></a></div></nav>
+
 <span class="sr-only" style="position:absolute;left:-9999px">موقع Lensora للعدسات الملونة الفاخرة</span>
+
 <header class="hero" role="banner">
 <div class="hero-bg" aria-hidden="true"></div>
 <div class="hero-sphere-wrap" aria-hidden="true">
@@ -468,6 +503,7 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <p class="hero-sub">اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي بأمان تام وجودة عالمية</p>
 <div class="hero-ctas"><button class="cta-primary" onclick="scrollToProducts()">تسوّقي الآن ✦</button><button class="cta-secondary" onclick="openWishlist()">المفضلة ♡</button></div></div>
 <div class="hero-scroll" aria-hidden="true"><span>اكتشفي</span><div class="scroll-line"></div></div></header>
+
 <main id="mainContent" role="main">
 <section class="categories-section" id="products">
 <div class="section-header"><div class="section-label">👁️ مجموعتنا</div><h2 class="section-title">اختاري لونك المفضل</h2><p class="section-sub">سلايدر لا نهائي — اسحبي يمين أو شمال ✨</p></div>
@@ -477,38 +513,110 @@ body.is-admin .admin-link{display:flex;align-items:center;gap:6px}
 <button class="slider-nav-btn" id="prevBtn" aria-label="السابق" aria-controls="sliderTrack">→</button>
 <div class="slider-dots" id="sliderDots" role="tablist" aria-label="اختر فئة"></div>
 <button class="slider-nav-btn" id="nextBtn" aria-label="التالي" aria-controls="sliderTrack">←</button></div></div></section></main>
+
 <!-- Product Detail Modal -->
 <div class="modal-bg" id="lensModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
 <div class="modal-box" id="modalBox">
-    <!-- NEW: Side Arrows for Navigation inside Modal -->
     <button class="modal-nav-arrow modal-nav-prev" onclick="slideLensMove(1)" aria-label="التالي">←</button>
     <button class="modal-nav-arrow modal-nav-next" onclick="slideLensMove(-1)" aria-label="السابق">→</button>
-
 <div class="modal-header"><h2 id="modalTitle"></h2><div class="modal-actions">
 <button class="bg-toggle" onclick="toggleModalBg()" title="تبديل الخلفية" aria-label="تبديل بين الخلفية الفاتحة والداكنة"><span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span></button>
 <button class="modal-close" onclick="closeLensModal()" aria-label="إغلاق">✕</button></div></div>
 <div class="slider-area">
 <div class="lens-slider-container dark-bg" id="lensContainer" role="region" aria-label="معرض العدسات"><div class="lens-slider-track" id="lensTrack" role="list"></div></div>
 <div class="slider-nav-modal"><button onclick="slideLensMove(-1)" id="lensPrevBtn" aria-label="السابق">→</button><div class="slider-dots-modal" id="lensSliderDots" role="tablist" aria-label="اختر عدسة"></div><button onclick="slideLensMove(1)" id="lensNextBtn" aria-label="التالي">←</button></div></div></div></div>
+
 <!-- Cart Panel -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()" aria-hidden="true"></div>
 <div class="cart-panel" id="cartPanel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
 <div class="cart-top"><h2 id="cartTitle">🛒 سلة المشتريات</h2><button class="modal-close" onclick="closeCart()" aria-label="إغلاق السلة">✕</button></div>
 <div class="cart-items-list" id="cartItemsList" role="list"></div><div class="cart-bottom" id="cartBottom"></div></div>
+
 <!-- Wishlist Panel -->
 <div class="cart-overlay" id="wishlistOverlay" onclick="closeWishlist()" aria-hidden="true"></div>
 <div class="wishlist-panel" id="wishlistPanel" role="dialog" aria-modal="true" aria-labelledby="wishlistTitle">
 <div class="wishlist-top"><h2 id="wishlistTitle">♡ المفضلة</h2><button class="modal-close" onclick="closeWishlist()" aria-label="إغلاق المفضلة">✕</button></div>
 <div class="wishlist-items" id="wishlistItems" role="list"></div></div>
+
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+<!-- Customer Checkout Modal -->
+<div class="customer-form-overlay" id="customerModal">
+    <div class="customer-form-modal">
+        <h3 class="customer-form-title">📋 إتمام الطلب - بيانات التوصيل</h3>
+        <form id="checkoutForm" onsubmit="handleCheckout(event)">
+            <div class="customer-form-grid">
+                <div class="customer-form-group">
+                    <label>الاسم الكامل *</label>
+                    <input type="text" id="custName" required placeholder="أدخلي اسمك الثلاثي">
+                </div>
+                <div class="customer-form-group">
+                    <label>رقم الهاتف *</label>
+                    <input type="tel" id="custPhone" required placeholder="05xxxxxxxx">
+                </div>
+                <div class="customer-form-group">
+                    <label>رقم هاتف بديل (للتأكيد)</label>
+                    <input type="tel" id="custPhone2" placeholder="05xxxxxxxx">
+                </div>
+                <div class="customer-form-group">
+                    <label>المدينة *</label>
+                    <input type="text" id="custCity" required placeholder="مثال: الرياض">
+                </div>
+                <div class="customer-form-group">
+                    <label>الحي / المنطقة *</label>
+                    <input type="text" id="custDistrict" required placeholder="مثال: العليا">
+                </div>
+                <div class="customer-form-group">
+                    <label>اسم الشارع</label>
+                    <input type="text" id="custStreet" placeholder="اسم الشارع الرئيسي">
+                </div>
+                <div class="customer-form-group">
+                    <label>رقم العمارة</label>
+                    <input type="text" id="custBuilding">
+                </div>
+                <div class="customer-form-group">
+                    <label>رقم الشقة / الدور</label>
+                    <input type="text" id="custApartment">
+                </div>
+                <div class="customer-form-group full">
+                    <label>ملاحظات إضافية (اختياري)</label>
+                    <textarea id="custNotes" rows="2" placeholder="أي تعليمات خاصة للتوصيل..."></textarea>
+                </div>
+                <div class="customer-form-group">
+                    <label>طريقة الاستلام</label>
+                    <select id="deliveryMethod">
+                        <option value="delivery">توصيل للمنزل</option>
+                        <option value="pickup">استلام من الفرع</option>
+                    </select>
+                </div>
+                <div class="customer-form-group">
+                    <label>تكلفة التوصيل</label>
+                    <input type="number" id="deliveryCost" value="0" min="0" readonly>
+                </div>
+            </div>
+            <div class="customer-form-actions">
+                <button type="button" class="customer-form-btn cancel" onclick="closeCustomerModal()">إلغاء</button>
+                <button type="submit" class="customer-form-btn submit">✅ تأكيد الطلب ودفع عند الاستلام</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- Footer -->
 <footer class="footer" role="contentinfo">
 <div class="footer-links"><a href="#privacy" onclick="showPrivacy()">سياسة الخصوصية</a><a href="#terms" onclick="showTerms()">الشروط والأحكام</a><a href="#shipping" onclick="showShipping()">سياسة الشحن</a><a href="#returns" onclick="showReturns()">الإرجاع والاستبدال</a><a href="#contact" onclick="showContact()">تواصل معنا</a></div>
 <div class="footer-social" role="social" aria-label="تابعنا على"><a href="#" aria-label="إنستغرام" onclick="trackSocial('instagram')">📷</a><a href="#" aria-label="تيك توك" onclick="trackSocial('tiktok')">🎵</a><a href="#" aria-label="سناب شات" onclick="trackSocial('snapchat')">👻</a><a href="#" aria-label="واتساب" onclick="trackSocial('whatsapp')">💬</a></div>
 <p>© 2026 LENSORA — جميع الحقوق محفوظة ✨</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">منتجات معتمدة من هيئة الغذاء والدواء | شحن آمن | دفع عند الاستلام</p></footer>
+
 <!-- ========== MAIN APP SCRIPT ========== -->
 <script>
+// ========== SUPABASE CONFIG ==========
+const SUPABASE_URL = 'https://bdgnhmqmttiksuhaoamil.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ25obXFtdHRpa3N1aG9hbWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NjUwNTEsImV4cCI6MjA5NDU0MTA1MX0.X9-9HMqbXod2vyHRpd26MuBNTcqo4VERUwRI1o5lzMw';
+const { createClient } = supabase;
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // ========== CONFIG ==========
 const CONFIG = {
 baseUrl: 'https://lensora.com',
@@ -525,15 +633,18 @@ i18n: {
     } 
 }
 };
+
 // ========== SECURE STORAGE ==========
 const SecureStorage = {
 set: (key, value, isSensitive = false) => { try { if (isSensitive) { const encrypted = btoa(encodeURIComponent(JSON.stringify(value))); localStorage.setItem(`secure_${key}`, encrypted); } else { localStorage.setItem(key, JSON.stringify(value)); } return true; } catch (e) { console.error('Storage error:', e); return false; } },
 get: (key, isSensitive = false) => { try { const data = localStorage.getItem(isSensitive ? `secure_${key}` : key); if (!data) return null; if (isSensitive) { return JSON.parse(decodeURIComponent(atob(data))); } return JSON.parse(data); } catch { return null; } },
 remove: (key, isSensitive = false) => { localStorage.removeItem(isSensitive ? `secure_${key}` : key); }
 };
+
 // ========== DATA ==========
 let state = { products: [], cart: [], wishlist: [], currentLang: 'ar', currentCurrency: 'SAR', isAdmin: false, ageVerified: false, cookiesAccepted: false };
 let currentLensIdx = 0;
+
 // ========== UTILS ==========
 function adjColor(hex, amount) {
 hex = hex.replace('#','');
@@ -576,98 +687,90 @@ function updateStock(productId, changeReal = 0, changeReserved = 0, note = '') {
     return true;
 }
 
-// ========== LOAD DATA ==========
+// ========== LOAD DATA FROM SUPABASE ==========
 async function loadData() {
 try {
-console.log('🔄 جاري تحميل البيانات...');
-const productKeys = ['lens_prods', 'lensora_products', 'products'];
-const categoryKeys = ['lens_cats', 'lensora_categories', 'categories'];
-let localProducts = [], localCats = [];
-for (const key of productKeys) {
-const data = localStorage.getItem(key);
-if (data) {
-try {
-localProducts = JSON.parse(data);
-console.log(`✅ تم العثور على المنتجات في: ${key}`, localProducts.length);
-break;
-} catch(e) { console.warn(`❌ فشل في قراءة ${key}`); }
-}
-}
-for (const key of categoryKeys) {
-const data = localStorage.getItem(key);
-if (data) {
-try {
-localCats = JSON.parse(data);
-console.log(`✅ تم العثور على الفئات في: ${key}`, localCats.length);
-break;
-} catch(e) { console.warn(`❌ فشل في قراءة ${key}`); }
-}
-}
+console.log('🔄 جاري تحميل البيانات من Supabase...');
+
+// Load Categories
+const { data: catsData, error: catsError } = await supabaseClient
+    .from('categories')
+    .select('*')
+    .order('ar_name');
+
+// Load Products
+const { data: prodsData, error: prodsError } = await supabaseClient
+    .from('products')
+    .select('*')
+    .eq('visible', true)
+    .order('name_ar');
+
+if (catsError) throw catsError;
+if (prodsError) throw prodsError;
+
+// Process categories
 const catMap = {};
-if (Array.isArray(localCats) && localCats.length > 0) {
-localCats.forEach(c => {
-const id = c.id;
-catMap[id] = {
-ar: c.ar || c.arName || c.name_ar || c.name || 'عام',
-en: c.en || c.enName || c.name_en || c.id || 'Category',
-color: c.color || '#c9a84c'
-};
-});
+if (catsData) {
+    catsData.forEach(c => {
+        catMap[c.id] = {
+            ar: c.ar_name,
+            en: c.en_name || c.ar_name,
+            color: c.color || '#c9a84c'
+        };
+    });
 }
-if (Array.isArray(localProducts) && localProducts.length > 0) {
-state.products = localProducts.map(p => {
-const catId = p.category || p.categoryId || 'uncategorized';
-const catInfo = catMap[catId] || { ar: 'عام', en: 'General', color: '#c9a84c' };
-return {
-...p,
-id: p.id || ('p_' + Math.random().toString(36).substr(2, 9)),
-name: p.nameAr || p.name || 'منتج',
-enName: p.nameEn || p.enName || '',
-categoryId: catId,
-categoryName: catInfo.ar,
-categoryNameEn: catInfo.en,
-categoryColor: catInfo.color,
-gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
-visible: p.visible !== false,
-price: parseFloat(p.price) || 0,
-// ✅ Handle both old and new stock format
-stockReal: p.stockReal || p.stock || 0,
-stockReserved: p.stockReserved || 0,
-opacity: p.opacity || 0.7,
-lensSize: p.lensSize || 85,
-offsetX: p.offsetX || 0,
-offsetY: p.offsetY || 0
-};
-});
-console.log(`✅ تم معالجة ${state.products.length} منتج`);
+
+// Process products
+if (prodsData && prodsData.length > 0) {
+    state.products = prodsData.map(p => {
+        const catInfo = catMap[p.category_id] || { ar: 'عام', en: 'General', color: '#c9a84c' };
+        return {
+            ...p,
+            id: p.id,
+            name: p.name_ar,
+            enName: p.name_en || '',
+            categoryId: p.category_id,
+            categoryName: catInfo.ar,
+            categoryNameEn: catInfo.en,
+            categoryColor: catInfo.color,
+            gradient: p.gradient || generateLensGradient(p.color || catInfo.color),
+            visible: p.visible !== false,
+            price: parseFloat(p.price) || 0,
+            stockReal: p.stock_real || 0,
+            stockReserved: p.stock_reserved || 0,
+            opacity: p.opacity || 0.7,
+            lensSize: p.lens_size || 85
+        };
+    });
+    console.log(`✅ تم تحميل ${state.products.length} منتج من Supabase`);
 } else {
-    console.log('ℹ️ لا توجد بيانات محلية، تحميل بيانات تجريبية...');
-    const demoCats = [
-        {id:'brown',ar:'بني دافئ',en:'Warm Brown',color:'#D4A056'},
-        {id:'blue',ar:'أزرق ساحر',en:'Enchanting Blue',color:'#2E6CB5'}
-    ];
+    console.log('ℹ️ لا توجد منتجات في القاعدة، تحميل بيانات تجريبية...');
+    // Fallback Demo Data
     const demoProds = [
-        {id:'p1', nameAr:'عسل ذهبي', nameEn:'Golden Honey', category:'brown', price:85, stockReal:50, stockReserved:0, color:'#D4A056', visible:true},
-        {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', category:'brown', price:85, stockReal:30, stockReserved:0, color:'#8B4513', visible:true},
-        {id:'p3', nameAr:'محيط', nameEn:'Ocean', category:'blue', price:90, stockReal:20, stockReserved:0, color:'#2E6CB5', visible:true}
+        {id:'p1', nameAr:'عسل ذهبي', nameEn:'Golden Honey', categoryId:'brown', price:85, stockReal:50, stockReserved:0, color:'#D4A056', visible:true},
+        {id:'p2', nameAr:'شوكولاتة', nameEn:'Chocolate', categoryId:'brown', price:85, stockReal:30, stockReserved:0, color:'#8B4513', visible:true},
+        {id:'p3', nameAr:'محيط', nameEn:'Ocean', categoryId:'blue', price:90, stockReal:20, stockReserved:0, color:'#2E6CB5', visible:true}
     ];
-    localStorage.setItem('lens_cats', JSON.stringify(demoCats));
-    localStorage.setItem('lens_prods', JSON.stringify(demoProds));
-    await loadData();
-    return;
+    state.products = demoProds;
 }
-state.cart = SecureStorage.get('lensora_cart') || [];
-state.wishlist = SecureStorage.get('lensora_wishlist') || [];
-console.log('✅ تم تحميل البيانات بنجاح');
+
+// Load cart from localStorage
+const savedCart = localStorage.getItem('lensora_cart');
+if (savedCart) state.cart = JSON.parse(savedCart);
+
+// Load wishlist from localStorage
+const savedWishlist = localStorage.getItem('lensora_wishlist');
+if (savedWishlist) state.wishlist = JSON.parse(savedWishlist);
+
 } catch (error) {
 console.error('❌ فشل في تحميل البيانات:', error);
+showToast('⚠️ حدث خطأ في تحميل البيانات', 'warning');
 }
 }
 
 function saveData() {
 SecureStorage.set('lensora_cart', state.cart);
 SecureStorage.set('lensora_wishlist', state.wishlist);
-// ✅ Also save products to sync stock changes with admin panel
 localStorage.setItem('lens_prods', JSON.stringify(state.products));
 }
 
@@ -694,7 +797,7 @@ function showShipping() { showToast('🚚 شحن مجاني للطلبات فو�
 function showReturns() { showToast('🔄 إرجاع خلال 14 يوم', 'info'); }
 function showContact() { showToast('💬 support@lensora.com', 'info'); }
 
-// ========== SLIDER - INFINITE LOOP (SMOOTH VERSION) ==========
+// ========== SLIDER - INFINITE LOOP ==========
 function initSmoothSlider() {
 const track = document.getElementById('sliderTrack');
 if (!track) return;
@@ -726,7 +829,6 @@ for (let copy = 0; copy < 3; copy++) {
 COLORS_DATA.forEach((cat, i) => {
 if (!cat.lenses.length) return;
 const main = cat.lenses[0];
-// ✅ Use available stock for display
 const availableStock = getAvailableStock(main);
 const totalStock = cat.lenses.reduce((s,l) => s + getAvailableStock(l), 0);
 const dots = cat.lenses.map(l => `<div class="card-dot" style="background:${l.gradient||generateLensGradient(l.color)}" aria-label="${l.name}"></div>`).join('');
@@ -766,7 +868,6 @@ const vp = document.querySelector('.slider-viewport');
 return vp ? (vp.offsetWidth - CARD_W) / 2 : 0;
 }
 
-// ✅ Fixed: Smoother animation with better easing and longer duration
 function snapToIndex(idx) {
 isAnimating = true;
 const normalized = ((idx % total) + total) % total;
@@ -775,7 +876,6 @@ const target = idx * ITEM_W;
 const centerOffset = getCenterOffset();
 const pos = target - centerOffset;
 cancelAnimationFrame(animFrame);
-// ✅ Increased duration to 850ms for smoother motion
 animateTo(pos, 850, () => {
 isAnimating = false;
 if (idx >= total * 2 || idx < 0) {
@@ -790,10 +890,8 @@ track.style.transition = '';
 updateDots(normalized);
 }
 
-// ✅ Fixed: Added custom easing function for natural feel
 function animateTo(targetPos, duration = 850, callback) {
 const start = currentPos, diff = targetPos - start, startTime = performance.now();
-// ✅ Smoother easing: cubic-bezier(.22,1,.36,1)
 function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 function step(now) {
 const elapsed = now - startTime, progress = Math.min(elapsed / duration, 1);
@@ -817,7 +915,6 @@ const startCopy = 1;
 currentPos = (startCopy * total) * ITEM_W - getCenterOffset();
 track.style.transform = `translateX(-${currentPos}px)`;
 updateDots(0);
-// ✅ Fixed: Slower autoplay interval (5 seconds instead of 3.5)
 if (autoplayInterval) clearInterval(autoplayInterval);
 autoplayInterval = setInterval(() => {
 if (!isDragging && !isAnimating) {
@@ -850,7 +947,6 @@ const card = e.target.closest('.slider-card'); if (!card || isDragging) return;
 const catIdx = parseInt(card.dataset.cat);
 if (!isNaN(catIdx)) openLensModal(catIdx);
 };
-// ✅ Fixed: Improved drag resistance for smoother touch/mouse interaction
 const startDrag = (x) => {
 isDragging = true; dragStartX = x; dragStartPos = currentPos;
 cancelAnimationFrame(animFrame); isAnimating = false;
@@ -859,7 +955,6 @@ track.style.transition = 'none';
 const moveDrag = (x) => {
 if (!isDragging) return;
 const diff = x - dragStartX;
-// ✅ Added slight resistance factor (0.85) for more controlled dragging
 currentPos = dragStartPos - (diff * 0.85);
 track.style.transform = `translateX(-${currentPos}px)`;
 };
@@ -930,7 +1025,6 @@ document.body.style.overflow = '';
 
 function renderLensSlider(products) {
 document.getElementById('lensTrack').innerHTML = products.map((p, li) => {
-    // ✅ Use advanced stock system
     const available = getAvailableStock(p);
     const sc = available === 0 ? 'stock-out' : available <= 5 ? 'stock-low' : '';
     const st = available === 0 ? 'نفذ' : available <= 5 ? `باقي ${available}` : `${available} قطعة`;
@@ -971,14 +1065,11 @@ document.getElementById('lensPrevBtn').disabled = currentLensIdx === 0;
 document.getElementById('lensNextBtn').disabled = currentLensIdx >= (document.getElementById('lensTrack').children.length - 1);
 }
 
-// ✅ Fixed: Smoother modal slide with better easing
 function slideLensMove(dir) {
 const total = document.getElementById('lensTrack').children.length;
 currentLensIdx = Math.max(0, Math.min(total - 1, currentLensIdx + dir));
-// ✅ Added smooth transition for modal slider
 document.getElementById('lensTrack').style.transition = 'transform 0.85s cubic-bezier(.22,1,.36,1)';
 updateLensSlider();
-// ✅ Reset transition after animation completes
 setTimeout(() => {
 document.getElementById('lensTrack').style.transition = '';
 }, 900);
@@ -994,7 +1085,6 @@ el.textContent = v;
 el.setAttribute('aria-valuenow', v);
 }
 
-// ✅ UPDATED: Add to cart with stock reservation
 function addFromSlider(lensId, li) {
     const p = getProduct(lensId);
     const available = getAvailableStock(p);
@@ -1007,7 +1097,6 @@ function addFromSlider(lensId, li) {
     const el = document.getElementById(`mq_${li}`);
     const qty = el ? parseInt(el.textContent) : 1;
     
-    // ✅ Check if requested quantity is available
     if (available < qty) { 
         showToast(`⚠️ الكمية المتاحة فقط: ${available}`, 'warning'); 
         return; 
@@ -1024,7 +1113,6 @@ function addFromSlider(lensId, li) {
         state.cart.push({ productId: lensId, qty }); 
     }
     
-    // ✅ Reserve the stock when added to cart
     updateStock(lensId, 0, qty, `إضافة للسلة - ${getText(p.name, p.enName)}`);
     
     saveData(); updateCartBadge();
@@ -1056,7 +1144,7 @@ return `<div class="ci" role="listitem"><div class="ci-color" style="background:
 }).join('');
 const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
 const shipping = sub >= 200 ? 0 : 15, total = sub + shipping;
-bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="checkout()" ${state.cart.some(c => getAvailableStock(getProduct(c.productId)) < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
+bottom.innerHTML = `<div class="cb-row"><span>المجموع</span><span>${sub} ${getCurrencySymbol()}</span></div><div class="cb-row"><span>الشحن ${shipping===0?'(مجاني)':''}</span><span>${shipping===0?'مجاني':shipping+' '+getCurrencySymbol()}</span></div><div class="cb-row total"><span>الإجمالي</span><span>${total} ${getCurrencySymbol()}</span></div><button class="checkout-btn" onclick="openCustomerModalForCheckout()" ${state.cart.some(c => getAvailableStock(getProduct(c.productId)) < c.qty) ? 'disabled' : ''}>🧾 إتمام الشراء</button><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">🔒 دفع آمن | استرجاع خلال 14 يوم</p>`;
 }
 
 function changeCartQty(pid, delta) {
@@ -1064,7 +1152,6 @@ const item = state.cart.find(c => c.productId === pid), p = getProduct(pid);
 if (!item || !p) return;
 const available = getAvailableStock(p);
 
-// ✅ If increasing, check availability
 if (delta > 0 && available < item.qty + delta) {
     showToast('⚠️ الكمية غير متاحة', 'warning');
     return;
@@ -1072,7 +1159,6 @@ if (delta > 0 && available < item.qty + delta) {
 
 item.qty += delta;
 if (item.qty <= 0) { 
-    // ✅ Return reserved stock when removing from cart
     updateStock(pid, 0, -item.qty, `إزالة من السلة`);
     removeFromCart(pid); 
     return; 
@@ -1081,11 +1167,9 @@ if (item.qty <= 0) {
 saveData(); updateCartBadge(); renderCart();
 }
 
-// ✅ UPDATED: Return reserved stock when removing from cart
 function removeFromCart(pid) {
     const item = state.cart.find(c => c.productId === pid);
     if (item) {
-        // ✅ Return the reserved quantity
         updateStock(pid, 0, -item.qty, `إزالة من السلة`);
     }
     state.cart = state.cart.filter(c => c.productId !== pid);
@@ -1093,82 +1177,91 @@ function removeFromCart(pid) {
     showToast('✅ تمت الإزالة من السلة', 'success');
 }
 
-// ✅ UPDATED: Checkout with advanced stock management
-async function checkout() {
-if (state.cart.length === 0) return;
-
-// ✅ Final availability check before checkout
-for (const item of state.cart) {
-    const p = getProduct(item.productId);
-    const available = getAvailableStock(p);
-    if (!p || available < item.qty) { 
-        showToast(`⚠️ "${getText(p?.name,p?.enName)}" الكمية غير متاحة`, 'error'); 
-        return; 
-    }
+// ========== CUSTOMER MODAL FUNCTIONS ==========
+function openCustomerModalForCheckout() {
+    if (state.cart.length === 0) return;
+    document.getElementById('customerModal').classList.add('show');
 }
 
-try {
-const btn = document.querySelector('.checkout-btn');
-const originalText = btn.innerHTML;
-btn.disabled = true; btn.innerHTML = '⏳ جاري المعالجة...';
-await new Promise(resolve => setTimeout(resolve, 1500));
-
-// ✅ Deduct from both real and reserved stock on successful purchase
-state.cart.forEach(c => { 
-    const p = getProduct(c.productId); 
-    if (p) {
-        // Deduct the quantity from both real and reserved stock
-        updateStock(c.productId, -c.qty, -c.qty, `شراء مكتمل - فاتورة`);
-    }
-});
-
-// ✅ Create and save invoice
-const items = state.cart.map(c => ({ productId: c.productId, qty: c.qty }));
-const sub = state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0);
-const shipping = sub >= 200 ? 0 : 15;
-const total = sub + shipping;
-
-// ✅ Save invoice to localStorage (shared with admin.html)
-saveInvoice('عميل زائر', 'غير محدد', items, total, state.currentCurrency);
-
-showToast('✅ تم تأكيد طلبك بنجاح! 🎉', 'success');
-state.cart = []; saveData(); updateCartBadge(); closeCart();
-btn.disabled = false; btn.innerHTML = originalText;
-} catch (error) {
-showToast('❌ حدث خطأ، يرجى المحاولة مجددًا', 'error');
-console.error('Checkout error:', error);
-}
+function closeCustomerModal() {
+    document.getElementById('customerModal').classList.remove('show');
 }
 
-// ========== ✅ INVOICE SYSTEM FOR INDEX.HTML ==========
-function generateInvoiceId() {
-    return 'INV-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
-}
+// ========== CHECKOUT WITH SUPABASE ==========
+async function handleCheckout(e) {
+    e.preventDefault();
+    
+    const btn = e.target.querySelector('.submit');
+    const originalText = btn.innerHTML;
+    btn.disabled = true; 
+    btn.innerHTML = '⏳ جاري المعالجة...';
 
-function saveInvoice(customerName, customerPhone, items, total, currency) {
-    const invoice = {
-        id: generateInvoiceId(),
-        date: new Date().toISOString(),
-        customerName: customerName || 'عميل زائر',
-        customerPhone: customerPhone || 'غير محدد',
-        items: items,
-        total: total,
-        currency: currency || 'SAR',
-        status: 'completed'
-    };
-    // ✅ Load existing invoices from localStorage
-    let invoices = [];
     try {
-        const stored = localStorage.getItem('lens_invoices');
-        if (stored) invoices = JSON.parse(stored);
-    } catch(e) { invoices = []; }
-    
-    // ✅ Add new invoice and save
-    invoices.unshift(invoice);
-    localStorage.setItem('lens_invoices', JSON.stringify(invoices));
-    
-    console.log('✅ تم حفظ الفاتورة:', invoice.id);
-    return invoice;
+        // 1. Final availability check
+        for (const item of state.cart) {
+            const p = getProduct(item.productId);
+            const available = getAvailableStock(p);
+            if (!p || available < item.qty) { 
+                showToast(`⚠️ "${getText(p?.name,p?.enName)}" الكمية غير متاحة`, 'error'); 
+                btn.disabled = false; btn.innerHTML = originalText;
+                return; 
+            }
+        }
+
+        // 2. Prepare invoice data with FULL customer details
+        const invoiceData = {
+            id: 'INV-' + Date.now().toString(36).toUpperCase().slice(-6) + '-' + Math.random().toString(36).substr(2,4).toUpperCase(),
+            created_at: new Date().toISOString(),
+            customer_name: document.getElementById('custName').value.trim(),
+            customer_phone: document.getElementById('custPhone').value.trim(),
+            customer_phone_secondary: document.getElementById('custPhone2').value.trim() || null,
+            customer_city: document.getElementById('custCity').value.trim() || null,
+            customer_district: document.getElementById('custDistrict').value.trim() || null,
+            customer_street: document.getElementById('custStreet').value.trim() || null,
+            customer_building: document.getElementById('custBuilding').value.trim() || null,
+            customer_floor: null, // Can add if needed
+            customer_apartment: document.getElementById('custApartment').value.trim() || null,
+            customer_notes: document.getElementById('custNotes').value.trim() || null,
+            admin_notes: null,
+            delivery_method: document.getElementById('deliveryMethod').value,
+            delivery_cost: 0, // Can calculate based on city if needed
+            items: state.cart.map(c => ({ productId: c.productId, qty: c.qty })),
+            total: state.cart.reduce((s, c) => { const p = getProduct(c.productId); return s + (p ? getPrice(p) * c.qty : 0); }, 0),
+            currency: state.currentCurrency,
+            status: 'pending'
+        };
+
+        // 3. Insert into Supabase
+        const { error } = await supabaseClient
+            .from('invoices')
+            .insert([invoiceData]);
+        
+        if (error) throw error;
+
+        // 4. Update stock: deduct real AND reserved
+        for (const item of state.cart) {
+            const p = getProduct(item.productId);
+            if (p) {
+                updateStock(item.productId, -item.qty, -item.qty, `شراء مكتمل - فاتورة ${invoiceData.id}`);
+            }
+        }
+
+        // 5. Success
+        showToast('✅ تم إرسال طلبك بنجاح! 🎉 سنتواصل معك قريباً', 'success');
+        state.cart = []; 
+        saveData(); 
+        updateCartBadge(); 
+        closeCart();
+        closeCustomerModal();
+        document.getElementById('checkoutForm').reset();
+        
+    } catch (err) {
+        console.error('Checkout error:', err);
+        showToast('❌ حدث خطأ أثناء الحفظ. يرجى المحاولة لاحقاً', 'error');
+    } finally {
+        btn.disabled = false; 
+        btn.innerHTML = originalText;
+    }
 }
 
 // ========== WISHLIST ==========
@@ -1207,7 +1300,6 @@ initSmoothSlider();
 showToast('✅ تمت الإزالة من المفضلة', 'success');
 }
 
-// ✅ UPDATED: Add from wishlist with stock reservation
 function addToCartFromWishlist(productId) {
     const p = getProduct(productId);
     const available = getAvailableStock(p);
@@ -1228,7 +1320,6 @@ function addToCartFromWishlist(productId) {
         state.cart.push({ productId, qty: 1 }); 
     }
     
-    // ✅ Reserve the stock when added to cart
     updateStock(productId, 0, 1, `إضافة من المفضلة - ${getText(p.name, p.enName)}`);
     
     saveData(); updateCartBadge(); renderWishlist();
@@ -1257,7 +1348,7 @@ setTimeout(() => t.classList.remove('show'), 3000);
 
 function setupEventListeners() {
 document.addEventListener('keydown', e => {
-if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); }
+if (e.key === 'Escape') { closeLensModal(); closeCart(); closeWishlist(); closeCustomerModal(); }
 if (e.key === 'ArrowLeft' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(-1);
 if (e.key === 'ArrowRight' && document.getElementById('lensModal').classList.contains('open')) slideLensMove(1);
 });
