@@ -25,7 +25,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 @keyframes orb1{0%,100%{transform:translate(0,0)}33%{transform:translate(-100px,80px)}66%{transform:translate(60px,-50px)}}
 @keyframes orb2{0%,100%{transform:translate(0,0)}33%{transform:translate(80px,-70px)}66%{transform:translate(-60px,40px)}}
 @keyframes orb3{0%,100%{transform:translate(-50%,-50%)}33%{transform:translate(calc(-50%+80px),calc(-50%-50px))}66%{transform:translate(calc(-50%-50px),calc(-50%+80px))}}
-#particlesCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.3}
+#particlesCanvas{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.25}
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:rgba(6,4,4,.15);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,.04);transition:all var(--transition-normal)}
 .nav.scrolled{background:rgba(8,6,6,.9);padding:12px 5%;border-bottom-color:rgba(201,168,76,.08);box-shadow:0 4px 30px rgba(0,0,0,.1)}
 .nav-logo{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);letter-spacing:4px;display:flex;align-items:center;gap:12px;text-decoration:none}
@@ -39,46 +39,47 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .cart-btn:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 30px rgba(201,168,76,.2)}
 .cart-badge{background:#e74c3c;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;position:absolute;top:-6px;left:-6px;animation:popBadge .4s cubic-bezier(.68,-.55,.27,1.55)}
 @keyframes popBadge{from{transform:scale(0)}to{transform:scale(1)}}
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 5% 80px}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(201,168,76,.04) 0%,transparent 70%),radial-gradient(ellipse 35% 35% at 15% 85%,rgba(74,144,217,.03) 0%,transparent 50%),radial-gradient(ellipse 35% 35% at 85% 85%,rgba(123,94,167,.03) 0%,transparent 50%)}
-.hero-sphere-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;pointer-events:none;z-index:1}
-.hero-sphere{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(201,168,76,.12),transparent 60%),radial-gradient(circle at 70% 75%,rgba(201,168,76,.06),transparent 50%);box-shadow:0 0 80px rgba(201,168,76,.1),inset 0 0 60px rgba(201,168,76,.04);animation:sphereFloat 8s ease-in-out infinite,sphereGlow 4s ease-in-out infinite;filter:blur(1px)}
-.hero-sphere::before{content:'';position:absolute;inset:20%;border-radius:50%;border:1px solid rgba(201,168,76,.15);animation:sphereRing 10s linear infinite}
-.hero-sphere::after{content:'';position:absolute;inset:35%;border-radius:50%;border:1px solid rgba(201,168,76,.08);animation:sphereRing 15s linear infinite reverse}
-@keyframes sphereFloat{0%,100%{transform:translate(-50%,-50%) translateY(0) scale(1)}50%{transform:translate(-50%,-50%) translateY(-20px) scale(1.02)}}
-@keyframes sphereGlow{0%,100%{box-shadow:0 0 80px rgba(201,168,76,.1),inset 0 0 60px rgba(201,168,76,.04)}50%{box-shadow:0 0 120px rgba(201,168,76,.2),inset 0 0 80px rgba(201,168,76,.08)}}
-@keyframes sphereRing{to{transform:rotate(360deg)}}
-.sphere-particles{position:absolute;inset:-50px}
-.sphere-particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.5;animation:particleFloat 6s ease-in-out infinite;box-shadow:0 0 10px var(--gold)}
-.sphere-particle:nth-child(1){top:10%;left:20%;animation-delay:0s}.sphere-particle:nth-child(2){top:30%;right:15%;animation-delay:1s}
-.sphere-particle:nth-child(3){bottom:25%;left:10%;animation-delay:2s}.sphere-particle:nth-child(4){bottom:40%;right:25%;animation-delay:0.5s}
-.sphere-particle:nth-child(5){top:50%;left:5%;animation-delay:1.5s}.sphere-particle:nth-child(6){top:15%;right:30%;animation-delay:2.5s}
-@keyframes particleFloat{0%,100%{transform:translateY(0) scale(1);opacity:.5}50%{transform:translateY(-30px) scale(1.3);opacity:1}}
-.hero-glass{position:relative;z-index:2;background:rgba(201,168,76,.015);backdrop-filter:blur(50px);border:1px solid rgba(201,168,76,.06);border-radius:36px;padding:70px 90px;max-width:820px;animation:heroIn 1.4s cubic-bezier(.22,1,.36,1) both;box-shadow:0 0 100px rgba(201,168,76,.02),inset 0 1px 0 rgba(255,255,255,.02)}
-@keyframes heroIn{from{opacity:0;transform:translateY(50px) scale(.94);filter:blur(12px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
-.hero-glass::before{content:'';position:absolute;inset:-1px;border-radius:37px;background:linear-gradient(135deg,rgba(201,168,76,.12) 0%,transparent 40%,transparent 60%,rgba(201,168,76,.06) 100%);z-index:-1}
-.hero-glass::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(201,168,76,.03),transparent,transparent);animation:shimmerRotate 10s linear infinite;z-index:-1}
-@keyframes shimmerRotate{to{transform:rotate(360deg)}}
-.hero-logo-wrap{margin-bottom:28px;animation:logoAnim 1.2s cubic-bezier(.22,1,.36,1) .4s both}
-@keyframes logoAnim{from{opacity:0;transform:scale(.7) rotateY(30deg)}to{opacity:1;transform:scale(1) rotateY(0)}}
-.hero-logo-wrap svg{width:110px;height:110px;filter:drop-shadow(0 0 40px rgba(201,168,76,.2))}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(40px,7vw,68px);color:var(--gold);letter-spacing:8px;margin-bottom:10px;animation:titleAnim 1.2s cubic-bezier(.22,1,.36,1) .6s both}
-@keyframes titleAnim{from{opacity:0;transform:translateY(25px);letter-spacing:24px}to{opacity:1;transform:translateY(0);letter-spacing:8px}}
-.hero-line{width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 28px;animation:lineGrow 1.2s ease .7s both}
-@keyframes lineGrow{from{width:0;opacity:0}to{width:70px;opacity:1}}
-.hero-sub{font-size:15px;color:var(--text-dim);max-width:500px;margin:0 auto;line-height:1.9;animation:fadeUp .9s ease .8s both}
+/* ========== NEW HERO ANIMATION ========== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 5% 80px;background:radial-gradient(ellipse at 50% 0%,#1a1410 0%,#0a0808 60%)}
+.hero-aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-aurora span{position:absolute;width:150%;height:150%;top:-25%;left:-25%;background:conic-gradient(from 0deg at 50% 50%,transparent 0deg,rgba(201,168,76,.08) 60deg,transparent 120deg,rgba(74,144,217,.05) 180deg,transparent 240deg,rgba(123,94,167,.06) 300deg,transparent 360deg);animation:auroraSpin 25s linear infinite;filter:blur(80px)}
+.hero-aurora span:nth-child(2){animation-duration:35s;animation-direction:reverse;opacity:.7}
+@keyframes auroraSpin{to{transform:rotate(360deg)}}
+.hero-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:420px;height:420px;pointer-events:none;z-index:1}
+.hero-lens{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(201,168,76,.15),transparent 55%),radial-gradient(circle at 65% 70%,rgba(201,168,76,.08),transparent 50%);box-shadow:0 0 100px rgba(201,168,76,.12),inset 0 0 60px rgba(201,168,76,.05);animation:lensPulse 6s ease-in-out infinite}
+.hero-lens::before{content:'';position:absolute;inset:15%;border-radius:50%;border:1px solid rgba(201,168,76,.2);animation:ringRotate 12s linear infinite}
+.hero-lens::after{content:'';position:absolute;inset:30%;border-radius:50%;border:1px solid rgba(201,168,76,.1);animation:ringRotate 18s linear infinite reverse}
+@keyframes lensPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+@keyframes ringRotate{to{transform:rotate(360deg)}}
+.hero-glass{position:relative;z-index:2;background:rgba(201,168,76,.02);backdrop-filter:blur(60px);border:1px solid rgba(201,168,76,.08);border-radius:40px;padding:80px 100px;max-width:850px;animation:glassIn 1.2s cubic-bezier(.22,1,.36,1) both;box-shadow:0 20px 80px rgba(0,0,0,.4),0 0 0 1px rgba(201,168,76,.05)}
+.hero-glass::before{content:'';position:absolute;inset:-1px;border-radius:41px;background:linear-gradient(135deg,rgba(201,168,76,.15),transparent 40%,transparent 60%,rgba(201,168,76,.08));z-index:-1;animation:borderGlow 4s ease-in-out infinite alternate}
+@keyframes glassIn{from{opacity:0;transform:translateY(40px) scale(.95);filter:blur(10px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes borderGlow{0%{opacity:.5}100%{opacity:1}}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,72px);color:var(--gold);letter-spacing:12px;margin-bottom:16px;animation:titleReveal 1.4s cubic-bezier(.22,1,.36,1) .3s both}
+@keyframes titleReveal{from{opacity:0;transform:translateY(30px);letter-spacing:30px;filter:blur(8px)}to{opacity:1;transform:translateY(0);letter-spacing:12px;filter:blur(0)}}
+.hero-line{width:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 24px;animation:lineDraw 1s ease .8s forwards}
+@keyframes lineDraw{to{width:80px;opacity:1}}
+.hero-sub{font-size:16px;color:var(--text-dim);max-width:520px;margin:0 auto;line-height:1.8;animation:fadeUp .8s ease 1s both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.hero-ctas{display:flex;gap:16px;justify-content:center;margin-top:32px;animation:fadeUp .9s ease 1s both}
+.hero-ctas{display:flex;gap:16px;justify-content:center;margin-top:36px;animation:fadeUp .8s ease 1.2s both}
 .cta-primary{padding:16px 40px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#b8943a);color:var(--bg);font-weight:700;font-size:15px;transition:all var(--transition-normal);position:relative;overflow:hidden}
 .cta-primary::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.3);transform:translate(-50%,-50%);transition:width .5s,height .5s}
 .cta-primary:hover::before{width:180px;height:180px}
 .cta-primary:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(201,168,76,.3)}
 .cta-secondary{padding:16px 40px;border-radius:50px;background:rgba(201,168,76,.08);color:var(--gold);font-weight:600;font-size:15px;border:1px solid rgba(201,168,76,.2);transition:all var(--transition-normal)}
 .cta-secondary:hover{background:rgba(201,168,76,.15);transform:translateY(-2px)}
-.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;animation:fadeUp 1s ease 1.3s both}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeUp 1s ease 1.5s both}
 .hero-scroll span{font-size:10px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}
-.scroll-line{width:1px;height:45px;background:linear-gradient(180deg,var(--gold),transparent);animation:scrollPulse 2.5s ease-in-out infinite}
-@keyframes scrollPulse{0%,100%{opacity:.2;transform:scaleY(.4);transform-origin:top}50%{opacity:1;transform:scaleY(1)}}
+.scroll-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:bounceDot 2s ease-in-out infinite}
+@keyframes bounceDot{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(12px);opacity:1}}
+.hero-particles{position:absolute;inset:0;pointer-events:none;z-index:1}
+.h-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--gold);opacity:0;animation:floatUp 8s linear infinite}
+.h-particle:nth-child(1){left:10%;animation-delay:0s;animation-duration:7s}.h-particle:nth-child(2){left:25%;animation-delay:1.5s;animation-duration:9s}
+.h-particle:nth-child(3){left:40%;animation-delay:3s;animation-duration:6s}.h-particle:nth-child(4){left:55%;animation-delay:0.8s;animation-duration:8s}
+.h-particle:nth-child(5){left:70%;animation-delay:2.2s;animation-duration:10s}.h-particle:nth-child(6){left:85%;animation-delay:4s;animation-duration:7.5s}
+.h-particle:nth-child(7){left:15%;animation-delay:1s;animation-duration:8.5s}.h-particle:nth-child(8){left:60%;animation-delay:2.8s;animation-duration:6.5s}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.6}90%{opacity:.6}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+/* ========== SLIDER & REST ========== */
 .categories-section{padding:80px 5% 140px;max-width:1500px;margin:0 auto;position:relative;z-index:2}
 .section-header{text-align:center;margin-bottom:60px}
 .section-label{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
@@ -215,7 +216,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .toast.success{border-color:var(--success)}
 .toast.error{border-color:var(--error)}
 .footer{text-align:center;padding:50px 5%;border-top:1px solid rgba(201,168,76,.03);color:var(--text-dim);font-size:13px;position:relative;z-index:2}
-@media(max-width:768px){.hero-sphere-wrap{width:350px;height:350px}.hero-glass{padding:40px 28px;border-radius:28px}.hero-logo-wrap svg{width:80px;height:80px}.lens-slide{flex-direction:column;text-align:center;gap:32px}.lens-visual{width:200px;height:200px}.lens-visual-inner{width:170px;height:170px}.lens-meta{justify-content:center}.qty-selector{justify-content:center}.slider-area{padding:24px 16px}.lens-slider-container{padding:28px 16px}.cart-panel{width:100%}.modal-box{max-height:95vh}.modal-header{padding:20px 20px}.lens-details h3{font-size:24px}.checkout-grid{grid-template-columns:1fr}.modal-nav-arrow{width:40px;height:40px;font-size:18px;right:10px;left:10px}}
+@media(max-width:768px){.hero-center{width:300px;height:300px}.hero-glass{padding:50px 30px;border-radius:28px}.lens-slide{flex-direction:column;text-align:center;gap:32px}.lens-visual{width:200px;height:200px}.lens-visual-inner{width:170px;height:170px}.lens-meta{justify-content:center}.qty-selector{justify-content:center}.slider-area{padding:24px 16px}.lens-slider-container{padding:28px 16px}.cart-panel{width:100%}.modal-box{max-height:95vh}.modal-header{padding:20px 20px}.lens-details h3{font-size:24px}.checkout-grid{grid-template-columns:1fr}.modal-nav-arrow{width:40px;height:40px;font-size:18px;right:10px;left:10px}}
 </style>
 </head>
 <body>
@@ -234,15 +235,13 @@ button:disabled{opacity:.5;cursor:not-allowed}
 </div>
 </nav>
 <header class="hero">
-<div class="hero-bg"></div>
-<div class="hero-sphere-wrap">
-<div class="hero-sphere"></div>
-<div class="sphere-particles"><div class="sphere-particle"></div><div class="sphere-particle"></div><div class="sphere-particle"></div><div class="sphere-particle"></div><div class="sphere-particle"></div><div class="sphere-particle"></div></div>
+<div class="hero-aurora"><span></span><span></span></div>
+<div class="hero-center"><div class="hero-lens"></div></div>
+<div class="hero-particles">
+<div class="h-particle"></div><div class="h-particle"></div><div class="h-particle"></div><div class="h-particle"></div>
+<div class="h-particle"></div><div class="h-particle"></div><div class="h-particle"></div><div class="h-particle"></div>
 </div>
 <div class="hero-glass">
-<div class="hero-logo-wrap">
-<svg viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="55" stroke="#c9a84c" stroke-width=".8" opacity=".15"/><circle cx="60" cy="60" r="40" fill="url(#hg1)"/><circle cx="60" cy="60" r="40" stroke="#c9a84c" stroke-width="1.2" opacity=".5"/><circle cx="60" cy="60" r="20" fill="url(#hg2)" opacity=".8"/><circle cx="60" cy="60" r="6" fill="#c9a84c" opacity=".4"/><defs><radialGradient id="hg1" cx="35%" cy="30%"><stop offset="0%" stop-color="#d4a84c" stop-opacity=".25"/><stop offset="100%" stop-color="#3a2510" stop-opacity=".65"/></radialGradient><radialGradient id="hg2" cx="30%" cy="25%"><stop offset="0%" stop-color="#e8d5a3" stop-opacity=".55"/><stop offset="100%" stop-color="#5a3a1a" stop-opacity=".75"/></radialGradient></defs></svg>
-</div>
 <h1 class="hero-title">SOLINA</h1>
 <div class="hero-line"></div>
 <p class="hero-sub">اكتشفي عالماً من الألوان — عدسات ملونة فاخرة تعكس جمالك الطبيعي بأمان تام وجودة عالمية</p>
@@ -251,7 +250,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <button class="cta-secondary" onclick="showToast('♡ المفضلة قيد التطوير','info')">المفضلة ♡</button>
 </div>
 </div>
-<div class="hero-scroll"><span>اكتشفي</span><div class="scroll-line"></div></div>
+<div class="hero-scroll"><span>اكتشفي</span><div class="scroll-dot"></div></div>
 </header>
 <main id="products">
 <section class="categories-section">
